@@ -1,0 +1,7 @@
+A repository for my master's degree program at VUT FIT.
+
+The repo structure consists of directories named MITn, where 'n'
+represents the year of the program (e.g. MIT1 is the first two
+semesters). Inside these directories are further directories named
+according to the individual classes.
+
