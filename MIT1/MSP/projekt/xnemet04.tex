@@ -184,5 +184,41 @@
     Bodový odhad rozptylu: $ s^2 = \dfrac{1}{n-1} \sum\limits_{i=1}^{n} (x_i - \overline{x})^2 = 1,027 $ \\
     \noindent
     Bodový odhad smerodatnej odchýľky: $ s = \sqrt{\dfrac{1}{n-1} \sum\limits_{i=1}^{n} (x_i - \overline{x})^2} = 1,0134 $ \\
+    
     \noindent\rule{\linewidth}{0.4pt}\\
+
+    \noindent
+    d) Testujte předpoklad o výběru z normálního rozdělení Pearsonovým
+    (chí-kvadrát) testem na hladině významnosti 0,05.\\
+
+    \begin{tabular}[]{|c|c|c|c|c|c|c|c|}
+        \hline
+        \textbf{trieda} & \textbf{x$_{i-}$} & \textbf{x$_{i+}$} & \textbf{stred triedy} & \textbf{kumul. poč.} & \textbf{poč.} & \textbf{teor. poč.} & $\dfrac{\text{\textbf{rozdiel}}^2}{\text{\textbf{teor. poč.}}}$ \\
+        \hline
+        1   &   $-1000$     & $-0,0718$ & $-500,0359$   & $9$   & $9$ & $7,9038$ & $0,1520$ \\
+        2   &   $-0,0718$   & $0,3509$  & $0,1395$      & $13$  & $4$ & $6,0556$ & $0,6978$ \\
+        3   &   $0,3509$    & $0,7736$  & $0,5623$      & $22$  & $9$ & $7,7029$ & $0,2184$ \\
+        4   &   $0,7736$    & $1,1964$  & $0,9850$      & $28$  & $6$ & $8,2542$ & $0,6156$ \\
+        5   &   $1,1964$    & $1,6191$  & $1,4077$      & $35$  & $7$ & $7,4509$ & $0,0273$ \\
+        6   &   $1,6191$    & $2,0418$  & $1,8305$      & $43$  & $8$ & $5,6658$ & $0,9616$ \\
+        7   &   $2,0418$    & $1000$    & $501,0209$    & $50$  & $7$ & $6,9668$ & $0,0002$ \\
+        \hline
+    \end{tabular}
+
+    \noindent
+    Testovacie kritérium: $ t= \sum\limits_{j=1}^{m} \dfrac{(f_j - \hat{f}_j)^2}{\hat{f}_j} = 2,6727$,\\
+
+    \noindent
+    $ \chi{}_{1-\alpha}^2 $ pre $ k = 7-2-1 $ stupňov voľnosti: $ 9,4877 $,\\
+
+    \noindent
+    doplnok kritického oboru: $ \overline{W_\alpha} = \langle 0;\chi{}_{1-\alpha}^2 \rangle = \langle 0;9,4877 \rangle $.\\
+
+    \noindent
+    Keďže $ t \in \overline{W_\alpha} $, tak sa hypotéza $ X \sim N(0,944; 1,027) $ \textbf{nezamieta}.
+
+    \includegraphics[scale=0.8]{histogram_pocetnosti.png}
+
+    \noindent\rule{\linewidth}{0.4pt}\\
+
 \end{document}
