@@ -413,4 +413,70 @@
     $\overline{W_\alpha} = \left\langle -t_{1-\alpha/2}, t_{1-\alpha/2} \right\rangle = \left\langle -2,010635 ; 2,010635 \right\rangle$\\
     Keďže $t \in \overline{W_\alpha}$, tak sa hypotéza $H_0 : \mu_X - \mu_Y = 0$ \textbf{nezamieta}.
 
+    % TASK 2
+    \newpage
+    \noindent
+    \textbf{2. Měřením dvojice (\emph{Výška}[cm], \emph{Váha}[kg]) u vybraných studentů
+    z FIT byl získán dvourozměrný statistický soubor zapsaný po dvojicích
+    v řádcích v listu Data\_př. 2.}\\
+
+    \begin{table}[H]
+		\begin{tabular}{|r|r|}
+			\multicolumn{1}{c}{\textbf{$ \boldsymbol{X} $\,--\,Výška [cm]}}
+			& \multicolumn{1}{c}{\textbf{$ \boldsymbol{Y} $\,--\,Váha [kg]}}
+			\\ \hline
+
+			$ 166 $ & $ 67 $ \\ \hline
+			$ 152 $ & $ 52 $ \\ \hline
+			$ 154 $ & $ 78 $ \\ \hline
+			$ 155 $ & $ 57 $ \\ \hline
+			$ 190 $ & $ 109 $ \\ \hline
+			$ 182 $ & $ 97 $ \\ \hline
+			$ 153 $ & $ 58 $ \\ \hline
+			$ 193 $ & $ 95 $ \\ \hline
+			$ 191 $ & $ 98 $ \\ \hline
+			$ 166 $ & $ 82 $ \\ \hline
+			$ 164 $ & $ 68 $ \\ \hline
+			$ 186 $ & $ 90 $ \\ \hline
+			$ 175 $ & $ 85 $ \\ \hline
+			$ 154 $ & $ 54 $ \\ \hline
+			$ 200 $ & $ 104 $ \\ \hline
+			$ 199 $ & $ 110 $ \\ \hline
+			$ 164 $ & $ 75 $ \\ \hline
+			$ 200 $ & $ 119 $ \\ \hline
+			$ 180 $ & $ 94 $ \\ \hline
+			$ 158 $ & $ 65 $ \\ \hline
+		\end{tabular}
+    \end{table}
+    
+    \noindent
+    $n = 20$\\
+    $\overline{x} = 174,1$\\
+    $\overline{y} = 82,85$\\
+    $\sum\limits_{i=1}^{n}x_i^2 = 612014$\\
+    $\sum\limits_{i=1}^{n}y_i^2 = 145161$\\
+    $\sum\limits_{i=1}^{n}x_iy_i = 294839$\\
+
+    \noindent\rule{\linewidth}{0.4pt}\\
+
+    a) Vypočtěte bodový odhad koeficientu korelace.\\
+    
+    \noindent
+    $r = \dfrac{\sum\limits_{i=1}^{n}x_iy_i - n\overline{x}\overline{y}}{\sqrt{\left( \sum\limits_{i=1}^{n}x_i^2 - n\overline{x}^2 \right) \left( \sum\limits_{i=1}^{n}y_i^2 - n\overline{y}^2 \right)}} = 0,940332$\\
+
+    \noindent\rule{\linewidth}{0.4pt}\\
+
+    \noindent
+    b) Na hladině významnosti 0,05 testujte hypotézu, že náhodné veličiny
+    Výška a Váha jsou nezávislé.\\
+
+    \noindent
+    Testuje sa hypotéza $H_0 : \rho = 0$:\\
+    testovacie kritérium: $t = \dfrac{|r|\sqrt{n-2}}{\sqrt{1-r^2}} = 11,724906$\\
+    doplnok kritického oboru: $\overline{W_\alpha} = \left\langle 0,t_{1-\alpha/2} \right\rangle$ pre alternatívnu hypotézu: $H_A: \rho \neq 0$,\\
+    $t_{1-\alpha/2}(n-2) = 2,100922$, čím $\overline{W_\alpha} = \left\langle 0;2,100922 \right\rangle$\\
+    Keďže $t \notin \overline{W_\alpha}$, tak sa hypotéza $H_0 : \rho = 0$ sa \textbf{zamieta}.\\
+
+    \noindent\rule{\linewidth}{0.4pt}\\
+
 \end{document}
