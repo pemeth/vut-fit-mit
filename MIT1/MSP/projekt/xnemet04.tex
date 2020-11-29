@@ -479,4 +479,109 @@
 
     \noindent\rule{\linewidth}{0.4pt}\\
 
+    \noindent
+    c) \textbf{Regresní analýza} - data proložte přímkou: $\text{\emph{Váha}} = \beta_0 + \beta_1\cdot\text{\emph{Výška}}$
+    \begin{enumerate}
+        \item Bodově odhadněte $\beta_0$, $\beta_1$ a rozptyl $s^2$.
+        \item Na hladině významnosti $0,05$ otestujte hypotézy:\\
+            $H : \beta_0 = -100$, $H_A : \beta_0 \neq -100$,\\
+            $H : \beta_1 = 1$, $H_A : \beta_1 \neq 1$,
+        \item Vytvořte graf bodů spolu s regresní přímkou a pásem spolehlivosti pro individuální hodnotu výšky.\\
+    \end{enumerate}
+
+    \begin{table}[H]
+        \catcode`\-=12
+        \begin{tabular}{r|c|c|c|c|c|}
+            \cline{2-6}
+            &$x_i$ & $y_i$ & $x_i^2$ & $y_i^2$ & $x_iy_i$ \\
+            \cline{2-6}
+            & $166$ & $67$    & $27556$   & $4489$    & $11122$ \\
+            & $152$ & $52$    & $23104$   & $2704$    & $7904$ \\
+            & $154$ & $78$    & $23716$   & $6084$    & $12012$ \\
+            & $155$ & $57$    & $24025$   & $3249$    & $8835$ \\
+            & $190$ & $109$   & $36100$   & $11881$   & $20710$ \\
+            & $182$ & $97$    & $33124$   & $9409$    & $17654$ \\
+            & $153$ & $58$    & $23409$   & $3364$    & $8874$ \\
+            & $193$ & $95$    & $37249$   & $9025$    & $18335$ \\
+            & $191$ & $98$    & $36481$   & $9604$    & $18718$ \\
+            & $166$ & $82$    & $27556$   & $6724$    & $13612$ \\
+            & $164$ & $68$    & $26896$   & $4624$    & $11152$ \\
+            & $186$ & $90$    & $34596$   & $8100$    & $16740$ \\
+            & $175$ & $85$    & $30625$   & $7225$    & $14875$ \\
+            & $154$ & $54$    & $23716$   & $2916$    & $8316$ \\
+            & $200$ & $104$   & $40000$   & $10816$   & $20800$ \\
+            & $199$ & $110$   & $39601$   & $12100$   & $21890$ \\
+            & $164$ & $75$    & $26896$   & $5625$    & $12300$ \\
+            & $200$ & $119$   & $40000$   & $14161$   & $23800$ \\
+            & $180$ & $94$    & $32400$   & $8836$    & $16920$ \\
+            & $158$ & $65$    & $24964$   & $4225$    & $10270$ \\
+            \cline{2-6}
+            $\sum$ & $3482$ & $1657$ & $612014$ & $145161$ & $294839$ \\
+            \cline{2-6}
+            priemer & 174,1 & 82,85 & \multicolumn{3}{c}{} \\
+            \cline{2-3}
+        \end{tabular}
+    \end{table}
+
+    \noindent
+    1) Bodově odhadněte $\beta_0$, $\beta_1$ a rozptyl $s^2$.\\
+
+    \noindent
+    $\beta_1 = \dfrac{1}{\text{det}(H)} \left( n\sum\limits_{i=1}^{n}x_iy_i - \sum\limits_{i=1}^{n}x_i \sum\limits_{i=1}^{n}y_i \right) = 1,096157$\\
+    $\beta_0 = \overline{y} - \beta_1\overline{x} = -107,990962$\\
+    Regresná priamka: $y = \beta_0 + \beta_1x = -107,990962 + 1,096157x$\\
+    $S^\star_\text{min} = \sum\limits_{i=1}^{n}y_i^2 - \beta_0\sum\limits_{i=1}^{n}y_i - \beta_1\sum\limits_{i=1}^{n}x_iy_i = 912,142382$\\
+    $s^2 = \dfrac{S^\star_\text{min}}{n-2} = 50,674577$\\
+
+    \newpage
+    \noindent
+    2) Na hladině významnosti $0,05$ otestujte hypotézy:\\
+    
+    $H : \beta_0 = -100$, $H_A : \beta_0 \neq -100$,\\
+    $h^{11} = \dfrac{\sum\limits_{i=1}^{n}x_i^2}{\text{det}(H)} = 5,277985$\\
+    $t = \dfrac{\beta_0 - (-100)}{s\sqrt{h^{11}}} = -0,488619$\\
+    $t_{1-\alpha/2}(n-2) = 2,100922$\\
+    $\overline{W_\alpha} = \left\langle -2,100922;2,100922  \right\rangle$\\
+    Keďže $t\in\overline{W_\alpha}$, tak sa hypotéza $H$ \textbf{nezamieta}.\\
+
+    $H : \beta_1 = 1$, $H_A : \beta_1 \neq 1$,\\
+    $h^{22} = \dfrac{n}{\text{det}(H)} = 0,000172$\\
+    $t = \dfrac{\beta_1 - 1}{s\sqrt{h^{22}}} = 1,028533$\\
+    $t_{1-\alpha/2}(n-2) = 2,100922$\\
+    $\overline{W_\alpha} = \left\langle -2,100922;2,100922  \right\rangle$\\
+    Keďže $t\in\overline{W_\alpha}$, tak sa hypotéza $H$ \textbf{nezamieta}.\\
+
+    \noindent
+    3) Vytvořte graf bodů spolu s regresní přímkou a pásem spolehlivosti pro individuální hodnotu výšky.\\
+
+    \begin{table}[H]
+        \catcode`\-=12
+        \begin{tabular}{|c|c|c|c|c|c|c|}
+            \hline
+            \multicolumn{7}{|c|}{Výpočet pásu spoľahlivosti}\\
+            \hline
+            \multicolumn{2}{|c}{}& \multicolumn{2}{|c|}{stredné $y$} & \multicolumn{2}{c|}{individuálne $y$} & \\
+            \hline
+            $x_i$ & $y_i$ & dolný & horný & dolný & horný & $h^\star$ \\
+            \hline
+            $150$ & $56,432612$     & $50,636889$   & $62,228336$   & $40,393236$   & $72,471988$   & $0,150178$ \\
+            $155$ & $61,913398$     & $56,887721$   & $66,939075$   & $46,135927$   & $77,690869$   & $0,112922$ \\
+            $160$ & $67,394184$     & $63,052137$   & $71,736231$   & $51,820984$   & $82,967384$   & $0,084291$ \\
+            $165$ & $72,87497$      & $69,083103$   & $76,666837$   & $57,446120$   & $88,303820$   & $0,064283$ \\
+            $170$ & $78,355756$     & $74,915979$   & $81,795533$   & $63,009641$   & $93,701870$   & $0,052899$ \\
+            $175$ & $83,836541$     & $80,487690$   & $87,185393$   & $68,510551$   & $99,162532$   & $0,050140$ \\
+            $180$ & $89,317327$     & $85,778050$   & $92,856604$   & $73,948604$   & $104,686050$  & $0,056004$ \\
+            $185$ & $94,798113$     & $90,827334$   & $98,768892$   & $79,324321$   & $110,271906$  & $0,070492$ \\
+            $190$ & $100,278899$    & $95,703244$   & $104,854554$  & $84,638957$   & $115,918841$  & $0,093604$ \\
+            $195$ & $105,759685$    & $100,464868$  & $111,054502$  & $89,894432$   & $121,624938$  & $0,125341$ \\
+            $200$ & $111,240471$    & $105,152574$  & $117,328367$  & $95,093221$   & $127,387720$  & $0,165701$ \\
+            \hline
+        \end{tabular}
+    \end{table}
+
+    \newpage
+    \noindent
+    \includegraphics[scale=0.85]{regresna_priamka.png}\\
+    \includegraphics[scale=0.85]{pas_spolahl_pre_strednu_hodnotu.png}\\
+    \includegraphics[scale=0.85]{pas_spolahl_pre_individualnu_hodnotu.png}\\
 \end{document}
