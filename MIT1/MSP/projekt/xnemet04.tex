@@ -219,6 +219,54 @@
 
     \includegraphics[scale=0.8]{histogram_pocetnosti.png}
 
+    \newpage
     \noindent\rule{\linewidth}{0.4pt}\\
 
+    \noindent
+    e) Za předpokladu (bez ohledu na výsledek části d)), že statistický soubor
+    byl získán náhodným výběrem z normálního rozdělení, určete intervalové odhady
+    střední hodnoty, rozptylu a směrodatné odchylky se spolehlivostí 0,95 a 0,99.\\
+
+    \noindent
+    Predpoklad: $ X \sim N(\mu,\sigma^2), \mu $ a $ \sigma^2 $ sú neznáme.\\
+
+    \noindent
+    Bodový odhad strednej hodnoty: $ \overline{x} = \dfrac{1}{n} \sum\limits_{i=1}^{n} x_i = 0,944 $ \\
+    Bodový odhad rozptylu: $ s^2 = \dfrac{1}{n-1} \sum\limits_{i=1}^{n} (x_i - \overline{x})^2 = 1,027 $ \\
+    Bodový odhad smerodatnej odchýľky: $ s = \sqrt{\dfrac{1}{n-1} \sum\limits_{i=1}^{n} (x_i - \overline{x})^2} = 1,0134 $ \\
+
+    \noindent
+    \textbf{Intervalový odhad parametru $\mu$:}\\
+    0,975 kvantil Študentovho rozdelenia $t_{1-\alpha/2}$ s $k=n-1=50-1=49$
+    stupňami voľnosti $=2,009575237$\\
+    0,995 kvantil Študentovho rozdelenia $t_{1-\alpha/2}$ s $k=n-1=50-1=49$
+    stupňami voľnosti $=2,679951974$\\
+
+    \noindent
+    $\alpha=0,05:\left\langle \overline{x}-t_{1-\alpha/2}\dfrac{s}{\sqrt{n}} ; \overline{x}+t_{1-\alpha/2}\dfrac{s}{\sqrt{n}} \right\rangle = \langle 0,655997191483301 ; 1,2320028085167 \rangle$\\
+    $\alpha=0,01:\left\langle \overline{x}-t_{1-\alpha/2}\dfrac{s}{\sqrt{n}} ; \overline{x}+t_{1-\alpha/2}\dfrac{s}{\sqrt{n}} \right\rangle = \langle 0,559921971551384 ; 1,32807802844862 \rangle$\\
+
+
+    \noindent
+    \textbf{Intervalový odhad parametru $\sigma^2$:}\\
+    \noindent
+    0,975 kvantil Pearsonovho rozdelenia $\chi_{\alpha/2}^{2}$ s $k = n-1 = 50-1=49$
+    stupňami voľnosti $=31,5549164626671$\\
+    0,975 kvantil Pearsonovho rozdelenia $\chi_{1-\alpha/2}^{2}$ s $k = n-1 = 50-1=49$
+    stupňami voľnosti $=70,2224135664345$\\
+    0,995 kvantil Pearsonovho rozdelenia $\chi_{\alpha/2}^{2}$ s $k = n-1 = 50-1=49$
+    stupňami voľnosti $=27,2493490695696$\\
+    0,995 kvantil Pearsonovho rozdelenia $\chi_{1-\alpha/2}^{2}$ s $k = n-1 = 50-1=49$
+    stupňami voľnosti $=78,2307080866899$\\
+
+    \noindent
+    $\alpha=0,05: \left\langle \dfrac{(n-1)s^2}{\chi_{1-\alpha/2}^2} ; \dfrac{(n-1)s^2}{\chi_{\alpha/2}^2} \right\rangle = \langle 0,716597414476408 ; 1,59471821323106 \rangle$\\
+    $\alpha=0,01: \left\langle \dfrac{(n-1)s^2}{\chi_{1-\alpha/2}^2} ; \dfrac{(n-1)s^2}{\chi_{\alpha/2}^2} \right\rangle = \langle 0,643241014055983 ; 1,84669365391174 \rangle$\\
+
+    \noindent
+    \textbf{Intervalový odhad parametru $\sigma$:}\\
+
+    \noindent
+    $\alpha=0,05: \left\langle \sqrt{\dfrac{(n-1)s^2}{\chi_{1-\alpha/2}^2}} ; \sqrt{\dfrac{(n-1)s^2}{\chi_{\alpha/2}^2}} \right\rangle = \langle 0,846520770256943 ; 1,26282152865362 \rangle$\\
+    $\alpha=0,01: \left\langle \sqrt{\dfrac{(n-1)s^2}{\chi_{1-\alpha/2}^2}} ; \sqrt{\dfrac{(n-1)s^2}{\chi_{\alpha/2}^2}} \right\rangle = \langle 0,802023075762775 ; 1,35893107033129 \rangle$\\
 \end{document}
