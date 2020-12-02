@@ -374,15 +374,15 @@
             \cline{2-3}
             & $ \boldsymbol{X} $ & $ \boldsymbol{Y} $ \\
             \cline{2-3}
-			$ \boldsymbol{n} $ & $ 20 $ & $ 30 $ \\
+			\textbf{počet} $ \boldsymbol{n} $ & $ 20 $ & $ 30 $ \\
 			\textbf{priemer} $ \boldsymbol{\overline{x}} $ & $ 1,27 $
 			& $ 0,726667 $ \\
 
-			\textbf{rozptyl} $ \boldsymbol{s^2} $ & $ 0,62873 $
-			& $ 1,140136 $ \\
+			\textbf{bodový odhad rozptylu} $ \boldsymbol{s^2} $ & $ 0,661821 $
+			& $ 1,179451 $ \\
 
-			\textbf{smerodatná odchýľka} $ \boldsymbol{s} $ & $ 0,792925 $
-            & $ 1,067771 $ \\
+			\textbf{bodový odhad smerodatnej odchýľky} $ \boldsymbol{s} $ & $ 0,813524 $
+            & $ 1,086025 $ \\
             \cline{2-3}
 		\end{tabular}
     \end{table}
@@ -393,7 +393,7 @@
     \textbf{Testuje sa hypotéza} $H_0 : \sigma_X^2 = \sigma_Y^2$:\\
 
     \noindent
-    testovacie kritérium: $t = \dfrac{s^2(X)}{s^2(Y)} = \dfrac{0,62873}{1,140136} = 0,551452$\\
+    testovacie kritérium: $t = \dfrac{s^2(X)}{s^2(Y)} = \dfrac{0,661821}{1,179451} = 0,561127$\\
     doplnok kritického oboru: $\overline{W_\alpha} = \left\langle F_{\alpha/2}(n-1,m-1), F_{1-\alpha/2}(n-1,m-1) \right\rangle$ pre $H_A : \sigma_X^2 \neq \sigma_Y^2$,\\
     $F_{\alpha/2}(k_1,k_2), F_{1-\alpha/2}(k_1,k_2)$ sú kvantily Fischer-Snedecerovho rozdelenia s $k_1 = n-1$ a $k_2 = m-1$ stupňami voľnosti.\\
     $F_{\alpha/2}(19,29) = 0,41632$\\
@@ -406,7 +406,7 @@
     \textbf{Testuje sa hypotéza} $H_0 : \mu_X - \mu_Y = 0$ \textbf{za podmienky} $\sigma_X^2 = \sigma_Y^2$\\
 
     \noindent
-    testovacie kritérium: $t = \dfrac{\overline{x}-\overline{y}-\mu_0}{\sqrt{(n-1)s^2(X)+(m-1)s^2(Y)}}\sqrt{\dfrac{nm(n+m-2)}{n+m}} = 1,943677$\\
+    testovacie kritérium: $t = \dfrac{\overline{x}-\overline{y}-\mu_0}{\sqrt{(n-1)s^2(X)+(m-1)s^2(Y)}}\sqrt{\dfrac{nm(n+m-2)}{n+m}} = 1,906574$\\
     doplnok kritického oboru: $\overline{W_\alpha} = \left\langle -t_{1-\alpha/2}, t_{1-\alpha/2} \right\rangle$ pre $H_A : \mu_X - \mu_Y \neq 0$,\\
     $t_{1-\alpha/2}$ - kvantil Študentovho rozdelenia s $k=n+m-2=20+30-2=48$ stupňami voľnosti.\\
     $t_{1-\alpha/2} = 2,010635$\\
