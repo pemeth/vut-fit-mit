@@ -528,10 +528,10 @@
     1) Bodově odhadněte $\beta_0$, $\beta_1$ a rozptyl $s^2$.\\
 
     \noindent
-    $\beta_1 = \dfrac{1}{\text{det}(H)} \left( n\sum\limits_{i=1}^{n}x_iy_i - \sum\limits_{i=1}^{n}x_i \sum\limits_{i=1}^{n}y_i \right) = 1,096157$\\
-    $\beta_0 = \overline{y} - \beta_1\overline{x} = -107,990962$\\
-    Regresná priamka: $y = \beta_0 + \beta_1x = -107,990962 + 1,096157x$\\
-    $S^\star_\text{min} = \sum\limits_{i=1}^{n}y_i^2 - \beta_0\sum\limits_{i=1}^{n}y_i - \beta_1\sum\limits_{i=1}^{n}x_iy_i = 912,142382$\\
+    $b_1 = \dfrac{1}{\text{det}(H)} \left( n\sum\limits_{i=1}^{n}x_iy_i - \sum\limits_{i=1}^{n}x_i \sum\limits_{i=1}^{n}y_i \right) = 1,096157$\\
+    $b_0 = \overline{y} - b_1\overline{x} = -107,990962$\\
+    Regresná priamka: $y = b_0 + b_1x = -107,990962 + 1,096157x$\\
+    $S^\star_\text{min} = \sum\limits_{i=1}^{n}y_i^2 - b_0\sum\limits_{i=1}^{n}y_i - b_1\sum\limits_{i=1}^{n}x_iy_i = 912,142382$\\
     $s^2 = \dfrac{S^\star_\text{min}}{n-2} = 50,674577$\\
 
     \newpage
@@ -540,14 +540,14 @@
     
     $H : \beta_0 = -100$, $H_A : \beta_0 \neq -100$,\\
     $h^{11} = \dfrac{\sum\limits_{i=1}^{n}x_i^2}{\text{det}(H)} = 5,277985$\\
-    $t = \dfrac{\beta_0 - (-100)}{s\sqrt{h^{11}}} = -0,488619$\\
+    $t = \dfrac{b_0 - (-100)}{s\sqrt{h^{11}}} = -0,488619$\\
     $t_{1-\alpha/2}(n-2) = 2,100922$\\
     $\overline{W_\alpha} = \left\langle -2,100922;2,100922  \right\rangle$\\
     Keďže $t\in\overline{W_\alpha}$, tak sa hypotéza $H$ \textbf{nezamieta}.\\
 
     $H : \beta_1 = 1$, $H_A : \beta_1 \neq 1$,\\
     $h^{22} = \dfrac{n}{\text{det}(H)} = 0,000172$\\
-    $t = \dfrac{\beta_1 - 1}{s\sqrt{h^{22}}} = 1,028533$\\
+    $t = \dfrac{b_1 - 1}{s\sqrt{h^{22}}} = 1,028533$\\
     $t_{1-\alpha/2}(n-2) = 2,100922$\\
     $\overline{W_\alpha} = \left\langle -2,100922;2,100922  \right\rangle$\\
     Keďže $t\in\overline{W_\alpha}$, tak sa hypotéza $H$ \textbf{nezamieta}.\\
