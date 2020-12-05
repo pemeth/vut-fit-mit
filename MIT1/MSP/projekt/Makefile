@@ -6,5 +6,5 @@ all: $(IN)
 	pdflatex $(IN)
 
 clean:
-	rm -rf $(PROJ).aux $(PROJ).log $(PROJ).pdf
+	rm -rf $(PROJ).aux $(PROJ).log
 
