@@ -18,22 +18,6 @@ class Employee {
 	}
 }
 
-/**
- * TODO: idea for a pool of employees of same rank, which could pass tasks 
- * to each other based on whether or not they were busy (or something else)
- */
-class EmployeePool {
-	#pool = [];
-
-	pushEmp(emp) {
-		if (emp instanceof Employee) {
-			this.#pool.push(emp);
-		} else {
-			throw TypeError('Expected type Employee');
-		}
-	}
-}
-
 class Ceo extends Employee {
 	constructor(name, job) {
 		super(name, job);
@@ -55,6 +39,22 @@ class Caretaker extends Employee {
 class Feeder extends Employee {
 	constructor(name, job) {
 		super(name, job);
+	}
+}
+
+/**
+ * TODO: idea for a pool of employees of same rank, which could pass tasks 
+ * to each other based on whether or not they were busy (or something else)
+ */
+class EmployeePool {
+	#pool = [];
+
+	pushEmp(emp) {
+		if (emp instanceof Employee) {
+			this.#pool.push(emp);
+		} else {
+			throw TypeError('Expected type Employee');
+		}
 	}
 }
 
