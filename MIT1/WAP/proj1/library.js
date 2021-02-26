@@ -16,6 +16,30 @@ class Employee {
 	setNext(next) {
 		this.#nextInChain = next;
 	}
+
+	/**
+	 * Check if the employee is right for the job. If yes, finish() the job,
+	 * otherwise send down the chain.
+	 */
+	workOn(job, ...args) {
+		args.unshift(job)
+
+		if (job == this.#job) {
+			this.finish.apply(this, args);
+		} else {
+			if (this.#nextInChain == undefined) {
+				throw Error("End of chain - can't finish task");
+			}
+			this.#nextInChain.workOn.apply(this.#nextInChain, args)
+		}
+	}
+
+	/**
+	 * An "abstract" method to be implemented for each unique employee type.
+	 */
+	finish(job, args) {
+		throw Error("Method not implemented");
+	}
 }
 
 class Ceo extends Employee {
