@@ -10,7 +10,7 @@ data Cfg = Cfg {
     nterm :: [Char],
     term :: [Char],
     start :: Char,
-    rules :: [String]
+    rules :: [(Char, String)]
 } deriving (Show)
 
 -- Returns Nothing on empty input string or a stripped down version of
