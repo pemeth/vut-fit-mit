@@ -57,19 +57,24 @@ ntermInRules nterm (rule : rest) =
 -- Take a String, pull out words and reduce it back to String
 reduceToString = concat . words
 
-main = do
-    let cfg = Cfg "" "" ' ' []
+-- Get the input from stdin and construct a Cfg record.
+collectInput = do
     line <- getLine
-    let nterm cfg = reduceToString line
+    let nterm = reduceToString line
 
     line <- getLine
-    let term cfg = reduceToString line
+    let term = reduceToString line
 
     line <- getLine
-    let start cfg = head line
+    let start = head line
 
     rls <- getRules
-    let rules cfg = rls
+    let rules = tuplifyRules rls
+
+    return (Cfg nterm term start rules)
+
+main = do
+    cfg <- collectInput
 
     print (nterm cfg)
     print (term cfg)
