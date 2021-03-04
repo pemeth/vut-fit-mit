@@ -31,6 +31,23 @@ getRules = do
             nextLine <- getRules
             return (aString : nextLine)
 
+-- A helper function for tuplifyRules. It takes the first letter of a rule,
+-- which is a non-terminal and separates it into a tuple for the left and
+-- right sides of a rule.
+tuplifyRules' :: String -> Maybe (Char, String)
+tuplifyRules' "" = Nothing
+tuplifyRules' (nterm : rest) = Just (nterm, rest)
+
+-- Take a [String] of CFG rules and return a [(Char, String)] of the same
+-- rules, only separated into tuples of left/right sides of the respective
+-- rules.
+tuplifyRules :: [String] -> [(Char, String)]
+tuplifyRules [] = []
+tuplifyRules (x : xs) =
+    case tuplifyRules' x of
+        Nothing -> []
+        Just tuple -> tuple : (tuplifyRules xs)
+
 main = do
     let cfg = Cfg "" "" ' ' []
     line <- getLine
