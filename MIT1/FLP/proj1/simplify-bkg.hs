@@ -47,6 +47,13 @@ tuplifyRules (x : xs) =
         Nothing -> []
         Just tuple -> tuple : (tuplifyRules xs)
 
+-- Checks if a non-terminal nterm is in the rules. The second argument is
+-- an array of tuplified rules.
+ntermInRules :: Char -> [(Char, String)] -> Bool
+ntermInRules _ [] = False
+ntermInRules nterm (rule : rest) =
+    (nterm == fst rule) || ntermInRules nterm rest
+
 main = do
     let cfg = Cfg "" "" ' ' []
     line <- getLine
