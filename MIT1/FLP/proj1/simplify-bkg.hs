@@ -16,7 +16,6 @@ data Cfg = Cfg {
 -- Returns Nothing on empty input string or a stripped down version of
 -- a rule - just the terminal and nonterminal symbols without
 -- the arrow ("->") symbol.
--- TODO Rework this, so that it returns a tuple of the two sides of a rule.
 filterRule :: String -> Maybe String
 filterRule "" = Nothing
 filterRule line = Just (filter (\x -> isAlpha x || x == '#') line)
