@@ -54,13 +54,16 @@ ntermInRules _ [] = False
 ntermInRules nterm (rule : rest) =
     (nterm == fst rule) || ntermInRules nterm rest
 
+-- Take a String, pull out words and reduce it back to String
+reduceToString = concat . words
+
 main = do
     let cfg = Cfg "" "" ' ' []
     line <- getLine
-    let nterm cfg = words line
+    let nterm cfg = reduceToString line
 
     line <- getLine
-    let term cfg = words line
+    let term cfg = reduceToString line
 
     line <- getLine
     let start cfg = head line
