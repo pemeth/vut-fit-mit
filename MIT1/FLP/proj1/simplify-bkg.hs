@@ -47,6 +47,14 @@ tuplifyRules (x : xs) =
         Nothing -> []
         Just tuple -> tuple : (tuplifyRules xs)
 
+-- Checks if every element of `alpha` is contained in
+-- the `set` string. The input `set` is implicitly extended to include
+-- an empty string as well ('#') - hence the iter(ation).
+-- MAY BE USEFUL FOR ALGORITHM 4.1 (2) (the second part of the conjunction).
+inIterSet :: String -> String -> Bool
+inIterSet alpha set = all (\x -> x `elem` iterSet) alpha
+    where iterSet = set ++ "#"
+
 -- Checks if a non-terminal nterm is in the rules on the left side.
 -- The second argument is an array of tuplified rules.
 isInLRules :: Char -> [(Char, String)] -> Bool
