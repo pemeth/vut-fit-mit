@@ -47,12 +47,12 @@ tuplifyRules (x : xs) =
         Nothing -> []
         Just tuple -> tuple : (tuplifyRules xs)
 
--- Checks if a non-terminal nterm is in the rules. The second argument is
--- an array of tuplified rules.
-ntermInRules :: Char -> [(Char, String)] -> Bool
-ntermInRules _ [] = False
-ntermInRules nterm (rule : rest) =
-    (nterm == fst rule) || ntermInRules nterm rest
+-- Checks if a non-terminal nterm is in the rules on the left side.
+-- The second argument is an array of tuplified rules.
+isInLRules :: Char -> [(Char, String)] -> Bool
+isInLRules _ [] = False
+isInLRules nterm (rule : rest) =
+    (nterm == fst rule) || isInLRules nterm rest
 
 -- Take a String, pull out words and reduce it back to String
 reduceToString = concat . words
