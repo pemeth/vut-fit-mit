@@ -55,6 +55,10 @@ inIterSet :: String -> String -> Bool
 inIterSet alpha set = all (\x -> x `elem` iterSet) alpha
     where iterSet = set ++ "#"
 
+-- Uses `inIterSet` to check the same thing, only over an array of `alphas`.
+checkAlphas [] _ = False
+checkAlphas (alpha : alphas) set = inIterSet alpha set || checkAlphas alphas set
+
 -- Checks if a non-terminal nterm is in the rules on the left side.
 -- The second argument is an array of tuplified rules.
 isInLRules :: Char -> [(Char, String)] -> Bool
