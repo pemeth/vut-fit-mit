@@ -62,6 +62,15 @@ isInLRules _ [] = False
 isInLRules nterm (rule : rest) =
     (nterm == fst rule) || isInLRules nterm rest
 
+-- Returns an array of the right sides of rules for a specific non-terminal.
+getRRulesOfNterm :: Char -> [(Char, String)] -> [String]
+getRRulesOfNterm _ [] = []
+getRRulesOfNterm nterm (rule : rules) =
+    if (nterm == fst rule) then
+        (snd rule) : (getRRulesOfNterm nterm rules)
+    else
+        getRRulesOfNterm nterm rules
+
 -- Take a String, pull out words and reduce it back to String
 reduceToString = concat . words
 
