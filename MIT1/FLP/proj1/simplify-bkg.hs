@@ -85,9 +85,17 @@ buildNextNi ni (ntA : ntAs) terms rules =
     else
         buildNextNi ni ntAs terms rules
 
-makeNt _ [] _ _ = []
-makeNt ni (nt : nts) term rules = []
-    --if isInLRules nt rules && all (\x -> x `elem` (ni ++ term)) "faBBbA" then
+-- TODO asi to funguje ale je to hrozne daco... prerobit.. obzvlast podmienku
+-- pre ukoncenie rekurzie, ktora je momentalne zalozena na
+-- pocte neterminalov + 1...
+makeNt [] _ _ _ _ = []
+makeNt (i:is) ni nterm term rules =
+    if buildNextNi ni nterm term rules
+        == makeNt is (buildNextNi ni nterm term rules) nterm term rules
+    then
+        []
+    else 
+        ni ++ (buildNextNi (ni ++ (buildNextNi ni nterm term rules)) nterm term rules)
 
 -- Take a String, pull out words and reduce it back to String
 reduceToString = concat . words
@@ -111,6 +119,8 @@ collectInput = do
 main = do
     cfg <- collectInput
 
+    print (makeNt [1,2,3,4,5,6] "" (nterm cfg) (term cfg) (rules cfg))
+    print (buildNextNi "" (nterm cfg) (term cfg) (rules cfg))
     print (nterm cfg)
     print (term cfg)
     print (start cfg)
