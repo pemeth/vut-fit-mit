@@ -6,3 +6,35 @@
 // 	extensions, for example marking a task as completed, but not
 // 	removing it, etc.
 
+class ReqHandler {
+	#next;
+	#data;
+	#request;
+
+	constructor(request) {
+		this.#request = request;
+	}
+
+	/**
+	 * Sets the next link in the chain.
+	 */
+	setNext(handler) {
+		this.#next = handler;
+	}
+
+	/**
+	 * Method checks if the passed request can be handled.
+	 * If it can be, then complete the request, otherwise pass
+	 * the request down the chain.
+	 */
+	handle(request, ...args) {
+		if (request == this.#request) {
+			completeRequest.apply(this, args.unshift(request));
+		} else {
+			this.#next.handle.apply(
+				this.#next, args.unshift(request));
+		}
+}
+
+exports.ReqHandler = ReqHandler;
+
