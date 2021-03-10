@@ -28,14 +28,22 @@ class Todoer extends lib.ReqHandler {
 	}
 }
 
-todo = new Todoer('todo.txt');
-add = new Todoer('todo.txt');
-rem = new Todoer('todo.txt');
+// The beginning of the chain 
+todo = new lib.Chain();
 
-todo.setNext(add);
-add.setNext(rem);
+// Create the chain link objects
+todo.add = new Todoer('add');
+todo.rem = new Todoer('rem');
+todo.cng = new Todoer('cng');
 
-add.completeRequest = function(op, task) {
+// Set the first link in the chain
+todo.setFirst(todo.add);
+
+// Set the rest of the "next" links
+todo.add.setNext(todo.rem);
+todo.rem.setNext(todo.cng);
+
+todo.add.completeRequest = function(op, task) {
 	if (op == 'add') {
 		data = JSON.parse(this.load());
 		if (typeof data === "string") {
