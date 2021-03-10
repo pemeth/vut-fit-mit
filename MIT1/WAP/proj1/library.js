@@ -29,7 +29,7 @@ class ReqHandler {
 	 */
 	handle(request, ...args) {
 		if (request == this.request) {
-			completeRequest.apply(this, args.unshift(request));
+			this.completeRequest.apply(this, args.unshift(request));
 		} else {
 			this.next.handle.apply(
 				this.next, args.unshift(request));
