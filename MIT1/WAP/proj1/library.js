@@ -40,6 +40,16 @@ class ReqHandler {
 			this.next.handle.apply(this.next, args);
 		}
 	}
+
+	/**
+	 * Method for completing specific requests. Needs to be overridden
+	 * by the user-defined chain links, as this is the function, which
+	 * is called to complete the requests sent down the chain
+	 * of responsibility.
+	 */
+	completeRequest(request, ...args) {
+		throw 'Method not implemented!';
+	}
 }
 
 exports.ReqHandler = ReqHandler;
