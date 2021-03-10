@@ -6,7 +6,7 @@
 // 	extensions, for example marking a task as completed, but not
 // 	removing it, etc.
 
-class ReqHandler {
+class Link {
 	next;
 	data;
 	request;
@@ -60,7 +60,7 @@ class Chain {
 
 	/**
 	 * Set the first link in the chain. Should be an object of
-	 * class `ReqHandler` or it's derivative.
+	 * class `Link` or it's derivative.
 	 */
 	setFirst(first) {
 		this.#first = first;
@@ -75,6 +75,6 @@ class Chain {
 	}
 }
 
-exports.ReqHandler = ReqHandler;
+exports.Link = Link;
 exports.Chain = Chain;
 

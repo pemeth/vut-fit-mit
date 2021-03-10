@@ -14,7 +14,7 @@
 let lib = require('./library.js');
 let fs = require('fs');
 
-class Todoer extends lib.ReqHandler {
+class Todoer extends lib.Link {
 	#file;
 
 	constructor(request, file) {
