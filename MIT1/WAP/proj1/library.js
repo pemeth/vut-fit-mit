@@ -33,6 +33,10 @@ class ReqHandler {
 		if (request == this.request) {
 			this.completeRequest.apply(this, args);
 		} else {
+			if (!this.next) {
+				throw 'End of chain';
+				return;
+			}
 			this.next.handle.apply(this.next, args);
 		}
 	}
