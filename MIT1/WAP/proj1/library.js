@@ -34,6 +34,7 @@ class ReqHandler {
 			this.#next.handle.apply(
 				this.#next, args.unshift(request));
 		}
+	}
 }
 
 exports.ReqHandler = ReqHandler;
