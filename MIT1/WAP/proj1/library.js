@@ -52,5 +52,29 @@ class ReqHandler {
 	}
 }
 
+/**
+ * A container/wrapper for the linked chain of objects.
+ */
+class Chain {
+	#first;
+
+	/**
+	 * Set the first link in the chain. Should be an object of
+	 * class `ReqHandler` or it's derivative.
+	 */
+	setFirst(first) {
+		this.#first = first;
+	}
+
+	/**
+	 * This starts the walk down the chain.
+	 */
+	handle(request, ...args) {
+		args.unshift(request);
+		this.#first.handle.apply(this.add, args);
+	}
+}
+
 exports.ReqHandler = ReqHandler;
+exports.Chain = Chain;
 
