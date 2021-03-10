@@ -17,8 +17,8 @@ let fs = require('fs');
 class Todoer extends lib.ReqHandler {
 	#file;
 
-	constructor(file) {
-		super();
+	constructor(request, file) {
+		super(request);
 		this.#file = file;
 	}
 
