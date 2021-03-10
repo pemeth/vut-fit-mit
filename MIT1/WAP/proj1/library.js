@@ -28,11 +28,12 @@ class ReqHandler {
 	 * the request down the chain.
 	 */
 	handle(request, ...args) {
+		args.unshift(request);
+
 		if (request == this.request) {
-			this.completeRequest.apply(this, args.unshift(request));
+			this.completeRequest.apply(this, args);
 		} else {
-			this.next.handle.apply(
-				this.next, args.unshift(request));
+			this.next.handle.apply(this.next, args);
 		}
 	}
 }
