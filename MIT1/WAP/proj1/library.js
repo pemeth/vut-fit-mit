@@ -7,19 +7,19 @@
 // 	removing it, etc.
 
 class ReqHandler {
-	#next;
-	#data;
-	#request;
+	next;
+	data;
+	request;
 
 	constructor(request) {
-		this.#request = request;
+		this.request = request;
 	}
 
 	/**
 	 * Sets the next link in the chain.
 	 */
 	setNext(handler) {
-		this.#next = handler;
+		this.next = handler;
 	}
 
 	/**
@@ -28,11 +28,11 @@ class ReqHandler {
 	 * the request down the chain.
 	 */
 	handle(request, ...args) {
-		if (request == this.#request) {
+		if (request == this.request) {
 			completeRequest.apply(this, args.unshift(request));
 		} else {
-			this.#next.handle.apply(
-				this.#next, args.unshift(request));
+			this.next.handle.apply(
+				this.next, args.unshift(request));
 		}
 	}
 }
