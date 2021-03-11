@@ -12,6 +12,13 @@
  * 	i.e. an array of objects
  */
 
+/**
+ * Link 1:
+ * 	https://stackoverflow.com/questions/42494823/json-parse-returns-string-instead-of-object
+ * Link 2:
+ * 	https://stackoverflow.com/questions/8668174/indexof-method-in-an-object-array
+ */
+
 let lib = require('./library.js');
 let fs = require('fs');
 
@@ -33,8 +40,7 @@ class Todoer extends lib.Link {
 		const data = JSON.parse(this.load());
 		if (typeof data === "string") {
 			// parse twice if 'overstringified'
-			// https://stackoverflow.com/questions/42494823/
-			// 	json-parse-returns-string-instead-of-object
+			// see Link 1
 			data = JSON.parse(data);
 		}
 
@@ -90,8 +96,7 @@ todo.cng.setNext(todo.sho);
 todo.rem.completeRequest = function(request, id) {
 	let data = this.getData();
 
-	// https://stackoverflow.com/
-	// 	questions/8668174/indexof-method-in-an-object-array
+	// see Link 2
 	let pos = data.map(function(e) { return e.id; }).indexOf(id);
 
 	// TODO out of bounds check?
