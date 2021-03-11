@@ -62,15 +62,15 @@ todo.rem.setNext(todo.cng);
 todo.cng.setNext(todo.sho);
 
 todo.sho.completeRequest = function() {
-	data = this.getData();
+	const data = this.getData();
 
-	for (item of data) {
+	for (const item of data) {
 		console.log(item);
 	}
 }
 
 todo.add.completeRequest = function(request, task) {
-	data = this.getData();
+	let data = this.getData();
 
 	data.push({id : data.length + 1, task : task });
 	data = JSON.stringify(data);
