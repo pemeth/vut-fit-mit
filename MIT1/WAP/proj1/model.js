@@ -87,6 +87,20 @@ todo.add.setNext(todo.rem);
 todo.rem.setNext(todo.cng);
 todo.cng.setNext(todo.sho);
 
+todo.rem.completeRequest = function(request, id) {
+	let data = this.getData();
+
+	// https://stackoverflow.com/
+	// 	questions/8668174/indexof-method-in-an-object-array
+	let pos = data.map(function(e) { return e.id; }).indexOf(id);
+
+	// TODO out of bounds check?
+	data.splice(pos, 1);
+	
+	data = this.resetIDs(data);
+	this.writeData(data);
+}
+
 todo.sho.completeRequest = function() {
 	const data = this.getData();
 
