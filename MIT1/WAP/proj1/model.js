@@ -32,9 +32,10 @@ class Todoer extends lib.Link {
 todo = new lib.Chain();
 
 // Create the chain link objects
-todo.add = new Todoer('add');
-todo.rem = new Todoer('rem');
-todo.cng = new Todoer('cng');
+// TODO change the filename from being hardcoded to user-specified
+todo.add = new Todoer('add', 'todo.txt');
+todo.rem = new Todoer('rem', 'todo.txt');
+todo.cng = new Todoer('cng', 'todo.txt');
 
 // Set the first link in the chain
 todo.setFirst(todo.add);
