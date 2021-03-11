@@ -46,16 +46,28 @@ todo = new lib.Chain();
 
 // Create the chain link objects
 // TODO change the filename from being hardcoded to user-specified
+todo.sho = new Todoer('sho', 'todo.txt');
 todo.add = new Todoer('add', 'todo.txt');
 todo.rem = new Todoer('rem', 'todo.txt');
 todo.cng = new Todoer('cng', 'todo.txt');
 
+// TODO figure out why the chaining breaks when `sho` is set as first
+// 	(the 'End of chain' exception gets thrown)...
 // Set the first link in the chain
 todo.setFirst(todo.add);
 
 // Set the rest of the "next" links
 todo.add.setNext(todo.rem);
 todo.rem.setNext(todo.cng);
+todo.cng.setNext(todo.sho);
+
+todo.sho.completeRequest = function() {
+	data = this.getData();
+
+	for (item of data) {
+		console.log(item);
+	}
+}
 
 todo.add.completeRequest = function(request, task) {
 	data = this.getData();
