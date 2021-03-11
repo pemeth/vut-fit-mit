@@ -43,17 +43,15 @@ todo.setFirst(todo.add);
 todo.add.setNext(todo.rem);
 todo.rem.setNext(todo.cng);
 
-todo.add.completeRequest = function(op, task) {
-	if (op == 'add') {
-		data = JSON.parse(this.load());
-		if (typeof data === "string") {
-			// parse twice if 'overstringified'
-			// https://stackoverflow.com/questions/42494823/
-			// 	json-parse-returns-string-instead-of-object
-			data = JSON.parse(data);
-		}
-
-		console.log(data);
+todo.add.completeRequest = function(request, task) {
+	data = JSON.parse(this.load());
+	if (typeof data === "string") {
+		// parse twice if 'overstringified'
+		// https://stackoverflow.com/questions/42494823/
+		// 	json-parse-returns-string-instead-of-object
+		data = JSON.parse(data);
 	}
+
+	console.log(data);
 }
 
