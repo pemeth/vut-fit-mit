@@ -45,6 +45,26 @@ class Todoer extends lib.Link {
 		data = JSON.stringify(data);
 		fs.writeFileSync(this.file, data, (err) => {if (err) throw err;});
 	}
+	
+	/**
+	 * @brief Take todo data and reset their task IDs (for example after
+	 * a task removal).
+	 *
+	 * @param data an array of todo item objects.
+	 * @returns the same data array, only with reset IDs.
+	 */
+	resetIDs(data) {
+		// TODO maybe try to define this only for items from a certain
+		// 	ID, as, for example after removing, only the higher
+		// 	ID numbers will be out of order - possible timesaver
+		let i = 1;
+		for (let item of data) {
+			item.id = i;
+			i++;
+		}
+
+		return data;
+	}
 }
 
 // The beginning of the chain 
