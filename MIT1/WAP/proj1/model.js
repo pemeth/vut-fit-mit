@@ -15,15 +15,15 @@ let lib = require('./library.js');
 let fs = require('fs');
 
 class Todoer extends lib.Link {
-	#file;
+	file;
 
 	constructor(request, file) {
 		super(request);
-		this.#file = file;
+		this.file = file;
 	}
 
 	load() {
-		return fs.readFileSync(this.#file, (err, data) => {
+		return fs.readFileSync(this.file, (err, data) => {
 			if (err) throw err;});
 	}
 }
