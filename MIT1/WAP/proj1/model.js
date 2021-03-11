@@ -40,6 +40,11 @@ class Todoer extends lib.Link {
 
 		return data;
 	}
+
+	writeData(data) {
+		data = JSON.stringify(data);
+		fs.writeFileSync(this.file, data, (err) => {if (err) throw err;});
+	}
 }
 
 // The beginning of the chain 
@@ -74,7 +79,7 @@ todo.add.completeRequest = function(request, task) {
 	let data = this.getData();
 
 	data.push({id : data.length + 1, task : task });
-	data = JSON.stringify(data);
-	fs.writeFileSync(this.file, data, (err) => {if (err) throw err;});
+
+	this.writeData(data);
 }
 
