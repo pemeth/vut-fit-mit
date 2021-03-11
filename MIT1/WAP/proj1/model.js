@@ -93,6 +93,21 @@ todo.add.setNext(todo.rem);
 todo.rem.setNext(todo.cng);
 todo.cng.setNext(todo.sho);
 
+todo.cng.completeRequest = function(request, id, task) {
+	let data = this.getData();
+
+	let pos = data.map(function(e) { return e.id; }).indexOf(id);
+
+	try {
+		data[pos].task = task;
+	} catch (err) {
+		console.log("id out of range");
+		return;
+	}
+
+	this.writeData(data);
+}
+
 todo.rem.completeRequest = function(request, id) {
 	let data = this.getData();
 
