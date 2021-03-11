@@ -114,7 +114,11 @@ todo.rem.completeRequest = function(request, id) {
 	// see Link 2
 	let pos = data.map(function(e) { return e.id; }).indexOf(id);
 
-	// TODO out of bounds check?
+	if (pos >= data.length || pos < 0) {
+		console.log("invalid id to be removed");
+		return;
+	}
+
 	data.splice(pos, 1);
 	
 	data = this.resetIDs(data);
