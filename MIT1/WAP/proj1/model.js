@@ -1,3 +1,4 @@
+"use strict";
 /**
  * TODO JSON format:
  * 	{"todo": [
@@ -42,7 +43,7 @@ class Todoer extends lib.Link {
 }
 
 // The beginning of the chain 
-todo = new lib.Chain();
+let todo = new lib.Chain();
 
 // Create the chain link objects
 // TODO change the filename from being hardcoded to user-specified

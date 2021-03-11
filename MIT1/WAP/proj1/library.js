@@ -1,3 +1,4 @@
+"use strict";
 // Idea:
 // 1 )	A todo manager. Requests will have a form of operations over the todos,
 // 	such as add, remove, change, etc. These requests will be handled
