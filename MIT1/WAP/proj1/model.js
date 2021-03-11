@@ -26,6 +26,19 @@ class Todoer extends lib.Link {
 		return fs.readFileSync(this.file, (err, data) => {
 			if (err) throw err;});
 	}
+
+	getData() {
+		// TODO add check if the file exists / if the JSON in it is valid
+		const data = JSON.parse(this.load());
+		if (typeof data === "string") {
+			// parse twice if 'overstringified'
+			// https://stackoverflow.com/questions/42494823/
+			// 	json-parse-returns-string-instead-of-object
+			data = JSON.parse(data);
+		}
+
+		return data;
+	}
 }
 
 // The beginning of the chain 
@@ -45,14 +58,7 @@ todo.add.setNext(todo.rem);
 todo.rem.setNext(todo.cng);
 
 todo.add.completeRequest = function(request, task) {
-	// TODO add check if the file exists / if the JSON in it is valid
-	data = JSON.parse(this.load());
-	if (typeof data === "string") {
-		// parse twice if 'overstringified'
-		// https://stackoverflow.com/questions/42494823/
-		// 	json-parse-returns-string-instead-of-object
-		data = JSON.parse(data);
-	}
+	data = this.getData();
 
 	data.push({id : data.length + 1, task : task });
 	data = JSON.stringify(data);
