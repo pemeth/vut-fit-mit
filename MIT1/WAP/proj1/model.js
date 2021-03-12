@@ -144,7 +144,9 @@ todo.add.setNext(todo.rem);
 todo.rem.setNext(todo.cng);
 todo.cng.setNext(todo.sho);
 
-todo.cng.completeRequest = function(request, id, task) {
+todo.cng.completeRequest = function(request, reqArgs) {
+	const id = reqArgs.id;
+	const task = reqArgs.text;
 	let data;
 	try {
 		data = this.getData();
@@ -165,7 +167,8 @@ todo.cng.completeRequest = function(request, id, task) {
 	this.writeData(data);
 }
 
-todo.rem.completeRequest = function(request, id) {
+todo.rem.completeRequest = function(request, reqArgs) {
+	const id = reqArgs.id;
 	let data;
 	try {
 		data = this.getData();
@@ -189,7 +192,7 @@ todo.rem.completeRequest = function(request, id) {
 	this.writeData(data);
 }
 
-todo.sho.completeRequest = function() {
+todo.sho.completeRequest = function(request, reqArgs) {
 	let data;
 	try {
 		data = this.getData();
@@ -206,7 +209,8 @@ todo.sho.completeRequest = function() {
 	}
 }
 
-todo.add.completeRequest = function(request, task) {
+todo.add.completeRequest = function(request, reqArgs) {
+	const task = reqArgs.text;
 	let data = [];
 	try {
 		data = this.getData();
