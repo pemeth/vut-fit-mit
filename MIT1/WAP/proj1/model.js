@@ -229,3 +229,5 @@ todo.add.completeRequest = function(request, reqArgs) {
 	this.writeData(data);
 }
 
+// Run the chain
+todo.handle(opts.request, opts.data);
