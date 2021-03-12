@@ -134,7 +134,18 @@ todo.sho.completeRequest = function() {
 }
 
 todo.add.completeRequest = function(request, task) {
-	let data = this.getData();
+	let data = [];
+	try {
+		data = this.getData();
+	} catch (err) {
+		if (err.code === 'ENOENT') {
+			// File not found -> create new one
+			fs.writeFileSync(this.file, '', function (err) {
+				if (err) throw err;});
+		} else {
+			throw err;
+		}
+	}
 
 	data.push({id : data.length + 1, task : task });
 
