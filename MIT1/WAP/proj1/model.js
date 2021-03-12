@@ -129,11 +129,10 @@ class Todoer extends lib.Link {
 let todo = new lib.Chain();
 
 // Create the chain link objects
-// TODO change the filename from being hardcoded to user-specified
-todo.sho = new Todoer('sho', 'todo.txt');
-todo.add = new Todoer('add', 'todo.txt');
-todo.rem = new Todoer('rem', 'todo.txt');
-todo.cng = new Todoer('cng', 'todo.txt');
+todo.sho = new Todoer('sho', opts.file);
+todo.add = new Todoer('add', opts.file);
+todo.rem = new Todoer('rem', opts.file);
+todo.cng = new Todoer('cng', opts.file);
 
 // TODO figure out why the chaining breaks when `sho` is set as first
 // 	(the 'End of chain' exception gets thrown)...
