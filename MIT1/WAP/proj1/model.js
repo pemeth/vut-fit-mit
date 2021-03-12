@@ -22,6 +22,58 @@
 let lib = require('./library.js');
 let fs = require('fs');
 
+// Program argument parsing
+const opts = (function(argv) {
+	const err = -1;
+	const argc = argv.length;
+	let request;
+	let file;
+	let data = {};
+
+	if (argc > 6) {
+		return err;
+	}
+
+	if (argv.includes('-help') || argv.includes('-h')) {
+		return err;
+	}
+
+	if (argc === 5 && argv[3] === 'add') {
+		request = 'add';
+		file = argv[2];
+		data.text = argv[4];
+	} else if (argc === 4 && argv[3] === 'sho') {
+		request = 'sho';
+		file = argv[2];
+	} else if (argc === 5 && argv[3] === 'rem') {
+		request = 'rem';
+		file = argv[2];
+		data.id = parseInt(argv[4]);
+	} else if (argc === 6 && argv[3] === 'cng') {
+		request = 'cng';
+		file = argv[2];
+		data.id = parseInt(argv[4]);
+		data.text = argv[5];
+	} else {
+		return err;
+	}
+
+	return {request : request,
+		file : file,
+		data : data};
+})(process.argv);
+
+if (opts === -1) {
+	// Print help on argument parsing error or help and exit.
+	console.log("Usage:\n\tnode model.js file OP [OPARGS]\n");
+	console.log("OP [OPARGS]:\n",
+		"add text\t:add the text into the file as the next todo\n",
+		"rem id\t\t:remove a todo item from file specified by id\n",
+		"cng id text\t:change the text of a todo specified by id to text\n",
+		"sho\t\t:show all todo items in file\n");
+	return;
+}
+
 class Todoer extends lib.Link {
 	file;
 
