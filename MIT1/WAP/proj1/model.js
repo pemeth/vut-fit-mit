@@ -88,7 +88,6 @@ class Todoer extends lib.Link {
 	}
 
 	getData() {
-		// TODO add check if the file exists / if the JSON in it is valid
 		const data = JSON.parse(this.load());
 		if (typeof data === "string") {
 			// parse twice if 'overstringified'
