@@ -2,18 +2,6 @@
 /**
  * @author Patrik Nemeth xnemet04
  */
-/**
- * TODO JSON format:
- * 	{"todo": [
- *		{"id": 1,
- *		 "date": "12.12.2021",
- *		 "task": "walk the plants"},
- *		{"id": 2,
- *		 "date": "13.12.2021",
- *		 "task": "water the dog"}
- * 	]}
- * 	i.e. an array of objects
- */
 
 /**
  * Link 1:
