@@ -195,6 +195,9 @@ todo.sho.completeRequest = function() {
 	try {
 		data = this.getData();
 	} catch (err) {
+		// TODO in each try/catch block in completeRequest - check
+		// 	if the err is thrown because of a file error or a JSON
+		// 	error
 		console.log("File does not exist.");
 		return;
 	}
