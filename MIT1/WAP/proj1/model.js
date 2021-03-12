@@ -102,6 +102,16 @@ class Todoer extends lib.Link {
 		data = JSON.stringify(data);
 		fs.writeFileSync(this.file, data, (err) => {if (err) throw err;});
 	}
+
+	getDataErrPrinter(err) {
+		if (err.code === 'ENOENT') {
+			console.log("File does not exist.");
+		} else if (err.name === 'SyntaxError') {
+			console.log("Invalid JSON syntax in: ", this.file);
+		} else {
+			throw err;
+		}
+	}
 	
 	/**
 	 * @brief Take todo data and reset their task IDs (for example after
@@ -150,7 +160,7 @@ todo.cng.completeRequest = function(request, reqArgs) {
 	try {
 		data = this.getData();
 	} catch (err) {
-		console.log("File does not exist.");
+		this.getDataErrPrinter(err);
 		return;
 	}
 
@@ -172,7 +182,7 @@ todo.rem.completeRequest = function(request, reqArgs) {
 	try {
 		data = this.getData();
 	} catch (err) {
-		console.log("File does not exist.");
+		this.getDataErrPrinter(err);
 		return;
 	}
 
@@ -196,10 +206,7 @@ todo.sho.completeRequest = function(request, reqArgs) {
 	try {
 		data = this.getData();
 	} catch (err) {
-		// TODO in each try/catch block in completeRequest - check
-		// 	if the err is thrown because of a file error or a JSON
-		// 	error
-		console.log("File does not exist.");
+		this.getDataErrPrinter(err);
 		return;
 	}
 
