@@ -218,6 +218,9 @@ todo.add.completeRequest = function(request, reqArgs) {
 			// File not found -> create new one
 			fs.writeFileSync(this.file, '', function (err) {
 				if (err) throw err;});
+		} else if (err.name === 'SyntaxError') {
+			console.log("Invalid JSON syntax in: ", this.file);
+			return;
 		} else {
 			throw err;
 		}
