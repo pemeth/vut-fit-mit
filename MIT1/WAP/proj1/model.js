@@ -126,7 +126,13 @@ todo.rem.completeRequest = function(request, id) {
 }
 
 todo.sho.completeRequest = function() {
-	const data = this.getData();
+	let data;
+	try {
+		data = this.getData();
+	} catch (err) {
+		console.log("File does not exist.");
+		return;
+	}
 
 	for (const item of data) {
 		console.log(item);
