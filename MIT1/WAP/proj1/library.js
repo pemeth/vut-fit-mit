@@ -1,16 +1,15 @@
 "use strict";
-// Idea:
-// 1 )	A todo manager. Requests will have a form of operations over the todos,
-// 	such as add, remove, change, etc. These requests will be handled
-// 	in a chain, such that only one link of the chain will complete the
-// 	request or none at all. There is the possibility of user defined
-// 	extensions, for example marking a task as completed, but not
-// 	removing it, etc.
+/**
+ * @author Patrik Nemeth xnemeth04
+ */
 
+/**
+ * A link in the chain of responsibility.
+ */
 class Link {
-	next;
-	data;
-	request;
+	next;	//!< The next link in the chain
+	data;	//!< Miscellaneous data
+	request;	//!< The request, which this object should handle
 
 	constructor(request) {
 		this.request = request;
@@ -18,6 +17,7 @@ class Link {
 
 	/**
 	 * Sets the next link in the chain.
+	 * @param handler the handler to be set as next in the chain.
 	 */
 	setNext(handler) {
 		this.next = handler;
@@ -27,6 +27,8 @@ class Link {
 	 * Method checks if the passed request can be handled.
 	 * If it can be, then complete the request, otherwise pass
 	 * the request down the chain.
+	 * @param request the request identifier.
+	 * @param ...args additional arguments to be passed to `completeRequest`.
 	 */
 	handle(request, ...args) {
 		args.unshift(request);
@@ -46,7 +48,11 @@ class Link {
 	 * Method for completing specific requests. Needs to be overridden
 	 * by the user-defined chain links, as this is the function, which
 	 * is called to complete the requests sent down the chain
-	 * of responsibility.
+	 * of responsibility. The ...args are possible additional arguments
+	 * if the library user needs additional arguments for the chain links.
+	 * This method must be implemented by the library user.
+	 * @param request the request identifier.
+	 * @param ...args additional arguments.
 	 */
 	completeRequest(request, ...args) {
 		throw 'Method not implemented!';
@@ -57,11 +63,12 @@ class Link {
  * A container/wrapper for the linked chain of objects.
  */
 class Chain {
-	#first;
+	#first;	//!< Holds the first link in the chain
 
 	/**
 	 * Set the first link in the chain. Should be an object of
 	 * class `Link` or it's derivative.
+	 * @param first the first link in the chain.
 	 */
 	setFirst(first) {
 		this.#first = first;
@@ -69,6 +76,8 @@ class Chain {
 
 	/**
 	 * This starts the walk down the chain.
+	 * @param request the request identifier.
+	 * @param ...args optional arguments.
 	 */
 	handle(request, ...args) {
 		args.unshift(request);
