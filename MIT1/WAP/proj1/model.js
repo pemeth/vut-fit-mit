@@ -204,11 +204,13 @@ todo.cng.completeRequest = function(request, reqArgs) {
 	try {
 		data[pos].task = task;
 	} catch (err) {
-		console.log("id out of range");
+		console.log("Item ID out of range");
 		return;
 	}
 
 	this.writeData(data);
+
+	console.log("Item", id, "changed to:", task);
 }
 
 /**
@@ -231,7 +233,7 @@ todo.rem.completeRequest = function(request, reqArgs) {
 	let pos = data.map(function(e) { return e.id; }).indexOf(id);
 
 	if (pos >= data.length || pos < 0) {
-		console.log("invalid id to be removed");
+		console.log("Invalid item ID to be removed");
 		return;
 	}
 
@@ -239,6 +241,8 @@ todo.rem.completeRequest = function(request, reqArgs) {
 	
 	data = this.resetIDs(data);
 	this.writeData(data);
+
+	console.log("Item", id, "removed");
 }
 
 /**
@@ -252,6 +256,11 @@ todo.sho.completeRequest = function(request, reqArgs) {
 		data = this.getData();
 	} catch (err) {
 		this.getDataErrPrinter(err);
+		return;
+	}
+
+	if (data.length === 0) {
+		console.log("Todo list empty");
 		return;
 	}
 
@@ -283,9 +292,12 @@ todo.add.completeRequest = function(request, reqArgs) {
 		}
 	}
 
-	data.push({id : data.length + 1, task : task });
-
+	const id = data.length + 1;
+	data.push({id : id, task : task });
+	
 	this.writeData(data);
+
+	console.log("Todo item", id, "added");
 }
 
 // Run the chain
