@@ -1,5 +1,8 @@
 "use strict";
 /**
+ * @author Patrik Nemeth xnemet04
+ */
+/**
  * TODO JSON format:
  * 	{"todo": [
  *		{"id": 1,
@@ -22,7 +25,21 @@
 let lib = require('./library.js');
 let fs = require('fs');
 
-// Program argument parsing
+/**
+ * Program argument parsing.
+ *
+ * `opts` will contain either:
+ * - an int of -1 on error or help
+ * - an object of the following form
+ *   {
+ *   request : str,
+ *   file : str,
+ *   data : {
+ *   	id : int,
+ *   	text : str
+ *   	}
+ *   }
+ */
 const opts = (function(argv) {
 	const err = -1;
 	const argc = argv.length;
@@ -74,19 +91,34 @@ if (opts === -1) {
 	return;
 }
 
+/**
+ * A class with methods and attributes for the todo operations.
+ *
+ * Handles file reading and writing, JSON parsing and completing
+ * the requests sent down the chain of responsibility - acts as the
+ * links in the chain.
+ */
 class Todoer extends lib.Link {
-	file;
+	file;	//!< Holds the filename, with which the user wants to work
 
 	constructor(request, file) {
 		super(request);
 		this.file = file;
 	}
 
+	/**
+	 * Loads all of the contents of `this.file`.
+	 * @returns the raw contents of `this.file`.
+	 */
 	load() {
 		return fs.readFileSync(this.file, (err, data) => {
 			if (err) throw err;});
 	}
 
+	/**
+	 * Returns `JSON.parse`d data from `this.file`.
+	 * @returns the parsed JSON data as an ES object.
+	 */
 	getData() {
 		const data = JSON.parse(this.load());
 		if (typeof data === "string") {
@@ -98,11 +130,21 @@ class Todoer extends lib.Link {
 		return data;
 	}
 
+	/**
+	 * Takes the `data`, stringifies it and saves it to `this.file`.
+	 * @param data the data object to be saved.
+	 */
 	writeData(data) {
 		data = JSON.stringify(data);
 		fs.writeFileSync(this.file, data, (err) => {if (err) throw err;});
 	}
 
+	/**
+	 * Prints appropriate messages based on exception `err`.
+	 * Used in a `catch` block after `try`ing `getData`. If an unknown
+	 * exception is passed, it is rethrown.
+	 * @param err an exception for which a message should be printed.
+	 */
 	getDataErrPrinter(err) {
 		if (err.code === 'ENOENT') {
 			console.log("File does not exist.");
@@ -114,9 +156,8 @@ class Todoer extends lib.Link {
 	}
 	
 	/**
-	 * @brief Take todo data and reset their task IDs (for example after
+	 * Take todo data and reset their task IDs (for example after
 	 * a task removal).
-	 *
 	 * @param data an array of todo item objects.
 	 * @returns the same data array, only with reset IDs.
 	 */
@@ -153,6 +194,12 @@ todo.add.setNext(todo.rem);
 todo.rem.setNext(todo.cng);
 todo.cng.setNext(todo.sho);
 
+/**
+ * Change a todo item's text. The item is identified by `reqArgs.id`
+ * and the text is specified in `reqArgs.text`.
+ * @param request the request id.
+ * @param reqArgs arguments for the request.
+ */
 todo.cng.completeRequest = function(request, reqArgs) {
 	const id = reqArgs.id;
 	const task = reqArgs.text;
@@ -176,6 +223,11 @@ todo.cng.completeRequest = function(request, reqArgs) {
 	this.writeData(data);
 }
 
+/**
+ * Remove a todo item identified by `reqArgs.id`.
+ * @param request the request id.
+ * @param reqArgs arguments for the request.
+ */
 todo.rem.completeRequest = function(request, reqArgs) {
 	const id = reqArgs.id;
 	let data;
@@ -201,6 +253,11 @@ todo.rem.completeRequest = function(request, reqArgs) {
 	this.writeData(data);
 }
 
+/**
+ * Show all todo items.
+ * @param request the request id.
+ * @param reqArgs arguments for the request.
+ */
 todo.sho.completeRequest = function(request, reqArgs) {
 	let data;
 	try {
@@ -215,6 +272,11 @@ todo.sho.completeRequest = function(request, reqArgs) {
 	}
 }
 
+/**
+ * Add a new todo item with text `reqArgs.text`.
+ * @param request the request id.
+ * @param reqArgs arguments for the request.
+ */
 todo.add.completeRequest = function(request, reqArgs) {
 	const task = reqArgs.text;
 	let data = [];
