@@ -94,7 +94,13 @@ todo.rem.setNext(todo.cng);
 todo.cng.setNext(todo.sho);
 
 todo.cng.completeRequest = function(request, id, task) {
-	let data = this.getData();
+	let data;
+	try {
+		data = this.getData();
+	} catch (err) {
+		console.log("File does not exist.");
+		return;
+	}
 
 	let pos = data.map(function(e) { return e.id; }).indexOf(id);
 
@@ -109,7 +115,14 @@ todo.cng.completeRequest = function(request, id, task) {
 }
 
 todo.rem.completeRequest = function(request, id) {
-	let data = this.getData();
+	let data;
+	try {
+		data = this.getData();
+	} catch (err) {
+		console.log("File does not exist.");
+		return;
+	}
+
 
 	// see Link 2
 	let pos = data.map(function(e) { return e.id; }).indexOf(id);
