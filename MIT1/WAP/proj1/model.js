@@ -165,7 +165,7 @@ class Todoer extends lib.Link {
 	}
 }
 
-// The beginning of the chain 
+// Create the chain
 let todo = new lib.Chain();
 
 // Create the chain link objects
