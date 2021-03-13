@@ -228,7 +228,6 @@ todo.rem.completeRequest = function(request, reqArgs) {
 		return;
 	}
 
-
 	// see Link 2
 	let pos = data.map(function(e) { return e.id; }).indexOf(id);
 
