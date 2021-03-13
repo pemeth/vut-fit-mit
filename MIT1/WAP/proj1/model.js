@@ -70,12 +70,14 @@ const opts = (function(argv) {
 
 if (opts === -1) {
 	// Print help on argument parsing error or help and exit.
-	console.log("Usage:\n\tnode model.js file OP [OPARGS]\n");
-	console.log("OP [OPARGS]:\n",
-		"add text\t:add the text into the file as the next todo\n",
-		"rem id\t\t:remove a todo item from file specified by id\n",
-		"cng id text\t:change the text of a todo specified by id to text\n",
-		"sho\t\t:show all todo items in file\n");
+	console.log("Usage:\n\tnode model.js file OP\n");
+	console.log("OP can be either of:\n",
+		" add {text}\tadd the text into the file as the next todo\n",
+		" rem {id}\tremove a todo item from file specified by id\n",
+		" cng {id} {text}\tchange the text of a todo specified by id to text\n",
+		" sho\t\tshow all todo items in file\n");
+	console.log("NOTE:\n",
+		" Multi-word text must be given in single-quotes (i.e. 'water the dog').");
 	return;
 }
 
