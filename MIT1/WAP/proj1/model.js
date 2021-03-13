@@ -39,7 +39,7 @@ const opts = (function(argv) {
 		return err;
 	}
 
-	if (argv.includes('-help') || argv.includes('-h')) {
+	if (argv.includes('--help') || argv.includes('-h')) {
 		return err;
 	}
 
