@@ -174,8 +174,6 @@ todo.add = new Todoer('add', opts.file);
 todo.rem = new Todoer('rem', opts.file);
 todo.cng = new Todoer('cng', opts.file);
 
-// TODO figure out why the chaining breaks when `sho` is set as first
-// 	(the 'End of chain' exception gets thrown)...
 // Set the first link in the chain
 todo.setFirst(todo.add);
 

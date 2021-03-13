@@ -81,7 +81,7 @@ class Chain {
 	 */
 	handle(request, ...args) {
 		args.unshift(request);
-		this.#first.handle.apply(this.add, args);
+		this.#first.handle.apply(this.#first, args);
 	}
 }
 
