@@ -21,6 +21,7 @@ filterRule "" = Nothing
 filterRule line = Just (filter (\x -> isAlpha x || x == '#') line)
 
 -- A loop to get all the CFG rules from stdin.
+-- TODO rework this, so that it does not exit at empty line, but at EOF
 getRules :: IO [String]
 getRules = do
     line <- getLine
