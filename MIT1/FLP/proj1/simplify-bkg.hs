@@ -127,7 +127,9 @@ flags =
     ,Option ['2'] [] (NoArg StepTwo)
         "print out CFG after algo 4.3 or 4.1 if it generates empty language"]
 
--- Parser for the program options
+-- Parser for the program options.
+-- Returns a tuple of an option and a filename. If no filename was given,
+-- returns a tuple of an option and a Nothing.
 argParse argv =
     case getOpt Permute flags argv of
         ((o:[]),n:[],[])->
