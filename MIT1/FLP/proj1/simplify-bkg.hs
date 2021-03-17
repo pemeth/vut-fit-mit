@@ -130,11 +130,16 @@ flags =
 -- Parser for the program options
 argParse argv =
     case getOpt Permute flags argv of
-        (o,n,[])    -> return (o,n)
-        (_,_,err)   -> error "Bad program arguments."
+        ((o:[]),n:[],[])->
+            return (Just o, Just n)  -- One arg and a file
+        ((o:[]),[],[])  ->
+            return (Just o, Nothing)  -- One arg and load CFG from stdin
+        (_,_,_)         -> do
+            let hdr = "\nsimplify-bkg opt [input]\n where opt is one of:"
+            ioError (userError (usageInfo hdr flags))
 
 main = do
-    (opts, nonOpts) <- getArgs >>= argParse
+    (opt, file) <- getArgs >>= argParse
     -- TODO if nonOpts is empty, take input from stdin, otherwise from
     -- specified file in nonOpts
 
