@@ -78,8 +78,6 @@ getRRulesOfNterm nterm (rule : rules) =
         getRRulesOfNterm nterm rules
 
 -- Step (2) of algorithm 4.1 from TIN scripts
--- TODO This does one iteration of the algorithm. Needs to be wrapped into
--- a loop, which will check N[i] == N[i-1] in order to complete the algo.
 buildNextNi _ [] _ _ = []
 buildNextNi ni (ntA : ntAs) terms rules =
     if checkAlphas (getRRulesOfNterm ntA rules) (terms ++ ni) then
