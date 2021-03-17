@@ -116,11 +116,11 @@ collectInput = do
     return (Cfg nterm term start rules)
 
 -- Program argument flag types
-data Flag = Info | StepOne | StepTwo deriving Show
+data Flag = JustPrint | StepOne | StepTwo deriving (Show, Eq)
 
 -- The program options
 flags =
-    [Option ['i'] [] (NoArg Info)
+    [Option ['i'] [] (NoArg JustPrint)
         "print out the loaded CFG"
     ,Option ['1'] [] (NoArg StepOne)
         "print out CFG after algo 4.1"
