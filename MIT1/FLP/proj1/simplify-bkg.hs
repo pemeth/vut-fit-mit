@@ -135,6 +135,8 @@ argParse argv =
 
 main = do
     (opts, nonOpts) <- getArgs >>= argParse
+    -- TODO if nonOpts is empty, take input from stdin, otherwise from
+    -- specified file in nonOpts
 
     cfg <- collectInput
 
