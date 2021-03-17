@@ -82,7 +82,7 @@ getRRulesOfNterm nterm (rule : rules) =
 buildNextNi _ [] _ _ = []
 buildNextNi ni (ntA : ntAs) terms rules =
     if checkAlphas (getRRulesOfNterm ntA rules) (terms ++ ni) then
-        let currNi = ni ++ (ntA : [])in ntA : (buildNextNi currNi ntAs terms rules)
+        let currNi = ni ++ (ntA : []) in ntA : (buildNextNi currNi ntAs terms rules)
     else
         buildNextNi ni ntAs terms rules
 
