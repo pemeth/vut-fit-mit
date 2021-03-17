@@ -116,10 +116,5 @@ collectInput = do
 main = do
     cfg <- collectInput
 
-    print (makeNt "" (nterm cfg) (term cfg) (rules cfg))
-    print (buildNextNi "" (nterm cfg) (term cfg) (rules cfg))
-    print (nterm cfg)
-    print (term cfg)
-    print (start cfg)
-    print (rules cfg)
+    let nt = makeNt "" (nterm cfg) (term cfg) (rules cfg)
 
