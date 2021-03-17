@@ -5,6 +5,8 @@
 
 import Data.Char
 import Data.List
+import System.Environment
+import System.Console.GetOpt
 
 -- Record of a context-free grammar
 data Cfg = Cfg {
@@ -113,7 +115,27 @@ collectInput = do
 
     return (Cfg nterm term start rules)
 
+-- Program argument flag types
+data Flag = Info | StepOne | StepTwo deriving Show
+
+-- The program options
+flags =
+    [Option ['i'] [] (NoArg Info)
+        "print out the loaded CFG"
+    ,Option ['1'] [] (NoArg StepOne)
+        "print out CFG after algo 4.1"
+    ,Option ['2'] [] (NoArg StepTwo)
+        "print out CFG after algo 4.3 or 4.1 if it generates empty language"]
+
+-- Parser for the program options
+argParse argv =
+    case getOpt Permute flags argv of
+        (o,n,[])    -> return (o,n)
+        (_,_,err)   -> error "Bad program arguments."
+
 main = do
+    (opts, nonOpts) <- getArgs >>= argParse
+
     cfg <- collectInput
 
     let nt = makeNt "" (nterm cfg) (term cfg) (rules cfg)
