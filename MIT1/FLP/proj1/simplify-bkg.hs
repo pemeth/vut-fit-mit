@@ -128,14 +128,14 @@ flags =
         "print out CFG after algo 4.3 or 4.1 if it generates empty language"]
 
 -- Parser for the program options.
--- Returns a tuple of an option and a filename. If no filename was given,
+-- Returns a tuple of an option and a Maybe filename. If no filename was given,
 -- returns a tuple of an option and a Nothing.
 argParse argv =
     case getOpt Permute flags argv of
         ((o:[]),n:[],[])->
-            return (Just o, Just n)  -- One arg and a file
+            return (o, Just n)  -- One arg and a file
         ((o:[]),[],[])  ->
-            return (Just o, Nothing)  -- One arg and load CFG from stdin
+            return (o, Nothing)  -- One arg and load CFG from stdin
         (_,_,_)         -> do
             let hdr = "\nsimplify-bkg opt [input]\n where opt is one of:"
             ioError (userError (usageInfo hdr flags))
