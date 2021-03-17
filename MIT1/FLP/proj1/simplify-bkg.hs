@@ -16,6 +16,35 @@ data Cfg = Cfg {
     rules :: [(Char, String)]
 } deriving (Show)
 
+-- Print a string with a comma inserted between each character
+-- and a newline at the end. If an empty string is supplied,
+-- print just a newline. (i.e. "hello" -> "h,e,l,l,o\n"
+printStringWithCommas :: [Char] -> IO ()
+printStringWithCommas [] = putChar '\n'
+printStringWithCommas (x:[]) = do
+    putChar x
+    putChar '\n'
+printStringWithCommas (x:xs) = do
+    putChar x
+    putChar ','
+    printStringWithCommas xs
+
+-- A printing function for the correct output format of the CFG rules.
+-- (i.e. A->ab)
+printCfgRules [] = return ()
+printCfgRules (x:xs) = do
+    putChar (fst x)
+    putStrLn ("->" ++ (snd x))
+    printCfgRules xs
+
+-- Print a CFG in the correct format.
+printCfg cfg = do
+    printStringWithCommas (nterm cfg)
+    printStringWithCommas (term cfg)
+    putChar (start cfg)
+    putChar '\n'
+    printCfgRules (rules cfg)
+
 -- Returns Nothing on empty input string or a stripped down version of
 -- a rule - just the terminal and nonterminal symbols without
 -- the arrow ("->") symbol.
