@@ -4,6 +4,7 @@
  -}
 
 import Data.Char
+import Data.List
 
 -- Record of a context-free grammar
 data Cfg = Cfg {
@@ -86,17 +87,14 @@ buildNextNi ni (ntA : ntAs) terms rules =
     else
         buildNextNi ni ntAs terms rules
 
--- TODO asi to funguje ale je to hrozne daco... prerobit.. obzvlast podmienku
--- pre ukoncenie rekurzie, ktora je momentalne zalozena na
--- pocte neterminalov + 1...
-makeNt [] _ _ _ _ = []
-makeNt (i:is) ni nterm term rules =
-    if buildNextNi ni nterm term rules
-        == makeNt is (buildNextNi ni nterm term rules) nterm term rules
+-- Builds the 'Nt' set according to algorithm 4.1 from TIN.
+makeNt ni nterm term rules =
+    if ni' /= ni
     then
+        nub (ni' ++ (makeNt ni' nterm term rules))
+    else
         []
-    else 
-        ni ++ (buildNextNi (ni ++ (buildNextNi ni nterm term rules)) nterm term rules)
+    where ni' = buildNextNi ni nterm term rules
 
 -- Take a String, pull out words and reduce it back to String
 reduceToString = concat . words
@@ -120,7 +118,7 @@ collectInput = do
 main = do
     cfg <- collectInput
 
-    print (makeNt [1,2,3,4,5,6] "" (nterm cfg) (term cfg) (rules cfg))
+    print (makeNt "" (nterm cfg) (term cfg) (rules cfg))
     print (buildNextNi "" (nterm cfg) (term cfg) (rules cfg))
     print (nterm cfg)
     print (term cfg)
