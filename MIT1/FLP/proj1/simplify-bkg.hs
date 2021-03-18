@@ -125,16 +125,24 @@ makeNt ni nterm term rules =
         []
     where ni' = buildNextNi ni nterm term rules
 
--- Take a String, pull out words and reduce it back to String
-reduceToString = concat . words
+-- Takes a String of Chars separated by commas and returns the same String
+-- without the commas (i.e. "f,o,o" -> "foo"). Multiple commas are fine,
+-- but multiple Chars without commas between each of them results in an error.
+charsByComma "" = []
+charsByComma (',':"") = []
+charsByComma (s:"") = s : []
+charsByComma (s:ss)
+    | s == ','          = charsByComma ss
+    | head ss /= ','    = error "Char not succeeded by comma"
+    | otherwise         = s : charsByComma ss
 
 -- Get the input from stdin and construct a Cfg record.
 collectInput = do
     line <- getLine
-    let nterm = reduceToString line
+    let nterm = charsByComma line
 
     line <- getLine
-    let term = reduceToString line
+    let term = charsByComma line
 
     line <- getLine
     let start = head line
