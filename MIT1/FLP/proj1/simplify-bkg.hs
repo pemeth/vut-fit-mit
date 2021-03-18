@@ -141,9 +141,11 @@ charsByComma (s:ss)
 collectInput = do
     line <- getLine
     let nterm = charsByComma line
+    -- TODO check if nterms are all uppercase and alpha (probably do it in main())
 
     line <- getLine
     let term = charsByComma line
+    -- TODO check if terms are all lowercase and alpha
 
     line <- getLine
     let start = head line
