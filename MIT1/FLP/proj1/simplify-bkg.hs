@@ -207,3 +207,10 @@ main = do
 
     -- Step 2 of algorithm 4.3 form TIN
     hatG <- getBarG cfg nt
+
+    if opt == StepOne then do
+        -- Option '-1'
+        printCfg hatG
+        exitWith ExitSuccess
+    else
+        return () --do nothing
