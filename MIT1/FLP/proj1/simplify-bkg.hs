@@ -7,6 +7,7 @@ import Data.Char
 import Data.List
 import System.Environment
 import System.Console.GetOpt
+import System.Exit
 
 -- Record of a context-free grammar
 data Cfg = Cfg {
@@ -183,6 +184,13 @@ main = do
     -- specified file in nonOpts
 
     cfg <- collectInput
+
+    if opt == JustPrint then do
+        -- Option '-i'
+        printCfg cfg
+        exitWith ExitSuccess
+    else
+        return () -- do nothing
 
     let nt = makeNt "" (nterm cfg) (term cfg) (rules cfg)
 
