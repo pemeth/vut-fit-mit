@@ -180,6 +180,15 @@ argParse argv =
             let hdr = "\nsimplify-bkg opt [input]\n where opt is one of:"
             ioError (userError (usageInfo hdr flags))
 
+-- Create the "bar G" CFG as per algorithm 4.3, step 2 from TIN.
+-- Called `barG` because of the bar above the G.
+getBarG cfg nt = do
+    let rulesOld = rules cfg
+    let rulesNew' = filter (\x -> fst x `elem` nt) rulesOld
+    let rulesNew = filter (\x -> inIterSet (snd x) (nt ++ (term cfg))) rulesNew'
+
+    return (Cfg nt (term cfg) (start cfg) rulesNew)
+
 main = do
     (opt, file) <- getArgs >>= argParse
     -- TODO if nonOpts is empty, take input from stdin, otherwise from
@@ -196,3 +205,5 @@ main = do
 
     let nt = makeNt "" (nterm cfg) (term cfg) (rules cfg)
 
+    -- Step 2 of algorithm 4.3 form TIN
+    hatG <- getBarG cfg nt
