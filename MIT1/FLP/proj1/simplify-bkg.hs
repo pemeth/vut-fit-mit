@@ -132,6 +132,30 @@ makeNt ni nterm term rules =
         []
     where ni' = buildNextNi ni nterm term rules
 
+-- Builds an iteration of the 'V' (so technically builds Vi)
+-- set for algorithm 4.2.
+buildNextVi :: String -> [(Char,String)] -> String
+buildNextVi _ [] = []
+buildNextVi vi (rule : rules) =
+    if (fst rule) `elem` vi then
+        let currVi = nub (snd rule ++ vi) in currVi ++ (buildNextVi currVi rules)
+    else
+        buildNextVi vi rules
+
+-- Builds the 'V' set based on algorithm 4.2 from TIN.
+-- Takes an initialization value of Vi (the start symbol of the CFG), which
+-- is an array of one non-terminal symbol. Returns the 'V' set.
+makeV :: String -> [(Char,String)] -> String
+makeV "" _ = error "Algorithm needs an initialization value"
+makeV vi rules =
+    if vi' /= vi then
+        nub (vi' ++ (makeV vi' rules))
+    else
+        []
+    where
+        -- Filter out empty strings (#)
+        vi' = filter (\x -> isAlpha x) (buildNextVi vi rules)
+
 -- Takes a String of Chars separated by commas and returns the same String
 -- without the commas (i.e. "f,o,o" -> "foo"). Multiple commas are fine,
 -- but multiple Chars without commas between each of them results in an error.
@@ -229,3 +253,7 @@ main = do
         exitWith ExitSuccess
     else
         return ()
+
+    -- Step 3 of algorithm 4.3 from TIN
+    let v = makeV [(start hatG)] (rules hatG)
+    print v
