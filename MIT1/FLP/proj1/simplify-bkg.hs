@@ -244,11 +244,11 @@ flags =
 argParse :: [String] -> IO (Flag, String)
 argParse argv =
     case getOpt Permute flags argv of
-        ((o:[]),n:[],[])->
+        ((o:[]), (n:[]), [])    ->
             return (o, n)  -- One arg and a file
-        ((o:[]),[],[])  ->
+        ((o:[]), [], [])    ->
             return (o, "")  -- One arg and load CFG from stdin
-        (_,_,_)         -> do
+        (_, _, _)           -> do
             let hdr = "\nsimplify-bkg opt [input]\n where opt is one of:"
             ioError (userError (usageInfo hdr flags))
 
