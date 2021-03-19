@@ -125,9 +125,9 @@ buildNextNi ni (ntA : ntAs) terms rules =
         buildNextNi ni ntAs terms rules
 
 -- Builds the 'Nt' set according to algorithm 4.1 from TIN.
-makeNt ni nterm term rules =
+makeSetNt ni nterm term rules =
     if ni' /= ni then
-        nub (ni' ++ (makeNt ni' nterm term rules))
+        nub (ni' ++ (makeSetNt ni' nterm term rules))
     else
         []
     where ni' = buildNextNi ni nterm term rules
@@ -145,11 +145,11 @@ buildNextVi vi (rule : rules) =
 -- Builds the 'V' set based on algorithm 4.2 from TIN.
 -- Takes an initialization value of Vi (the start symbol of the CFG), which
 -- is an array of one non-terminal symbol. Returns the 'V' set.
-makeV :: String -> [(Char,String)] -> String
-makeV "" _ = error "Algorithm needs an initialization value"
-makeV vi rules =
+makeSetV :: String -> [(Char,String)] -> String
+makeSetV "" _ = error "Algorithm needs an initialization value"
+makeSetV vi rules =
     if vi' /= vi then
-        nub (vi' ++ (makeV vi' rules))
+        nub (vi' ++ (makeSetV vi' rules))
     else
         []
     where
@@ -233,7 +233,7 @@ main = do
     else
         return () -- do nothing
 
-    let nt = makeNt "" (nterm cfg) (term cfg) (rules cfg)
+    let nt = makeSetNt "" (nterm cfg) (term cfg) (rules cfg)
 
     -- Step 2 of algorithm 4.3 from TIN
     hatG <- getBarG cfg nt
@@ -255,5 +255,5 @@ main = do
         return ()
 
     -- Step 3 of algorithm 4.3 from TIN
-    let v = makeV [(start hatG)] (rules hatG)
+    let v = makeSetV [(start hatG)] (rules hatG)
     print v
