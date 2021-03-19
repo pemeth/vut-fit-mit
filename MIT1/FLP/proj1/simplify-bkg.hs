@@ -219,6 +219,17 @@ getBarG cfg nt = do
 
     return (Cfg nt (term cfg) (start cfg) rulesNew)
 
+-- Create the "G'" CFG as per algorithm 4.3.
+getG' :: Monad m => Cfg -> [Char] -> m Cfg
+getG' cfg v = do
+    let ntermNew = nub (intersect v (nterm cfg))
+    let termNew = nub (intersect v (term cfg))
+    let rulesOld = rules cfg
+    let rulesNew' = filter (\x -> fst x `elem` ntermNew) rulesOld
+    let rulesNew = filter (\x -> inIterSet (snd x) v) rulesNew'
+
+    return (Cfg ntermNew termNew (start cfg) rulesNew)
+
 main = do
     (opt, file) <- getArgs >>= argParse
     -- TODO if nonOpts is empty, take input from stdin, otherwise from
@@ -256,4 +267,6 @@ main = do
 
     -- Step 3 of algorithm 4.3 from TIN
     let v = makeSetV [(start cfgBarG)] (rules cfgBarG)
-    print v
+
+    cfgG' <- getG' cfgBarG v
+    printCfg cfgG'
