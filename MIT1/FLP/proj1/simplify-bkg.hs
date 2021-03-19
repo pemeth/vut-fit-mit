@@ -125,13 +125,26 @@ collectInput :: IO Cfg
 collectInput = do
     line <- getLine
     let nterm = charsByComma line
-    -- TODO check if nterms are all uppercase and alpha (probably do it in main())
+    if not (all isUpper nterm) then
+        error "Non-terminals must be uppercase letters"
+    else
+        return ()
 
     line <- getLine
     let term = charsByComma line
-    -- TODO check if terms are all lowercase and alpha
+    if not (all isLower term) then
+        error "Terminals must be lowercase letters"
+    else
+        return ()
 
     line <- getLine
+    if null line then
+        error "No starting symbol"
+    else
+        if not (null (tail line)) || not (isUpper (head line)) then
+            error "Starting symbol is either not uppercase or is not a single character"
+        else
+            return ()
     let start = head line
 
     rls <- getRules
