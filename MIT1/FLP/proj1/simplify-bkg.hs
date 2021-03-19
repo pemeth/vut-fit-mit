@@ -90,6 +90,37 @@ tuplifyRules (x : xs) =
         Nothing -> []
         Just tuple -> tuple : (tuplifyRules xs)
 
+-- Takes a String of Chars separated by commas and returns the same String
+-- without the commas (i.e. "f,o,o" -> "foo"). Multiple commas are fine,
+-- but multiple Chars without commas between each of them results in an error.
+charsByComma :: String -> String
+charsByComma "" = []
+charsByComma (',':"") = []
+charsByComma (s:"") = s : []
+charsByComma (s:ss)
+    | s == ','          = charsByComma ss
+    | head ss /= ','    = error "Char not succeeded by comma"
+    | otherwise         = s : charsByComma ss
+
+-- Get the input from stdin and construct a Cfg record.
+collectInput :: IO Cfg
+collectInput = do
+    line <- getLine
+    let nterm = charsByComma line
+    -- TODO check if nterms are all uppercase and alpha (probably do it in main())
+
+    line <- getLine
+    let term = charsByComma line
+    -- TODO check if terms are all lowercase and alpha
+
+    line <- getLine
+    let start = head line
+
+    rls <- getRules
+    let rules = tuplifyRules rls
+
+    return (Cfg nterm term start rules)
+
 -- Checks if every element of `alpha` is contained in
 -- the `set` string. The input `set` is implicitly extended to include
 -- an empty string as well ('#') - hence the iter(ation).
@@ -160,37 +191,6 @@ makeSetV vi rules =
     where
         -- Filter out empty strings (#)
         vi' = filter (\x -> isAlpha x) (buildNextVi vi rules)
-
--- Takes a String of Chars separated by commas and returns the same String
--- without the commas (i.e. "f,o,o" -> "foo"). Multiple commas are fine,
--- but multiple Chars without commas between each of them results in an error.
-charsByComma :: String -> String
-charsByComma "" = []
-charsByComma (',':"") = []
-charsByComma (s:"") = s : []
-charsByComma (s:ss)
-    | s == ','          = charsByComma ss
-    | head ss /= ','    = error "Char not succeeded by comma"
-    | otherwise         = s : charsByComma ss
-
--- Get the input from stdin and construct a Cfg record.
-collectInput :: IO Cfg
-collectInput = do
-    line <- getLine
-    let nterm = charsByComma line
-    -- TODO check if nterms are all uppercase and alpha (probably do it in main())
-
-    line <- getLine
-    let term = charsByComma line
-    -- TODO check if terms are all lowercase and alpha
-
-    line <- getLine
-    let start = head line
-
-    rls <- getRules
-    let rules = tuplifyRules rls
-
-    return (Cfg nterm term start rules)
 
 -- Program argument flag types
 data Flag = JustPrint | StepOne | StepTwo deriving (Show, Eq)
