@@ -236,11 +236,11 @@ main = do
     let nt = makeSetNt "" (nterm cfg) (term cfg) (rules cfg)
 
     -- Step 2 of algorithm 4.3 from TIN
-    hatG <- getBarG cfg nt
+    cfgHatG <- getBarG cfg nt
 
     if opt == StepOne then do
         -- Option '-1'
-        printCfg hatG
+        printCfg cfgHatG
         exitWith ExitSuccess
     else
         return () --do nothing
@@ -248,12 +248,12 @@ main = do
     -- The rest is reached only with option '-2'
 
     if not ((start cfg) `elem` nt) then do
-        -- Empty language -> print hatG and exit
-        printCfg hatG
+        -- Empty language -> print cfgHatG and exit
+        printCfg cfgHatG
         exitWith ExitSuccess
     else
         return ()
 
     -- Step 3 of algorithm 4.3 from TIN
-    let v = makeSetV [(start hatG)] (rules hatG)
+    let v = makeSetV [(start cfgHatG)] (rules cfgHatG)
     print v
