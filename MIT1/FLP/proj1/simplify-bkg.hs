@@ -212,7 +212,7 @@ main = do
 
     let nt = makeNt "" (nterm cfg) (term cfg) (rules cfg)
 
-    -- Step 2 of algorithm 4.3 form TIN
+    -- Step 2 of algorithm 4.3 from TIN
     hatG <- getBarG cfg nt
 
     if opt == StepOne then do
