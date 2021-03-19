@@ -56,6 +56,8 @@ filterRule line = Just (filter (\x -> isAlpha x || x == '#') line)
 
 -- A loop to get all the CFG rules from stdin.
 -- Finishes parsing if an empty line or EOF is encountered.
+-- TODO add a parameter to this function to be able to work with files
+--      via handles
 getRules :: IO [String]
 getRules = do
     ineof <- isEOF
