@@ -150,6 +150,11 @@ collectInput = do
     rls <- getRules
     let rules = tuplifyRules rls
 
+    if not (start `elem` nterm) then
+        error "The starting symbol is not one of the given non-terminals"
+    else
+        return ()
+
     return (Cfg nterm term start rules)
 
 -- Checks if every element of `alpha` is contained in
