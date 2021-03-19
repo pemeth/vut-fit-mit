@@ -126,8 +126,7 @@ buildNextNi ni (ntA : ntAs) terms rules =
 
 -- Builds the 'Nt' set according to algorithm 4.1 from TIN.
 makeNt ni nterm term rules =
-    if ni' /= ni
-    then
+    if ni' /= ni then
         nub (ni' ++ (makeNt ni' nterm term rules))
     else
         []
