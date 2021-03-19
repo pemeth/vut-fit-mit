@@ -8,6 +8,7 @@ import Data.List
 import System.Environment
 import System.Console.GetOpt
 import System.Exit
+import System.IO
 
 -- Record of a context-free grammar
 data Cfg = Cfg {
@@ -54,15 +55,19 @@ filterRule "" = Nothing
 filterRule line = Just (filter (\x -> isAlpha x || x == '#') line)
 
 -- A loop to get all the CFG rules from stdin.
--- TODO rework this, so that it does not exit at empty line, but at EOF
+-- Finishes parsing if an empty line or EOF is encountered.
 getRules :: IO [String]
 getRules = do
-    line <- getLine
-    case filterRule line of
-        Nothing -> return []
-        Just aString -> do
-            nextLine <- getRules
-            return (aString : nextLine)
+    ineof <- isEOF
+    if ineof then
+        return []
+    else do
+        line <- getLine
+        case filterRule line of
+            Nothing -> return []
+            Just aString -> do
+                nextLine <- getRules
+                return (aString : nextLine)
 
 -- A helper function for tuplifyRules. It takes the first letter of a rule,
 -- which is a non-terminal and separates it into a tuple for the left and
