@@ -33,6 +33,7 @@ printStringWithCommas (x:xs) = do
 
 -- A printing function for the correct output format of the CFG rules.
 -- (i.e. A->ab)
+printCfgRules :: [(Char, String)] -> IO ()
 printCfgRules [] = return ()
 printCfgRules (x:xs) = do
     putChar (fst x)
@@ -40,6 +41,7 @@ printCfgRules (x:xs) = do
     printCfgRules xs
 
 -- Print a CFG in the correct format.
+printCfg :: Cfg -> IO ()
 printCfg cfg = do
     printStringWithCommas (nterm cfg)
     printStringWithCommas (term cfg)
@@ -97,6 +99,7 @@ inIterSet alpha set = all (\x -> x `elem` iterSet) alpha
     where iterSet = set ++ "#"
 
 -- Uses `inIterSet` to check the same thing, only over an array of `alphas`.
+checkAlphas :: [String] -> String -> Bool
 checkAlphas [] _ = False
 checkAlphas (alpha : alphas) set = inIterSet alpha set || checkAlphas alphas set
 
@@ -117,6 +120,7 @@ getRRulesOfNterm nterm (rule : rules) =
         getRRulesOfNterm nterm rules
 
 -- Step (2) of algorithm 4.1 from TIN scripts
+buildNextNi :: String -> String -> String -> [(Char, String)] -> String
 buildNextNi _ [] _ _ = []
 buildNextNi ni (ntA : ntAs) terms rules =
     if checkAlphas (getRRulesOfNterm ntA rules) (terms ++ ni) then
@@ -125,6 +129,7 @@ buildNextNi ni (ntA : ntAs) terms rules =
         buildNextNi ni ntAs terms rules
 
 -- Builds the 'Nt' set according to algorithm 4.1 from TIN.
+makeSetNt :: String -> String -> String -> [(Char, String)] -> String
 makeSetNt ni nterm term rules =
     if ni' /= ni then
         nub (ni' ++ (makeSetNt ni' nterm term rules))
@@ -159,6 +164,7 @@ makeSetV vi rules =
 -- Takes a String of Chars separated by commas and returns the same String
 -- without the commas (i.e. "f,o,o" -> "foo"). Multiple commas are fine,
 -- but multiple Chars without commas between each of them results in an error.
+charsByComma :: String -> String
 charsByComma "" = []
 charsByComma (',':"") = []
 charsByComma (s:"") = s : []
@@ -168,6 +174,7 @@ charsByComma (s:ss)
     | otherwise         = s : charsByComma ss
 
 -- Get the input from stdin and construct a Cfg record.
+collectInput :: IO Cfg
 collectInput = do
     line <- getLine
     let nterm = charsByComma line
@@ -200,6 +207,7 @@ flags =
 -- Parser for the program options.
 -- Returns a tuple of an option and a Maybe filename. If no filename was given,
 -- returns a tuple of an option and a Nothing.
+argParse :: [String] -> IO (Flag, Maybe String)
 argParse argv =
     case getOpt Permute flags argv of
         ((o:[]),n:[],[])->
@@ -212,6 +220,7 @@ argParse argv =
 
 -- Create the "bar G" CFG as per algorithm 4.3, step 2 from TIN.
 -- Called `barG` because of the bar above the G.
+getBarG :: Monad m => Cfg -> String -> m Cfg
 getBarG cfg nt = do
     let rulesOld = rules cfg
     let rulesNew' = filter (\x -> fst x `elem` nt) rulesOld
