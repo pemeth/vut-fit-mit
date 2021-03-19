@@ -56,6 +56,21 @@ filterRule :: String -> Maybe String
 filterRule "" = Nothing
 filterRule line = Just (filter (\x -> isAlpha x || x == '#') line)
 
+-- Check validity of the left hand side of a rule
+validLRule :: Char -> Bool
+validLRule nterm = isUpper nterm
+
+-- Check validity of the right hand side of a rule
+validRRule :: String -> Bool
+validRRule ('-':'>':'#':[]) = True
+validRRule ('-':'>':rest)   = all isAlpha rest
+validRRule _                = False
+
+-- Check if an input String is a valid CFG rule
+validRule :: String -> Bool
+validRule (x:xs) = validLRule x && validRRule xs
+validRule _ = False
+
 -- A loop to get all the CFG rules from stdin.
 -- Finishes parsing if an empty line or EOF is encountered.
 -- TODO add a parameter to this function to be able to work with files
@@ -67,11 +82,14 @@ getRules = do
         return []
     else do
         line <- getLine
-        case filterRule line of
-            Nothing -> return []
-            Just aString -> do
-                nextLine <- getRules
-                return (aString : nextLine)
+        if validRule line then
+            case filterRule line of
+                Nothing -> return []
+                Just aString -> do
+                    nextLine <- getRules
+                    return (aString : nextLine)
+        else
+            error "Invalid CFG rule encountered"
 
 -- A helper function for tuplifyRules. It takes the first letter of a rule,
 -- which is a non-terminal and separates it into a tuple for the left and
