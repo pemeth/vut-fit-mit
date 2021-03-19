@@ -71,22 +71,20 @@ validRule :: String -> Bool
 validRule (x:xs) = validLRule x && validRRule xs
 validRule _ = False
 
--- A loop to get all the CFG rules from stdin.
+-- A loop to get all the CFG rules from Handle `hdl`.
 -- Finishes parsing if an empty line or EOF is encountered.
--- TODO add a parameter to this function to be able to work with files
---      via handles
-getRules :: IO [String]
-getRules = do
-    ineof <- isEOF
+getRules :: Handle -> IO [String]
+getRules hdl = do
+    ineof <- hIsEOF hdl
     if ineof then
         return []
     else do
-        line <- getLine
+        line <- hGetLine hdl
         if validRule line then
             case filterRule line of
                 Nothing -> return []
                 Just aString -> do
-                    nextLine <- getRules
+                    nextLine <- getRules hdl
                     return (aString : nextLine)
         else
             error "Invalid CFG rule encountered"
@@ -120,24 +118,24 @@ charsByComma (s:ss)
     | head ss /= ','    = error "Char not succeeded by comma"
     | otherwise         = s : charsByComma ss
 
--- Get the input from stdin and construct a Cfg record.
-collectInput :: IO Cfg
-collectInput = do
-    line <- getLine
+-- Get the input from Handle `hdl` and construct a Cfg record.
+collectInput :: Handle -> IO Cfg
+collectInput hdl = do
+    line <- hGetLine hdl
     let nterm = charsByComma line
     if not (all isUpper nterm) then
         error "Non-terminals must be uppercase letters"
     else
         return ()
 
-    line <- getLine
+    line <- hGetLine hdl
     let term = charsByComma line
     if not (all isLower term) then
         error "Terminals must be lowercase letters"
     else
         return ()
 
-    line <- getLine
+    line <- hGetLine hdl
     if null line then
         error "No starting symbol"
     else
@@ -147,7 +145,7 @@ collectInput = do
             return ()
     let start = head line
 
-    rls <- getRules
+    rls <- getRules hdl
     let rules = tuplifyRules rls
 
     if not (start `elem` nterm) then
@@ -243,13 +241,13 @@ flags =
 -- Parser for the program options.
 -- Returns a tuple of an option and a Maybe filename. If no filename was given,
 -- returns a tuple of an option and a Nothing.
-argParse :: [String] -> IO (Flag, Maybe String)
+argParse :: [String] -> IO (Flag, String)
 argParse argv =
     case getOpt Permute flags argv of
         ((o:[]),n:[],[])->
-            return (o, Just n)  -- One arg and a file
+            return (o, n)  -- One arg and a file
         ((o:[]),[],[])  ->
-            return (o, Nothing)  -- One arg and load CFG from stdin
+            return (o, "")  -- One arg and load CFG from stdin
         (_,_,_)         -> do
             let hdr = "\nsimplify-bkg opt [input]\n where opt is one of:"
             ioError (userError (usageInfo hdr flags))
@@ -277,10 +275,13 @@ getG' cfg v = do
 
 main = do
     (opt, file) <- getArgs >>= argParse
-    -- TODO if nonOpts is empty, take input from stdin, otherwise from
-    -- specified file in nonOpts
 
-    cfg <- collectInput
+    cfg <- if null file then
+            -- No file specified, take input from stdin
+            collectInput stdin
+        else
+            -- Take input from file
+            withFile file ReadMode collectInput
 
     if opt == JustPrint then do
         -- Option '-i'
