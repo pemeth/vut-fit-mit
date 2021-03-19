@@ -221,3 +221,12 @@ main = do
         exitWith ExitSuccess
     else
         return () --do nothing
+
+    -- The rest is reached only with option '-2'
+
+    if not ((start cfg) `elem` nt) then do
+        -- Empty language -> print hatG and exit
+        printCfg hatG
+        exitWith ExitSuccess
+    else
+        return ()
