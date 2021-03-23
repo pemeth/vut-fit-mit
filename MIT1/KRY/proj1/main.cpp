@@ -9,7 +9,9 @@
 #include <array>
 #include <tuple>
 
-std::vector<unsigned long int>
+typedef unsigned long int ulong_t;
+
+std::vector<ulong_t>
 	getDistances(std::vector<char> *ctext);
 
 int main(int argc, char *argv[]) {
@@ -36,9 +38,9 @@ int main(int argc, char *argv[]) {
  * @param *ctext the input ciphertext.
  * @returns a vector of distances between repeating trigrams.
  */
-std::vector<unsigned long int> getDistances(std::vector<char> *ctext)
+std::vector<ulong_t> getDistances(std::vector<char> *ctext)
 {
-	std::vector<unsigned long int> distances;
+	std::vector<ulong_t> distances;
 
 	const int endIdx = ctext->size() - 3;
 	for (int i = 0; i <= endIdx; i++) {
