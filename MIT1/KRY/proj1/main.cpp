@@ -138,7 +138,7 @@ std::vector<ulong_t> getDistances(std::vector<char> *ctext)
 		char c1 = (*ctext)[i];
 		char c2 = (*ctext)[i+1];
 		char c3 = (*ctext)[i+2];
-		
+
 		for (int j = i+3; j <= endIdx; j++) {
 			char c11 = (*ctext)[j];
 			char c22 = (*ctext)[j+1];
