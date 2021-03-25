@@ -17,20 +17,20 @@
  * of the letter in the alphabet (i.e. [12,4,...] means 12 'A's, 4 'B's, etc.).
  */
 std::array<ulong_t, 26>
-getCharCounts(std::vector<char> *text)
+getLetterCounts(std::vector<char> *text)
 {
-    std::array<ulong_t, 26> charCounts;
-    charCounts.fill(0);
+    std::array<ulong_t, 26> letterCounts;
+    letterCounts.fill(0);
 
-    for (ulong_t i = 0; i < charCounts.size(); i++) {
+    for (ulong_t i = 0; i < letterCounts.size(); i++) {
         char currChar = (char) (i + ASCII_A);
 
         for (ulong_t j = 0; j < text->size(); j++) {
             if ( (*text)[j] == currChar ) {
-                charCounts[i]++;
+                letterCounts[i]++;
             }
         }
     }
 
-    return charCounts;
+    return letterCounts;
 }

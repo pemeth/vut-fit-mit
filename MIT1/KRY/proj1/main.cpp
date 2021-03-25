@@ -28,10 +28,10 @@ int main(int argc, char *argv[]) {
 
 	ulong_t keylength = getLastRisingKeylength(&factorTuples);
 
-	std::array<ulong_t,26> charCounts = getCharCounts(&ctext);
+	std::array<ulong_t,26> letterCounts = getLetterCounts(&ctext);
 
-	for (ulong_t i = 0; i < charCounts.size(); i++) {
-		std::cerr << (char) (i + 65) << ':' << charCounts[i] <<
+	for (ulong_t i = 0; i < letterCounts.size(); i++) {
+		std::cerr << (char) (i + 65) << ':' << letterCounts[i] <<
 					'|';
 	}
 	std::cerr << '\n';
