@@ -25,6 +25,8 @@ int partition
 	(std::vector<std::tuple<ulong_t, ulong_t> > *vect, int left, int right);
 void quickSortTuplesBySnd
 	(std::vector<std::tuple<ulong_t, ulong_t> > *vect, int left, int right);
+ulong_t
+	getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors);
 
 int main(int argc, char *argv[]) {
 	if (argc != 1) {
@@ -47,7 +49,39 @@ int main(int argc, char *argv[]) {
 
 	quickSortTuplesBySnd(&factorTuples, 0, factorTuples.size() - 1);
 
+	ulong_t keylength = getLastRisingKeylength(&factorTuples);
+
 	return 0;
+}
+
+/**
+ * A naive selector of the correct keylength. Selects the last rising keylength
+ * in a list of keylengths sorted by number of occurrences
+ * (i.e. in [2,3,4,8,5] selects 8).
+ *
+ * The rationale behind this is that the correct keylength's factors have at least
+ * the same number of occurrences as the correct keylength itself. It is also likely,
+ * that the correct keylength is rather a longer one than a shorter one. Therefore
+ * it should be likely, if a keylength's factors have the same or higher number
+ * of occurence (possibly always true, so it is not checked here) and the next
+ * keylength in the sorted list is a smaller number, that we have found the correct
+ * keylength. (The next smaller number in the list will be a factor of a larger
+ * keylength further down the list, but the current is the earliest largest such
+ * keylength).
+ *
+ * @param factors are the sorted(!) factors returned by `getFactorCounts`.
+ * @returns the (hopefully) correct keylength.
+ */
+ulong_t
+getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors)
+{
+	for (ulong_t i = 0; i < factors->size() - 1; i++) {
+		if ( std::get<0>((*factors)[i]) > std::get<0>((*factors)[i+1]) ) {
+			return std::get<0>((*factors)[i]);
+		}
+	}
+
+	return std::get<0>((*factors)[factors->size() - 1]);
 }
 
 /**
