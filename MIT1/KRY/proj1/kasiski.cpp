@@ -127,11 +127,17 @@ std::vector<ulong_t> getDistances(std::vector<char> *ctext)
 ulong_t
 getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors)
 {
+	// Bounds check
+	if (factors->size() < 1) {
+		return 0;
+	}
+
 	for (ulong_t i = 0; i < factors->size() - 1; i++) {
 		if ( std::get<FST>((*factors)[i]) > std::get<FST>((*factors)[i+1]) ) {
 			return std::get<FST>((*factors)[i]);
 		}
 	}
 
+	// Return last value
 	return std::get<FST>((*factors)[factors->size() - 1]);
 }
