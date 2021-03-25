@@ -30,5 +30,9 @@ ulong_t
 	getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors);
 std::array<ulong_t, 26>
     getLetterCounts(std::vector<char> *ctext);
+double
+    indexOfCoincidence(std::array<ulong_t, 26> letterCounts, ulong_t textLength);
+double getKeylengthFriedman
+    (std::array<ulong_t, 26> letterCounts, ulong_t textLength);
 
 #endif /* KRY_HPP */

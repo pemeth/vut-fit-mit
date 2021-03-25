@@ -26,17 +26,20 @@ int main(int argc, char *argv[]) {
 
 	quickSortTuplesBySnd(&factorTuples, 0, factorTuples.size() - 1);
 
-	ulong_t keylength = getLastRisingKeylength(&factorTuples);
+	ulong_t keylengthKasinski = getLastRisingKeylength(&factorTuples);
 
 	std::array<ulong_t,26> letterCounts = getLetterCounts(&ctext);
 
 	for (ulong_t i = 0; i < letterCounts.size(); i++) {
-		std::cerr << (char) (i + 65) << ':' << letterCounts[i] <<
-					'|';
+		std::cerr << (char) (i + 65) << ':' << letterCounts[i] << '|';
 	}
 	std::cerr << '\n';
 
-	std::cerr << keylength << '\n';
+	std::cerr << keylengthKasinski << '\n';
+
+	double keylengthFriedman = getKeylengthFriedman(letterCounts, ctext.size());
+
+	std::cerr << keylengthFriedman << '\n';
 
 	return 0;
 }
