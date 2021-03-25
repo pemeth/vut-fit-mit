@@ -28,5 +28,7 @@ void quickSortTuplesBySnd
 	(std::vector<std::tuple<ulong_t, ulong_t> > *vect, int left, int right);
 ulong_t
 	getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors);
+std::array<ulong_t, 26>
+    getCharCounts(std::vector<char> *ctext);
 
 #endif /* KRY_HPP */
