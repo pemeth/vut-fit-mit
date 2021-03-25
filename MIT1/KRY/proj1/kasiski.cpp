@@ -27,7 +27,7 @@ getFactorCounts(std::vector<ulong_t> distances)
 			int tmp = isFactorInVector(currFactor, factorCounts);
 
 			if (tmp >= 0) {
-				std::get<1>(factorCounts[tmp]) += 1;
+				std::get<SND>(factorCounts[tmp]) += 1;
 			} else {
 				factorCounts.push_back(std::make_tuple(currFactor, 1));
 			}
@@ -49,7 +49,7 @@ int
 isFactorInVector(ulong_t factor, std::vector<std::tuple<ulong_t, ulong_t> > vect)
 {
 	for (ulong_t i = 0; i < vect.size(); i++) {
-		if (std::get<0>(vect[i]) == factor) {
+		if (std::get<FST>(vect[i]) == factor) {
 			return i;
 		}
 	}
@@ -128,10 +128,10 @@ ulong_t
 getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors)
 {
 	for (ulong_t i = 0; i < factors->size() - 1; i++) {
-		if ( std::get<0>((*factors)[i]) > std::get<0>((*factors)[i+1]) ) {
-			return std::get<0>((*factors)[i]);
+		if ( std::get<FST>((*factors)[i]) > std::get<FST>((*factors)[i+1]) ) {
+			return std::get<FST>((*factors)[i]);
 		}
 	}
 
-	return std::get<0>((*factors)[factors->size() - 1]);
+	return std::get<FST>((*factors)[factors->size() - 1]);
 }

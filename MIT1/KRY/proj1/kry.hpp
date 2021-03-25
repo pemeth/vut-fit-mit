@@ -7,6 +7,9 @@
 #include <array>
 #include <tuple>
 
+#define FST 0
+#define SND 1
+
 typedef unsigned long int ulong_t;
 
 std::vector<ulong_t>
