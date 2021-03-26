@@ -1,0 +1,8 @@
+# .txt files are files containing ciphertext or other miscellaneous data
+*.txt
+
+# this file is used for output dumping in general
+output
+
+# local workspace vscode settings
+.vscode
