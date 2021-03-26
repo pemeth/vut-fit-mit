@@ -7,7 +7,7 @@ FLAGS := -Wall -Werror
 
 all: build
 
-build: main.o lib.o kasiski.o friedman.o
+build: main.o lib.o kasiski.o friedman.o cracker.o
 	$(CC) $(FLAGS) -o $(NAME) $^
 
 main.o: main.cpp kry.hpp
@@ -22,5 +22,8 @@ kasiski.o: kasiski.cpp kry.hpp
 friedman.o: friedman.cpp kry.hpp
 	$(CC) $(FLAGS) -c $^
 
+cracker.o: cracker.cpp kry.hpp
+	$(CC) $(FLAGS) -c $^
+
 clean:
-	rm -f main.o kasiski.o friedman.o lib.o kry.hpp.gch kry
+	rm -f main.o kasiski.o friedman.o lib.o cracker.o kry.hpp.gch kry

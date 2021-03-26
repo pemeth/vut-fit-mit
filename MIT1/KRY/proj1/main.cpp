@@ -41,5 +41,14 @@ int main(int argc, char *argv[]) {
 
 	std::cerr << keylengthFriedman << '\n';
 
+	// Find and print key
+	// TODO for now I just use the kasiski length, but a better guess needs to be
+	//		implemented
+	std::vector<char> key = findKey(&ctext, keylengthKasinski);
+	for (ulong_t i = 0; i < key.size(); i++) {
+		std::cerr << key[i];
+	}
+	std::cerr << '\n';
+
 	return 0;
 }

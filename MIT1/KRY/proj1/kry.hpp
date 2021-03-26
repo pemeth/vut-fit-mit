@@ -12,6 +12,14 @@
 
 typedef unsigned long int ulong_t;
 
+double calcMg
+    (const std::array<double, 26> *p, std::array<ulong_t, 26> *f, ulong_t n, int g);
+std::array<double, 26> getFreqs
+    (std::array<ulong_t, 26> *letterCounts, ulong_t colLength);
+int guessShift
+    (const std::array<double, 26> *realFreqs, std::array<ulong_t, 26> *ctextFreqs, ulong_t colLength);
+std::vector<char> findKey
+    (std::vector<char> *ctext, ulong_t keylength);
 std::vector<ulong_t>
 	getDistances(std::vector<char> *ctext);
 std::vector<ulong_t>
@@ -34,5 +42,7 @@ double
     indexOfCoincidence(std::array<ulong_t, 26> letterCounts, ulong_t textLength);
 double getKeylengthFriedman
     (std::array<ulong_t, 26> letterCounts, ulong_t textLength);
+std::array<ulong_t, 26>
+    getLetterCounts(std::vector<char> *text, ulong_t beginAt, ulong_t skip);
 
 #endif /* KRY_HPP */
