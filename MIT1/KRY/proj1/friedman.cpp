@@ -4,6 +4,9 @@
  */
 #include "kry.hpp"
 
+// TODO try out the friedman method outlined in the lectures
+//      instead of the wikipedia method - may give better results
+
 #define ASCII_A 65
 #define Kp 0.067 // monocase english, as per https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher#Friedman_test
 #define Kr 0.0385 // from same wiki as above

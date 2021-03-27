@@ -88,6 +88,12 @@ std::vector<ulong_t> getDistances(std::vector<char> *ctext)
 	std::vector<ulong_t> distances;
 
 	const int endIdx = ctext->size() - 3;
+
+	// TODO investigate whether it would be possible to increment
+	//		the iterator by 3 instead of 1 after each cycle.
+	// RATIONALE:
+	// The i+=3 speeds up the loop and should not(?) introduce any
+	// (significant) statistical error, as it just skips
 	for (int i = 0; i <= endIdx; i++) {
 		char c1 = (*ctext)[i];
 		char c2 = (*ctext)[i+1];
