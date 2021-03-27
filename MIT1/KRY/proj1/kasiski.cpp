@@ -80,7 +80,7 @@ factorizeNaive(ulong_t num)
 /**
  * Returns the distances between all repeating trigrams.
  *
- * @param *ctext the input ciphertext.
+ * @param ctext the input ciphertext.
  * @returns a vector of distances between repeating trigrams.
  */
 std::vector<ulong_t> getDistances(std::vector<char> *ctext)
