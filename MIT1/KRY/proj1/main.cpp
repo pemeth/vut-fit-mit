@@ -26,29 +26,25 @@ int main(int argc, char *argv[]) {
 
 	quickSortTuplesBySnd(&factorTuples, 0, factorTuples.size() - 1);
 
-	ulong_t keylengthKasinski = getLastRisingKeylength(&factorTuples);
+	ulong_t keylengthKasinski = std::get<FST>(factorTuples.at(0));
+
+	ulong_t keylengthCustom = getLastRisingKeylength(&factorTuples);
 
 	std::array<ulong_t,26> letterCounts = getLetterCounts(&ctext);
 
-	for (ulong_t i = 0; i < letterCounts.size(); i++) {
-		std::cerr << (char) (i + 65) << ':' << letterCounts[i] << '|';
-	}
-	std::cerr << '\n';
-
-	std::cerr << keylengthKasinski << '\n';
-
 	double keylengthFriedman = getKeylengthFriedman(letterCounts, ctext.size());
 
-	std::cerr << keylengthFriedman << '\n';
+	std::cout << keylengthFriedman << ';' << keylengthKasinski << ';' <<
+				keylengthCustom << ';';
 
 	// Find and print key
-	// TODO for now I just use the kasiski length, but a better guess needs to be
-	//		implemented
-	std::vector<char> key = findKey(&ctext, keylengthKasinski);
+	// TODO for now I just use the length based on Kasiski, but a better guess
+	//		needs to be implemented
+	std::vector<char> key = findKey(&ctext, keylengthCustom);
 	for (ulong_t i = 0; i < key.size(); i++) {
-		std::cerr << key[i];
+		std::cout << key[i];
 	}
-	std::cerr << '\n';
+	std::cout << '\n';
 
 	return 0;
 }
