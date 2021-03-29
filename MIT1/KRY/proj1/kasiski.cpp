@@ -5,95 +5,71 @@
 #include "kry.hpp"
 
 /**
- * Calculate the number of times values of vector `distances` factor into specific
- * values and return them as a vector of tuples. Factors of 1 are ignored.
- * Example: if `distances` is [2,4,6], then [(2,3),(4,1),(3,1),(6,1)]) is returned.
+ * Returns the best guess of the keylength for ciphertext `ctext`
+ * based on the Kasiski test.
  *
- * @param distances is an array of distances, which are to be facotred.
- * @returns a vector of tuples, where the tuples contain the factors and their
- * respective counts (in this order).
+ * @param ctext is a pointer to the input ciphertext.
+ * @return a guess of the keylength based on the Kasiski test.
  */
-std::vector<std::tuple<ulong_t, ulong_t> >
-getFactorCounts(std::vector<ulong_t> distances)
+ulong_t
+kasiski(std::vector<char> *ctext)
 {
-	std::vector<std::tuple<ulong_t, ulong_t> > factorCounts;
-	std::vector<ulong_t> factors;
+	std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > > trigDists;
+	trigDists = trigramDistances(ctext);
 
-	for (ulong_t i = 0; i < distances.size(); i++) {
-		factors = factorizeNaive(distances[i]);
+	// Find the most occurrent trigram
+	ulong_t idx = 0;
+	ulong_t prevSize = std::get<SND>(trigDists[idx]).size();
+	for (ulong_t i = 1; i < trigDists.size(); i++) {
+		if (std::get<SND>(trigDists[i]).size() > prevSize) {
+			idx = i;
+			prevSize = std::get<SND>(trigDists[i]).size();
+		}
+	}
 
-		for (ulong_t j = 0; j < factors.size(); j++) {
-			ulong_t currFactor = factors[j];
-			int tmp = isFactorInVector(currFactor, factorCounts);
-
-			if (tmp >= 0) {
-				std::get<SND>(factorCounts[tmp]) += 1;
-			} else {
-				factorCounts.push_back(std::make_tuple(currFactor, 1));
+	// Find the greatest common divisors for every combination of distances
+	// for the most occurrent trigram.
+	std::vector<ulong_t> gcds, commonest;
+	commonest = std::get<SND>(trigDists[idx]); // Trigram with the highest occurrence.
+	for (ulong_t i = 0; i < commonest.size(); i++) {
+		ulong_t curr = commonest[i];
+		for (ulong_t j = i+1; j < commonest.size(); j++) {
+			ulong_t gcd = std::gcd(curr, commonest[j]);
+			if (gcd > 1) { // don't count 1s
+				gcds.push_back(gcd);
 			}
 		}
 	}
 
-	return factorCounts;
+	// Count the number of occurrences of individual greatest common divisors.
+	std::vector<std::tuple<ulong_t, ulong_t> > countedGcds;
+	countedGcds = countsOfOccurrence(&gcds);
+
+	// Sort by number of occurrences and return the most occurrent one.
+	quickSortTuplesBySnd(&countedGcds, 0, countedGcds.size()-1);
+	return std::get<FST>(countedGcds[0]);
 }
 
 /**
- * Check if a `factor` is in a vector of (factor,count) tuples.
+ * Returns a vector of tuples, such that each tuple consists of a 3 element array
+ * of chars (the trigram) and an array of unsigned integers denoting individual
+ * distances between all occurrences of the given trigram. Basically creates a sort
+ * of associative array, where the key is a trigram (will always be unique) and
+ * the value is an array of distances.
+ * I.e. the input FOOBARFOOHMMBAR would return [("FOO",[6]), ("BAR",[9])]
  *
- * @param factor is the factor to be checked.
- * @param vect is the vector of (factor,count) tuples.
- * @returns the index at which the (factor,count) tuple was found
- * or the value -1 if no such tuple was found.
+ * @param ctext is a pointer to the input ciphertext
+ * @returns an associative array of trigrams and distances between them in the
+ * input ciphertext
  */
-int
-isFactorInVector(ulong_t factor, std::vector<std::tuple<ulong_t, ulong_t> > vect)
+std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > >
+trigramDistances(std::vector<char> *ctext)
 {
-	for (ulong_t i = 0; i < vect.size(); i++) {
-		if (std::get<FST>(vect[i]) == factor) {
-			return i;
-		}
-	}
-
-	return -1;
-}
-
-/**
- * Uses a naive algorithm to facotrize `num`.
- *
- * @param num the number to be factorized.
- * @returns a vector of factors of `num`.
- */
-std::vector<ulong_t>
-factorizeNaive(ulong_t num)
-{
-	std::vector<ulong_t> factors;
-
-	for (ulong_t i = 2; i <= num; i++) {
-		if ( num % i == 0 ) {
-			factors.push_back(i);
-		}
-	}
-
-	return factors;
-}
-
-/**
- * Returns the distances between all repeating trigrams.
- *
- * @param ctext the input ciphertext.
- * @returns a vector of distances between repeating trigrams.
- */
-std::vector<ulong_t> getDistances(std::vector<char> *ctext)
-{
-	std::vector<ulong_t> distances;
+	std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > >
+		trigramDistances;
 
 	const int endIdx = ctext->size() - 3;
 
-	// TODO investigate whether it would be possible to increment
-	//		the iterator by 3 instead of 1 after each cycle.
-	// RATIONALE:
-	// The i+=3 speeds up the loop and should not(?) introduce any
-	// (significant) statistical error, as it just skips
 	for (int i = 0; i <= endIdx; i++) {
 		char c1 = (*ctext)[i];
 		char c2 = (*ctext)[i+1];
@@ -104,46 +80,42 @@ std::vector<ulong_t> getDistances(std::vector<char> *ctext)
 			char c22 = (*ctext)[j+1];
 			char c33 = (*ctext)[j+2];
 			if (c1 == c11 && c2 == c22 && c3 == c33) {
-				distances.push_back(j - i);
+				std::array<char, 3> tmp = {c1,c2,c3};
+				addDistance(&trigramDistances, (j - i), tmp);
 			}
 		}
 	}
 
-	return distances;
+	return trigramDistances;
 }
 
 /**
- * A naive selector of the correct keylength. Selects the last rising keylength
- * in a list of keylengths sorted by number of occurrences
- * (i.e. in [2,3,4,8,5] selects 8).
+ * Acts as the logic behind making an associative array of tuples with unique keys.
+ * If `trigram` occurs in `vect`, then just append `distance` to the array
+ * of distances of that trigram. Otherwise create a new (trigram,distances) tuple
+ * in `vect`.
  *
- * The rationale behind this is that the correct keylength's factors have at least
- * the same number of occurrences as the correct keylength itself. It is also likely,
- * that the correct keylength is rather a longer one than a shorter one. Therefore
- * it should be likely, if a keylength's factors have the same or higher number
- * of occurence (possibly always true, so it is not checked here) and the next
- * keylength in the sorted list is a smaller number, that we have found the correct
- * keylength. (The next smaller number in the list will be a factor of a larger
- * keylength further down the list, but the current is the earliest largest such
- * keylength).
- *
- * @param factors are the sorted(!) factors returned by `getFactorCounts`.
- * @returns the (hopefully) correct keylength.
+ * @param vect a pointer to a vector of tuples like the ones returned by `trigramDistances`.
+ * @param distance the distance to be appended for the `trigram`.
+ * @param trigram the trigram, which acts as the key in the associative array.
  */
-ulong_t
-getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors)
+void
+addDistance(
+	std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > > *vect,
+	ulong_t distance,
+	std::array<char, 3> trigram)
 {
-	// Bounds check
-	if (factors->size() < 1) {
-		return 0;
-	}
-
-	for (ulong_t i = 0; i < factors->size() - 1; i++) {
-		if ( std::get<FST>((*factors)[i]) > std::get<FST>((*factors)[i+1]) ) {
-			return std::get<FST>((*factors)[i]);
+	// Check if the given trigram is already in the vector of tuples, and if it is,
+	// add the requested distance.
+	for (ulong_t i = 0; i < vect->size(); i++) {
+		if (std::get<FST>((*vect)[i]) == trigram) {
+			std::get<SND>((*vect)[i]).push_back(distance);
+			return;
 		}
 	}
 
-	// Return last value
-	return std::get<FST>((*factors)[factors->size() - 1]);
+	// This trigram has not yet been encountered, create a new tuple.
+	std::vector<ulong_t> tmp;
+	tmp.push_back(distance);
+	vect->push_back(std::make_tuple(trigram, tmp));
 }

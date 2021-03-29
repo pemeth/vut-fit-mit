@@ -6,6 +6,7 @@
 #include <vector>
 #include <array>
 #include <tuple>
+#include <numeric>
 
 #define FST 0
 #define SND 1
@@ -21,16 +22,15 @@ std::vector<char>
 	findKey(std::vector<char> *ctext, ulong_t keylength);
 
 // kasiski.cpp
-std::vector<ulong_t>
-	getDistances(std::vector<char> *ctext);
-std::vector<ulong_t>
-	factorizeNaive(ulong_t num);
-std::vector<std::tuple<ulong_t, ulong_t> >
-	getFactorCounts(std::vector<ulong_t> distances);
-int
-	isFactorInVector (ulong_t factor, std::vector<std::tuple<ulong_t, ulong_t> > vect);
 ulong_t
-	getLastRisingKeylength(std::vector<std::tuple<ulong_t, ulong_t> > *factors);
+	kasiski(std::vector<char> *ctext);
+std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > >
+	trigramDistances(std::vector<char> *ctext);
+void
+	addDistance(
+		std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > > *vect,
+		ulong_t distance,
+		std::array<char, 3> trigram);
 
 // friedman.cpp
 double
@@ -49,5 +49,9 @@ int
 	partition(std::vector<std::tuple<ulong_t, ulong_t> > *vect, int left, int right);
 void
 	quickSortTuplesBySnd(std::vector<std::tuple<ulong_t, ulong_t> > *vect, int left, int right);
+std::vector<std::tuple<ulong_t, ulong_t> >
+	countsOfOccurrence(std::vector<ulong_t> *input);
+ulong_t
+	idxOfOccurrence(std::vector<std::tuple<ulong_t, ulong_t> > *input, ulong_t item, bool *found);
 
 #endif /* KRY_HPP */

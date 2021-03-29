@@ -20,15 +20,12 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	std::vector<ulong_t> distances = getDistances(&ctext);
-	std::vector<std::tuple<ulong_t, ulong_t> > factorTuples =
-		getFactorCounts(distances);
+	ulong_t keylengthKasinski = kasiski(&ctext);
 
-	quickSortTuplesBySnd(&factorTuples, 0, factorTuples.size() - 1);
-
-	ulong_t keylengthKasinski = std::get<FST>(factorTuples.at(0));
-
-	ulong_t keylengthCustom = getLastRisingKeylength(&factorTuples);
+	// TODO change this to a better guess on longer passwords, as this starts
+	//		to fail considerably above around 80 letters...
+	//		IF I figure out how to make the guess better
+	ulong_t keylengthCustom = keylengthKasinski;
 
 	std::array<ulong_t,26> letterCounts = getLetterCounts(&ctext);
 

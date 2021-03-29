@@ -1,7 +1,7 @@
 CC := g++
 SRC := main
 NAME := kry
-FLAGS := -Wall -Werror
+FLAGS := -Wall -Werror -std=c++17
 
 .PHONY: build clean
 

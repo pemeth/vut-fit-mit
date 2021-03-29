@@ -66,3 +66,56 @@ void swap
 	(*vect)[idx1] = (*vect)[idx2];
 	(*vect)[idx2] = tmp;
 }
+
+/**
+ * Counts the number of occurrences of each item of `input`.
+ * Returns a vector of tuple in the form of (item,count), where the item
+ * is an item of `input` and count is the number of times it has occurred
+ * in `input`. Every item in the resulting vector is unique.
+ *
+ * @param input pointer to vector for which items should be counted.
+ * @returns a vector of tuples in the form of (item,count).
+ */
+std::vector<std::tuple<ulong_t, ulong_t> >
+countsOfOccurrence(std::vector<ulong_t> *input)
+{
+	std::vector<std::tuple<ulong_t, ulong_t> > counts;
+
+	for (ulong_t i = 0; i < input->size(); i++) {
+		ulong_t current = (*input)[i];
+		bool found;
+		ulong_t idx = idxOfOccurrence(&counts, current, &found);
+		if (found) {
+			std::get<SND>(counts[idx]) += 1;
+		} else {
+			counts.push_back(std::make_tuple(current, 1));
+		}
+	}
+
+	return counts;
+}
+
+/**
+ * Checks if `item` is in a vector of tuples, where the `item`
+ * is checked against the FIRST element in the tuples. If the `item`
+ * occurs in the vector of tuples, then the index of the tuple is
+ * returned and the the bool pointer variable set to true. Otherwise
+ * it is set to false and 0 is returned.
+ *
+ * @param input is the input vector of tuples.
+ * @param item the item to be found.
+ * @returns the index at which the item was found and `true` set into
+ * the variable ponted to by `*found` (`false` set otherwise).
+ */
+ulong_t
+idxOfOccurrence(std::vector<std::tuple<ulong_t, ulong_t> > *input, ulong_t item, bool *found)
+{
+	*found = false;
+	for (ulong_t i = 0; i < input->size(); i++) {
+		if (std::get<FST>((*input)[i]) == item) {
+			*found = true;
+			return i;
+		}
+	}
+	return 0;
+}
