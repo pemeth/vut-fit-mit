@@ -1,8 +1,15 @@
-# .txt files are files containing ciphertext or other miscellaneous data
+# .txt files are files containing plaintext
+# .ctxt files are files containing ciphertext
 *.txt
+*.ctxt
 
 # this file is used for output dumping in general
 output
+
+# compilation output
+kry
+*.o
+*.hpp.gch
 
 # local workspace vscode settings
 .vscode
