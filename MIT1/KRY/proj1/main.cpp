@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
 	// Find and print key
 	std::vector<char> key = findKey(&ctext, keylengthCustom);
 	for (ulong_t i = 0; i < key.size(); i++) {
-		std::cout << key[i];
+		std::cout << (char) tolower(key[i]);
 	}
 	std::cout << '\n';
 
