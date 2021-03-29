@@ -35,8 +35,6 @@ int main(int argc, char *argv[]) {
 				keylengthCustom << ';';
 
 	// Find and print key
-	// TODO for now I just use the length based on Kasiski, but a better guess
-	//		needs to be implemented
 	std::vector<char> key = findKey(&ctext, keylengthCustom);
 	for (ulong_t i = 0; i < key.size(); i++) {
 		std::cout << key[i];
