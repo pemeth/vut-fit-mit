@@ -81,7 +81,7 @@ trigramDistances(std::vector<char> *ctext)
 			char c33 = (*ctext)[j+2];
 			if (c1 == c11 && c2 == c22 && c3 == c33) {
 				std::array<char, 3> tmp = {c1,c2,c3};
-				addDistance(&trigramDistances, (j - i), tmp);
+				addDistance(&trigramDistances, (j - i), &tmp);
 			}
 		}
 	}
@@ -103,12 +103,12 @@ void
 addDistance(
 	std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > > *vect,
 	ulong_t distance,
-	std::array<char, 3> trigram)
+	std::array<char, 3> *trigram)
 {
 	// Check if the given trigram is already in the vector of tuples, and if it is,
 	// add the requested distance.
 	for (ulong_t i = 0; i < vect->size(); i++) {
-		if (std::get<FST>((*vect)[i]) == trigram) {
+		if (std::get<FST>((*vect)[i]) == *trigram) {
 			std::get<SND>((*vect)[i]).push_back(distance);
 			return;
 		}
@@ -117,5 +117,5 @@ addDistance(
 	// This trigram has not yet been encountered, create a new tuple.
 	std::vector<ulong_t> tmp;
 	tmp.push_back(distance);
-	vect->push_back(std::make_tuple(trigram, tmp));
+	vect->push_back(std::make_tuple(*trigram, tmp));
 }

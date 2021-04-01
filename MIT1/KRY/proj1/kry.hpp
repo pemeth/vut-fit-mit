@@ -34,11 +34,11 @@ void
 	addDistance(
 		std::vector<std::tuple<std::array<char,3>, std::vector<ulong_t> > > *vect,
 		ulong_t distance,
-		std::array<char, 3> trigram);
+		std::array<char, 3> *trigram);
 
 // friedman.cpp
 double
-	getKeylengthFriedman(std::array<ulong_t, 26> letterCounts, ulong_t textLength);
+	getKeylengthFriedman(std::array<ulong_t, 26> *letterCounts, ulong_t textLength);
 std::array<ulong_t, 26>
 	getLetterCounts(std::vector<char> *ctext);
 std::array<ulong_t, 26>

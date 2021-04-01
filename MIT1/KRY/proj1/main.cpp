@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
 	std::array<ulong_t,26> letterCounts = getLetterCounts(&ctext);
 
-	double keylengthFriedman = getKeylengthFriedman(letterCounts, ctext.size());
+	double keylengthFriedman = getKeylengthFriedman(&letterCounts, ctext.size());
 
 	std::cout << keylengthFriedman << ';' << keylengthKasinski << ';' <<
 				keylengthCustom << ';';

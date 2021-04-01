@@ -17,9 +17,9 @@
  * @returns the estimated keylength.
  */
 double getKeylengthFriedman
-(std::array<ulong_t, 26> letterCounts, ulong_t textLength)
+(std::array<ulong_t, 26> *letterCounts, ulong_t textLength)
 {
-    double IC = calcIC(&letterCounts, textLength);
+    double IC = calcIC(letterCounts, textLength);
 
     return (Kp - Kr) / (IC - Kr);
 }
