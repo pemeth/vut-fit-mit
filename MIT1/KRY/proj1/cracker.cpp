@@ -7,6 +7,71 @@
 #include "kry.hpp"
 
 #define TARGET_MG 0.065
+#define TARGET_IC 0.065
+
+/**
+ * Calculates the index of coincidence value based on an input text's letter counts
+ * and it's length. Used for guessing keyword length.
+ *
+ * @param letterCounts a pointer to an array containing the counts of letters
+ * in the input text, where each position in the array corresponds to a position
+ * of letters in the english alphabet (i.e. letterCounts[0] corresponds to 'A').
+ * @param textLength is the length of the text, from which the letter counts were
+ * acquired.
+ * @returns the calculated index of coincidence.
+ */
+double calcIC(std::array<ulong_t, 26> *letterCounts, ulong_t textLength)
+{
+	double IC = 0;
+	for (ulong_t i = 0; i < letterCounts->size(); i++) {
+		ulong_t curr = (*letterCounts)[i];
+		IC += (curr * (curr - 1));
+	}
+
+	return IC / ((textLength * (textLength - 1)));
+}
+
+/**
+ * Guesses the keylength of an input ciphertext `ctext` based on the method of
+ * index of coincidence.
+ *
+ * @param ctext is a pointer to the input ciphertext.
+ * @returns the found keylength.
+ */
+ ulong_t ICkeylength(std::vector<char> *ctext)
+ {
+	std::array<ulong_t, 26> letterCounts;
+	double IC = 0;
+	double bestICdist;
+	ulong_t keylen = 2;
+
+	// Initialize the best distance with IC for keylength 2
+	// as checking for 1 is unnecessary.
+	for (int j = 0; j < 2; j++) {
+		letterCounts = getLetterCounts(ctext, j, 2);
+		IC += calcIC(&letterCounts, ctext->size() / 2);
+	}
+	bestICdist = IC / 2;
+
+	// Try keylengths 3..150 and update the best if new best is found.
+	for (ulong_t i = 3; i <= 150; i++) {
+		IC = 0;
+		ulong_t j = 0;
+		for (; j < i; j++) {
+			letterCounts = getLetterCounts(ctext, j, i);
+			IC += calcIC(&letterCounts, ctext->size() / i);
+		}
+
+		double currICdist = std::abs((IC / j) - TARGET_IC);
+
+		if (currICdist < bestICdist) {
+			bestICdist = currICdist;
+			keylen = i;
+		}
+	}
+
+	return keylen;
+ }
 
 /**
  * Calculates an Mg value for a (possibly) shifted alphabed based on counts

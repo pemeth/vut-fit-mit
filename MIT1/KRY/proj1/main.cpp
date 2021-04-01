@@ -22,10 +22,10 @@ int main(int argc, char *argv[]) {
 
 	ulong_t keylengthKasinski = kasiski(&ctext);
 
-	// TODO change this to a better guess on longer passwords, as this starts
-	//		to fail considerably above around 80 letters...
-	//		IF I figure out how to make the guess better
-	ulong_t keylengthCustom = keylengthKasinski;
+	// TODO This method likes to find a higher multiple of the correct keylength.
+	//		That is not a massive issue, but it does reduce the sample pool
+	//		of letters for frequency analysis used to find the letters of the key.
+	ulong_t keylengthCustom = ICkeylength(&ctext);
 
 	std::array<ulong_t,26> letterCounts = getLetterCounts(&ctext);
 

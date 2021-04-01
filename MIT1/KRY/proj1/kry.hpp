@@ -20,6 +20,10 @@ int
 	guessShift(const std::array<double, 26> *realFreqs, std::array<ulong_t, 26> *ctextFreqs, ulong_t colLength);
 std::vector<char>
 	findKey(std::vector<char> *ctext, ulong_t keylength);
+double
+	calcIC(std::array<ulong_t, 26> *letterCounts, ulong_t textLength);
+ulong_t
+	ICkeylength(std::vector<char> *ctext);
 
 // kasiski.cpp
 ulong_t
