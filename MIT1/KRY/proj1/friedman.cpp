@@ -19,30 +19,9 @@
 double getKeylengthFriedman
 (std::array<ulong_t, 26> letterCounts, ulong_t textLength)
 {
-    double IC = indexOfCoincidence(letterCounts, textLength);
+    double IC = calcIC(&letterCounts, textLength);
 
     return (Kp - Kr) / (IC - Kr);
-}
-
-/**
- * Calculate the index of coincidence for the Friedman test.
- *
- * @param letterCounts should be the result of `getLetterCounts`.
- * @param textLength is the length of the text, from which the letter
- * counts were extracted.
- * @returns the index of coincidence.
- */
-double indexOfCoincidence
-(std::array<ulong_t, 26> letterCounts, ulong_t textLength)
-{
-    double result = 0;
-
-    for (ulong_t i = 0; i < letterCounts.size(); i++) {
-        double tmp = letterCounts[i] * (letterCounts[i] - 1);
-        result += tmp;
-    }
-
-    return result / (textLength * (textLength - 1));
 }
 
 /**

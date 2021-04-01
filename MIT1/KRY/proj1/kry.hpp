@@ -38,8 +38,6 @@ void
 
 // friedman.cpp
 double
-	indexOfCoincidence(std::array<ulong_t, 26> letterCounts, ulong_t textLength);
-double
 	getKeylengthFriedman(std::array<ulong_t, 26> letterCounts, ulong_t textLength);
 std::array<ulong_t, 26>
 	getLetterCounts(std::vector<char> *ctext);
