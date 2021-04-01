@@ -38,7 +38,7 @@ void
 
 // friedman.cpp
 double
-	getKeylengthFriedman(std::array<ulong_t, 26> *letterCounts, ulong_t textLength);
+	friedman(std::vector<char> *ctext);
 std::array<ulong_t, 26>
 	getLetterCounts(std::vector<char> *ctext);
 std::array<ulong_t, 26>

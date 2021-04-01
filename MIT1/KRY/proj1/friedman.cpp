@@ -16,10 +16,12 @@
  * counts were extracted.
  * @returns the estimated keylength.
  */
-double getKeylengthFriedman
-(std::array<ulong_t, 26> *letterCounts, ulong_t textLength)
+double friedman
+(std::vector<char> *ctext)
 {
-    double IC = calcIC(letterCounts, textLength);
+    std::array<ulong_t,26> letterCounts = getLetterCounts(ctext);
+
+    double IC = calcIC(&letterCounts, ctext->size());
 
     return (Kp - Kr) / (IC - Kr);
 }

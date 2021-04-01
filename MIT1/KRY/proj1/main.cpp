@@ -27,9 +27,7 @@ int main(int argc, char *argv[]) {
 	//		of letters for frequency analysis used to find the letters of the key.
 	ulong_t keylengthCustom = ICkeylength(&ctext);
 
-	std::array<ulong_t,26> letterCounts = getLetterCounts(&ctext);
-
-	double keylengthFriedman = getKeylengthFriedman(&letterCounts, ctext.size());
+	double keylengthFriedman = friedman(&ctext);
 
 	std::cout << keylengthFriedman << ';' << keylengthKasinski << ';' <<
 				keylengthCustom << ';';
