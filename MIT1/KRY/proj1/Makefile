@@ -3,7 +3,7 @@ SRC := main
 NAME := kry
 FLAGS := -Wall -Werror -std=c++17
 
-.PHONY: build clean
+.PHONY: build clean pack
 
 all: build
 
@@ -24,6 +24,9 @@ friedman.o: friedman.cpp kry.hpp
 
 cracker.o: cracker.cpp kry.hpp
 	$(CC) $(FLAGS) -c $^
+
+pack:
+	zip xnemet04.zip *.cpp *.hpp Makefile doc.pdf
 
 clean:
 	rm -f main.o kasiski.o friedman.o lib.o cracker.o kry.hpp.gch kry
