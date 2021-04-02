@@ -42,31 +42,25 @@ double calcIC(std::array<ulong_t, 26> *letterCounts, ulong_t textLength)
  {
 	std::array<ulong_t, 26> letterCounts;
 	double IC = 0;
-	double bestICdist;
-	ulong_t keylen = 2;
+	ulong_t keylen = 2; // Fallback keylength
 
-	// Initialize the best distance with IC for keylength 2
-	// as checking for 1 is unnecessary.
-	for (int j = 0; j < 2; j++) {
-		letterCounts = getLetterCounts(ctext, j, 2);
-		IC += calcIC(&letterCounts, ctext->size() / 2);
-	}
-	bestICdist = IC / 2;
-
-	// Try keylengths 3..150 and update the best if new best is found.
-	for (ulong_t i = 3; i <= 150; i++) {
+	// Try keylengths 2..150 and return the first one with IC close enough to 0.065
+	for (ulong_t i = 2; i <= 150; i++) {
 		IC = 0;
 		ulong_t j = 0;
 		for (; j < i; j++) {
 			letterCounts = getLetterCounts(ctext, j, i);
 			IC += calcIC(&letterCounts, ctext->size() / i);
 		}
+		IC = IC / j;
 
-		double currICdist = std::abs((IC / j) - TARGET_IC);
-
-		if (currICdist < bestICdist) {
-			bestICdist = currICdist;
-			keylen = i;
+		// Return the first good match of the index of coincidence.
+		//	The reason why I don't return the absolute closest value to 0.065
+		//	is because, seemingly, multiples of the correct keylength tend to
+		//	have values closer to 0.065. So I just grab the first,
+		//	that is close enough - works very well.
+		if (0.062 < IC && IC < 0.073) {
+			return i;
 		}
 	}
 
