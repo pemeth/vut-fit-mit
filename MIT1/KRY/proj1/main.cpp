@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	ulong_t keylengthKasinski = kasiski(&ctext);
+	ulong_t keylengthKasiski = kasiski(&ctext);
 
 	// TODO This method likes to find a higher multiple of the correct keylength.
 	//		That is not a massive issue, but it does reduce the sample pool
@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
 	double keylengthFriedman = friedman(&ctext);
 
-	std::cout << keylengthFriedman << ';' << keylengthKasinski << ';' <<
+	std::cout << keylengthFriedman << ';' << keylengthKasiski << ';' <<
 				keylengthCustom << ';';
 
 	// Find and print key
