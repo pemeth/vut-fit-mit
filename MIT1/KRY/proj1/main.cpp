@@ -22,10 +22,6 @@ int main(int argc, char *argv[]) {
 
 	double keylengthFriedman = friedman(&ctext);
 	ulong_t keylengthKasiski = kasiski(&ctext);
-
-	// TODO This method likes to find a higher multiple of the correct keylength.
-	//		That is not a massive issue, but it does reduce the sample pool
-	//		of letters for frequency analysis used to find the letters of the key.
 	ulong_t keylengthCustom = ICkeylength(&ctext);
 
 	std::cout << keylengthFriedman << ';' << keylengthKasiski << ';' <<
