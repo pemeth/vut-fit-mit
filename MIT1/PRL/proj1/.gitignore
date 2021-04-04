@@ -1,0 +1,5 @@
+# VSCode local config
+.vscode
+
+# MPI compilation output file
+*.out
