@@ -1,7 +1,7 @@
 CC := g++
 SRC := main
 NAME := kry
-FLAGS := -Wall -Werror -std=c++17
+FLAGS := -Wall -Werror -O1 -std=c++17
 
 .PHONY: build clean pack
 
