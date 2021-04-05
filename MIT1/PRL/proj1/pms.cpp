@@ -53,8 +53,17 @@ void receive(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int
             recv_top = 0; // reset
         }
     } else if (rank == 4) {
-        // last processor contains the sorted sequence in `top`
-        top->push_back(val);
+        if (recv_top < 8) {
+            top->push_back(val);
+        } else {
+            bot->push_back(val);
+        }
+
+        recv_top++;
+
+        if (recv_top == 16) {
+            recv_top = 0; // reset
+        }
     }
 }
 
