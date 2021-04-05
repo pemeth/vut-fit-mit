@@ -14,6 +14,8 @@ void receive(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int
     // Receive from previous rank
     MPI_Recv(&val, 1, MPI_CHAR, rank-1, PASS_TAG, MPI_COMM_WORLD, &status);
 
+    // TODO: generalize this - the ammount of values per queue is governed by the
+    //       current rank, so there shouldn't be a need for this many if/elses.
     // This controls into which queue the received value will go. Each rank has
     // its own behaviour.
     // Rank 0 has completely separate behaviour, so it is not handled in this
