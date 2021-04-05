@@ -10,9 +10,14 @@ void receive(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int
     static int recv_top = 0;
     unsigned char val;
     MPI_Status status;
-    MPI_Recv(&val, 1, MPI_CHAR, 0, PASS_TAG, MPI_COMM_WORLD, &status);
 
-    // Rank 0 has separate behaviour, so it is not handled in this if/else construct
+    // Receive from previous rank
+    MPI_Recv(&val, 1, MPI_CHAR, rank-1, PASS_TAG, MPI_COMM_WORLD, &status);
+
+    // This controls into which queue the received value will go. Each rank has
+    // its own behaviour.
+    // Rank 0 has completely separate behaviour, so it is not handled in this
+    // if/else construct.
     if (rank == 1) {
         if (recv_top < 1) {
             top->push_back(val);
