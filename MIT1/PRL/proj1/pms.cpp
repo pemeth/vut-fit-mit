@@ -1,11 +1,11 @@
 #include <iostream>
-#include <vector>
+#include <deque>
 #include <mpi.h>
 
 #define VALUES_CNT 16
 #define PASS_TAG 1
 
-void receive(std::vector<unsigned char> *top, std::vector<unsigned char> *bot, int rank)
+void receive(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int rank)
 {
     static int recv_top = 0;
     unsigned char val;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         std::cout << '\n';
     }
 
-    std::vector<unsigned char> top, bot;
+    std::deque<unsigned char> top, bot;
     int finished = 0, recvr;
     int cnt = 0; // To be incremented after every MPI_Send()
     MPI_Status stat;
