@@ -313,7 +313,6 @@ int main(int argc, char *argv[])
         for (int i = 0; i < out.size(); i++) {
             printf("%u\n", out[i]);
         }
-        printf("\n");
     }
 
     MPI_Finalize();
