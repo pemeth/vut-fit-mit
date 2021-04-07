@@ -4,6 +4,10 @@
 
 #define VALUES_CNT 16
 #define TAG 1
+#define WAIT 1
+#define NO_WAIT 0
+#define TO_STDOUT 0
+#define TO_NEXT_RANK 1
 
 // TODO remove debug prints (stderr)
 
@@ -62,114 +66,53 @@ void receive(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int
 }
 
 /**
- * Merge funcction for the last process. Instead of sending the sorted value
- * to the next process, it is pushed to the `out` queue.
+ * Passes the front value of queue `from` to next rank or stdout,
+ * depending on value of `into`. Returns `WAIT` or `NO_WAIT` based on
+ * if the `from` queue is empty. `WAIT` implies that the caller should
+ * wait for a value to appear and call again.
  *
- * @param top pointer to the top inbound queue of this process.
- * @param bot pointer to the bottom inbound queue of this process.
- * @param out pointer to the outbound queue of this process - contains the sorted values.
- * @param rank the rank of the current process - MUST be last in MPI_COMM_WORLD.
- * @param cnt pointer to a counter variable, which is incremented after each value sorted.
+ * @param from a pointer to a queue, from which the front value should be passed.
+ * @param rank the rank of the current process.
+ * @param into value of TO_NEXT_RANK or TO_STDOUT, which picks the destination
+ *  of the passed value.
+ * @returns `WAIT` if the `from` queue is empty, `NO_WAIT` on success.
  */
-void merge(
-    std::deque<unsigned char> *top,
-    std::deque<unsigned char> *bot,
-    std::deque<unsigned char> *out,
-    int rank,
-    int *cnt)
+int pass_through(std::deque<unsigned char> *from, int rank, int into)
 {
-    static unsigned int from_top = 0, from_bot = 0;
-    static bool let_me_through = false;
+    if (from->empty())
+        return WAIT; //active waiting
 
-    if ((pow(2, top->size()-1) >= pow(2, rank-1) && bot->size() >= 1) || let_me_through) {
-        let_me_through = true;
-        unsigned char tmp = 0;
+    unsigned char tmp = 0;
+    tmp = from->front();
 
-        if (from_top + from_bot >= (2 * pow(2, rank-1)) - 1) {
-            // Last value - take it from whichever queue is non-empty.
-            if (from_top < from_bot) {
-                if (top->empty())
-                    return; //active waiting
-                tmp = top->front();
-                out->push_back(tmp);
-                fprintf(stderr, "SORTED: %u\n", tmp);
-                if (!top->empty())
-                    top->pop_front();
-            } else {
-                if (bot->empty())
-                    return; //active waiting
-                tmp = bot->front();
-                out->push_back(tmp);
-                fprintf(stderr, "SORTED: %u\n", tmp);
-                if (!bot->empty())
-                    bot->pop_front();
-            }
-            (*cnt)++;
-            return;
-        }
-
-        if (from_top == pow(2, rank-1) || from_bot == pow(2, rank-1)) {
-            if (from_top == pow(2, rank-1)) {
-                // Bot remains
-                if (bot->empty())
-                    return; //active waiting
-                tmp = bot->front();
-                out->push_back(tmp);
-                fprintf(stderr, "SORTED: %u\n", tmp);
-                from_bot++;
-                if (!bot->empty())
-                    bot->pop_front();
-            } else if (from_bot == pow(2, rank-1)) {
-                // Top remains
-                if (top->empty())
-                    return; //active waiting
-                tmp = top->front();
-                out->push_back(tmp);
-                fprintf(stderr, "SORTED: %u\n", tmp);
-                from_top++;
-                if (!top->empty())
-                    top->pop_front();
-            }
-            (*cnt)++;
-            return;
-        }
-
-        if (top->empty() || bot->empty()) {
-            // A form of active waiting - nothing to compare right now.
-            return;
-        }
-
-        if (top->front() < bot->front()) {
-            tmp = top->front();
-            out->push_back(tmp);
-            fprintf(stderr, "SORTED: %u\n", tmp);
-            from_top++;
-            if (!top->empty());
-                top->pop_front();
-        } else {
-            tmp = bot->front();
-            out->push_back(tmp);
-            fprintf(stderr, "SORTED: %u\n", tmp);
-            from_bot++;
-            if (!bot->empty())
-                bot->pop_front();
-        }
-        (*cnt)++;
+    if (into == TO_NEXT_RANK) {
+        // Send to next process.
+        MPI_Send(&tmp, 1, MPI_UNSIGNED_CHAR, rank+1, TAG, MPI_COMM_WORLD);
+    } else {
+        // Final sorted merge - print it.
+        fprintf(stdout, "%u\n", tmp);
     }
+    from->pop_front();
 
+    return NO_WAIT;
 }
 
 /**
- * Merge function for processes 1...n-1, where n is the last one. The last process
- * has its own overloaded variant. This function manages the merge-sorting carried out
- * by the individual processes and sends the sorted value to the next process (rank+1).
+ * Merge function for the merging part of the pipeline-merge-sort.
+ * Processes 1...i-1, where i is the last one, must set the `into` argument
+ * to TO_NEXT_RANK. The last process must set the `into` argument to TO_STDOUT.
+ * This function manages the merge-sorting carried out by the individual
+ * processes and sends the sorted value to the next process (rank+1) or stdout.
  *
  * @param top pointer to the top inbound queue of this process.
  * @param bot pointer to the bottom inbound queue of this process.
  * @param rank the rank of the current process - MUST NOT be the last in MPI_COMM_WORLD.
  * @param cnt pointer to a counter variable, which is incremented after every value merged.
+ * @param into specifies where the merge should be targeted:
+ *  if TO_NEXT_RANK, then it is passed to process rank+1;
+ *  if TO_STDOUT, then the merged value is printed to stdout (used on last process).
  */
-void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int rank, int *cnt)
+void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int rank, int *cnt, int into)
 {
     // Keep track of how many values taken from each queue.
     static unsigned int from_top = 0, from_bot = 0;
@@ -177,7 +120,6 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
     static bool let_me_through = false;
 
     // TODO Figure out a way to pull out the entire function from this if block.
-    //      Same in the overloaded merge().
     if ((pow(2, top->size()-1) >= pow(2, rank-1) && bot->size() >= 1) || let_me_through) {
         let_me_through = true;
         unsigned char tmp = 0;
@@ -185,19 +127,15 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
         if (from_top + from_bot >= (2 * pow(2, rank-1)) - 1) {
             // Last value - take it from whichever queue is non-empty.
             if (from_top < from_bot) {
-                if (top->empty())
-                    return; //active waiting
-                tmp = top->front();
-                MPI_Send(&tmp, 1, MPI_UNSIGNED_CHAR, rank+1, TAG, MPI_COMM_WORLD);
-                if (!top->empty())
-                    top->pop_front();
+                if (pass_through(top, rank, into) == WAIT) {
+                    // wait for value
+                    return;
+                }
             } else {
-                if (bot->empty())
-                    return; //active waiting
-                tmp = bot->front();
-                MPI_Send(&tmp, 1, MPI_UNSIGNED_CHAR, rank+1, TAG, MPI_COMM_WORLD);
-                if (!bot->empty())
-                    bot->pop_front();
+                if (pass_through(bot, rank, into) == WAIT) {
+                    //wait for value
+                    return;
+                }
             }
             (*cnt)++;
             from_top = from_bot = 0;
@@ -208,26 +146,20 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
         if (from_top == pow(2, rank-1) || from_bot == pow(2, rank-1)) {
             // Maximum number of values has been taken from `top` or `bot` queue,
             //  so take from the other one.
-            // TODO Pop this below into a function, as this is 2x repeated
-            //      code (in overloaded merge).
             if (from_top == pow(2, rank-1)) {
                 // Bot remains
-                if (bot->empty())
-                    return; //active waiting
-                tmp = bot->front();
-                MPI_Send(&tmp, 1, MPI_UNSIGNED_CHAR, rank+1, TAG, MPI_COMM_WORLD);
+                if (pass_through(bot, rank, into) == WAIT) {
+                    //wait for value
+                    return;
+                }
                 from_bot++;
-                if (!bot->empty())
-                    bot->pop_front();
             } else if (from_bot == pow(2, rank-1)) {
                 // Top remains
-                if (top->empty())
-                    return; //active waiting
-                tmp = top->front();
-                MPI_Send(&tmp, 1, MPI_UNSIGNED_CHAR, rank+1, TAG, MPI_COMM_WORLD);
+                if (pass_through(top, rank, into) == WAIT) {
+                    //wait for value
+                    return;
+                }
                 from_top++;
-                if (!top->empty())
-                    top->pop_front();
             } else {
                 fprintf(stderr, "ERROR\n");
             }
@@ -243,17 +175,17 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
 
         // Take the smaller value.
         if (top->front() < bot->front()) {
-            tmp = top->front();
-            MPI_Send(&tmp, 1, MPI_UNSIGNED_CHAR, rank+1, TAG, MPI_COMM_WORLD);
+            if (pass_through(top, rank, into) == WAIT) {
+                //wait for value
+                return;
+            }
             from_top++;
-            if (!top->empty());
-                top->pop_front();
         } else {
-            tmp = bot->front();
-            MPI_Send(&tmp, 1, MPI_UNSIGNED_CHAR, rank+1, TAG, MPI_COMM_WORLD);
+            if (pass_through(bot, rank, into) == WAIT) {
+                //wait for value
+                return;
+            }
             from_bot++;
-            if (!bot->empty())
-                bot->pop_front();
         }
         (*cnt)++;
         //if (rank == 2) fprintf(stderr, "[C]merge %d frm_top: %d, frm_bot: %d, sent: %u\n", rank, from_top, from_bot, tmp);
@@ -292,11 +224,11 @@ int main(int argc, char *argv[])
         } else if (rank > 0 && rank < last_rank) {
             // The middle processes have identical behaviour only governed by rank.
             receive(&top, &bot, rank);
-            merge(&top, &bot, rank, &cnt);
+            merge(&top, &bot, rank, &cnt, TO_NEXT_RANK);
         } else {
             // The last process.
             receive(&top, &bot, rank);
-            merge(&top, &bot, &out, rank, &cnt);
+            merge(&top, &bot, rank, &cnt, TO_STDOUT);
         }
 
         for (int i = 0; i < 100000; i++) {} // TODO: possibly delete this delay?
@@ -304,14 +236,6 @@ int main(int argc, char *argv[])
         if (cnt >= VALUES_CNT) {
             // This process processed all 16 values and may exit.
             finished++;
-        }
-    }
-
-    //fprintf(stderr, "%d DONE\n", rank);
-
-    if (rank == last_rank) {
-        for (int i = 0; i < out.size(); i++) {
-            printf("%u\n", out[i]);
         }
     }
 
