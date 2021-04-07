@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
         printf("\n");
     }
 
-    std::deque<unsigned char> top, bot, out;
+    std::deque<unsigned char> top, bot;
     int finished = 0;
     int cnt = 0; // This is to be incremented after each value processed.
     while (!finished) {
