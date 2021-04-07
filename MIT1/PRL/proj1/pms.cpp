@@ -113,74 +113,80 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
     // A flag set to true after first opportunity for value comparison.
     static bool let_me_through = false;
 
-    // TODO Figure out a way to pull out the entire function from this if block.
-    if ((pow(2, top->size()-1) >= pow(2, rank-1) && bot->size() >= 1) || let_me_through) {
-        let_me_through = true;
-        unsigned char tmp = 0;
+    // This is just a convoluted way of saying, if you don't have enough values in top (2^rank-1)
+    // and at least one value in bottom before the first merge, then wait for more values.
+    // The let_me_through value is set to true after passing through this check and makes all
+    // subsequent calls to this function pass this check (this is the way the algorithm is defined).
+    if ( (pow(2, top->size()-1) >= pow(2, rank-1)) && (bot->size() >= 1) && (!let_me_through) ) {
+        // Insufficient number of values in the queues, wait for more.
+        return;
+    }
 
-        if (from_top + from_bot >= (2 * pow(2, rank-1)) - 1) {
-            // Last value - take it from whichever queue is non-empty.
-            if (from_top < from_bot) {
-                if (pass_through(top, rank, into) == WAIT) {
-                    // wait for value
-                    return;
-                }
-            } else {
-                if (pass_through(bot, rank, into) == WAIT) {
-                    //wait for value
-                    return;
-                }
+    let_me_through = true;
+    unsigned char tmp = 0;
+
+    if (from_top + from_bot >= (2 * pow(2, rank-1)) - 1) {
+        // Last value - take it from whichever queue is non-empty.
+        if (from_top < from_bot) {
+            if (pass_through(top, rank, into) == WAIT) {
+                // wait for value
+                return;
             }
-            (*cnt)++;
-            from_top = from_bot = 0;
-            return;
-        }
-
-        if (from_top == pow(2, rank-1) || from_bot == pow(2, rank-1)) {
-            // Maximum number of values has been taken from `top` or `bot` queue,
-            //  so take from the other one.
-            if (from_top == pow(2, rank-1)) {
-                // Bot remains
-                if (pass_through(bot, rank, into) == WAIT) {
-                    //wait for value
-                    return;
-                }
-                from_bot++;
-            } else if (from_bot == pow(2, rank-1)) {
-                // Top remains
-                if (pass_through(top, rank, into) == WAIT) {
-                    //wait for value
-                    return;
-                }
-                from_top++;
-            } else {
-                fprintf(stderr, "ERROR\n");
+        } else {
+            if (pass_through(bot, rank, into) == WAIT) {
+                //wait for value
+                return;
             }
-            (*cnt)++;
-            return;
         }
+        (*cnt)++;
+        from_top = from_bot = 0;
+        return;
+    }
 
-        if (top->empty() || bot->empty()) {
-            // A form of active waiting - nothing to compare right now.
-            return;
-        }
-
-        // Take the smaller value.
-        if (top->front() < bot->front()) {
+    if (from_top == pow(2, rank-1) || from_bot == pow(2, rank-1)) {
+        // Maximum number of values has been taken from `top` or `bot` queue,
+        //  so take from the other one.
+        if (from_top == pow(2, rank-1)) {
+            // Bot remains
+            if (pass_through(bot, rank, into) == WAIT) {
+                //wait for value
+                return;
+            }
+            from_bot++;
+        } else if (from_bot == pow(2, rank-1)) {
+            // Top remains
             if (pass_through(top, rank, into) == WAIT) {
                 //wait for value
                 return;
             }
             from_top++;
         } else {
-            if (pass_through(bot, rank, into) == WAIT) {
-                //wait for value
-                return;
-            }
-            from_bot++;
+            fprintf(stderr, "ERROR\n");
         }
         (*cnt)++;
+        return;
     }
+
+    if (top->empty() || bot->empty()) {
+        // A form of active waiting - nothing to compare right now.
+        return;
+    }
+
+    // Take the smaller value.
+    if (top->front() < bot->front()) {
+        if (pass_through(top, rank, into) == WAIT) {
+            //wait for value
+            return;
+        }
+        from_top++;
+    } else {
+        if (pass_through(bot, rank, into) == WAIT) {
+            //wait for value
+            return;
+        }
+        from_bot++;
+    }
+    (*cnt)++;
 }
 
 int main(int argc, char *argv[])
