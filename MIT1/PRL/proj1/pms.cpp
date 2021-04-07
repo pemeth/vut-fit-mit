@@ -1,3 +1,8 @@
+/**
+ * Pipeline merge-sort with Open MPI.
+ *
+ * @author Patrik Nemeth, xnemet04
+ */
 #include <deque>
 #include <iostream>
 #include <mpi.h>
