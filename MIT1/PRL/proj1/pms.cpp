@@ -9,8 +9,6 @@
 #define TO_STDOUT 0
 #define TO_NEXT_RANK 1
 
-// TODO remove debug prints (stderr)
-
 // Knuth's x^p
 int pow(int x, unsigned int p)
 {
@@ -51,18 +49,14 @@ void receive(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int
     // Decide to which queue the new value should go.
     if (q_picker < pow(2, rank-1)) {
         top->push_back(val);
-        fprintf(stderr, "top ");
     } else {
         bot->push_back(val);
-        fprintf(stderr, "bot ");
     }
     q_picker++;
-    fprintf(stderr, "%d received %u ", rank, val);
+
     if (q_picker >= 2 * pow(2, rank-1)) {
         q_picker = 0; // reset
-        fprintf(stderr, "| reset");
     }
-    fprintf(stderr, "\n");
 }
 
 /**
@@ -139,7 +133,6 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
             }
             (*cnt)++;
             from_top = from_bot = 0;
-            //if (rank == 2) fprintf(stderr, "[A]merge %d frm_top: %d, frm_bot: %d, sent: %u\n", rank, from_top, from_bot, tmp);
             return;
         }
 
@@ -164,7 +157,6 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
                 fprintf(stderr, "ERROR\n");
             }
             (*cnt)++;
-            //if (rank == 2) fprintf(stderr, "[B]merge %d frm_top: %d, frm_bot: %d, sent: %u\n", rank, from_top, from_bot, tmp);
             return;
         }
 
@@ -188,7 +180,6 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
             from_bot++;
         }
         (*cnt)++;
-        //if (rank == 2) fprintf(stderr, "[C]merge %d frm_top: %d, frm_bot: %d, sent: %u\n", rank, from_top, from_bot, tmp);
     }
 }
 
