@@ -222,8 +222,6 @@ int main(int argc, char *argv[])
             merge(&top, &bot, rank, &cnt, TO_STDOUT);
         }
 
-        for (int i = 0; i < 100000; i++) {} // TODO: possibly delete this delay?
-
         if (cnt >= VALUES_CNT) {
             // This process processed all 16 values and may exit.
             finished++;
