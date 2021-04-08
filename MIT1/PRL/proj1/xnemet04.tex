@@ -18,7 +18,7 @@
         The pipeline merge sort is a variation of the merge sorting algorithm suited for multiprocessing.
         It is diferrent in that it divides the merging of different length arrays between multiple processes,
         which are set up as a pipeline. Each channel between two processes consists of two queues - a top and a bottom
-        one, which hold the values to be merged by the next process. The algorithm requires $k = \log_{2}(n)+1$ processes
+        one, which hold the values to be merged by the next process. The algorithm requires $p(n) = \log_{2}(n)+1$ processes
         for $n$ input values. The processes will be indexed from $0$ to $k$, where $k$ is the last process in the pipeline.
         The merge sorting pipeline is visualized in figure \ref{pms_diagram}.
 
@@ -29,7 +29,7 @@
             \label{pms_diagram}
         \end{figure}
 
-        The first process ($P_0$) serves as the input parser, which loads the input values and sends them one by
+        The first process ($P_0$) serves as the input parser that loads the input values and sends them one by
         one to $P_1$. After parsing every input value, $P_0$ may exit. The rest of the processes
         ($P_i | 1\leq{}i\leq{}k$) work very similarly to each other. They all carry out two operations (\emph{receive}
         and \emph{merge})\footnote{Functions \texttt{receive()} and \texttt{merge()} in the implementation.} during each
@@ -67,13 +67,13 @@
         The last process in the pipeline is only different in that its output value is not sent to the next process, but rather
         to the output data structure (or, as in the case of this implementation, to the standard output stream).
 
-        \subsection{Complexity and cost}
+        \section{Complexity and cost}
         The required number of processes is $p(n) = \log_{2}(n)+1$, where $n$ is the number of input values. The time complexity
         can be derived from the number of values needed by each process to begin sorting and the total number of inputs.
         Process $P_0$ requires $1$ input to start sorting and all remaining inputs will be processed in parallel with the rest
         of the processes. Every other process requires the top queue to be full and the bottom queue to contain at least one value.
-        This means $2^{i-1} + 1$ steps, where $i$ is the index of the current process. Generalized to the $k$-th process, the following
-        equation can be derived:
+        This means $2^{i-1} + 1$ steps before the $i$-th process may start sorting. Generalized to the $k$-th process in the pipeline,
+        the following equation can be derived:
         \begin{equation}\label{eq:1}
             1 + \sum_{i=1}^{k}(2^{i-1}+1) = 2^{k} + k\,.
         \end{equation}
