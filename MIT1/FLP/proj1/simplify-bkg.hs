@@ -221,7 +221,7 @@ makeSetV vi rules =
     if vi' /= vi then
         nub (vi' ++ (makeSetV vi' rules))
     else
-        []
+        vi
     where
         -- Filter out empty strings (#)
         vi' = filter (\x -> isAlpha x) (buildNextVi vi rules)
