@@ -130,24 +130,6 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
     let_me_through = true;
     unsigned char tmp = 0;
 
-    if (from_top + from_bot >= (2 * pow(2, rank-1)) - 1) {
-        // Last value - take it from whichever queue is non-empty.
-        if (from_top < from_bot) {
-            if (pass_through(top, rank, into) == WAIT) {
-                // wait for value
-                return;
-            }
-        } else {
-            if (pass_through(bot, rank, into) == WAIT) {
-                //wait for value
-                return;
-            }
-        }
-        (*cnt)++;
-        from_top = from_bot = 0;
-        return;
-    }
-
     if (from_top == pow(2, rank-1) || from_bot == pow(2, rank-1)) {
         // Maximum number of values has been taken from `top` or `bot` queue,
         //  so take from the other one.
@@ -169,6 +151,11 @@ void merge(std::deque<unsigned char> *top, std::deque<unsigned char> *bot, int r
             fprintf(stderr, "ERROR\n");
         }
         (*cnt)++;
+
+        if ((from_top + from_bot) >= (2 * pow(2, rank-1))) {
+            // All values of one merge cycle have been sorted, may reset.
+            from_top = from_bot = 0;
+        }
         return;
     }
 
