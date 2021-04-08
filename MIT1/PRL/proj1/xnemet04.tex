@@ -54,14 +54,14 @@
         \subsection{Receive} \label{receive}
         Every $Pi$ manages its input queues,
         so that they are assigned the correct number of incoming values sent from the previous process. This number, $q$, is
-        governed by the rank of the current process, such that $q = 2^{i-1}$. The incoming values are first assigned to the
-        top queue up until $q$ number of values is reached, after which the queue is switched and the incoming values are
+        governed by the rank of the current process, such that $q = 2^{i-1}$, where $i$ is the rank. The incoming values are first
+        assigned to the top queue up until $q$ number of values is reached, after which the queue is switched and the incoming values are
         assigned to the bottom queue. After every $q$-th value, the queue is switched again.
 
         \subsection{Merge} \label{merge}
         This operation sorts the values contained in the input queues by merge sorting. The process merges the first value
         only after its top queue contains $q$ values and the bottom contains at least one. One full merge cycle is completed
-        after taking $q$ number of values from both input queues (i.e. $2q$ values in total). The process compares the first
+        after taking $q$ number of values from both input queues (i.e. $2q$ values in total). The~process compares the first
         values of the input queues and the lower value is sent to the next process $P_{i+1}$. Each process must take
         at most $q$ number of values from each of its input queues via comparison. Otherwise the remaining values, until $2q$,
         are taken from the other queue regardless of those values' relation to any other values in the input queue.
@@ -73,13 +73,13 @@
         The required number of processes is $p(n) = \log_{2}(n)+1$, where $n$ is the number of input values. The time complexity
         can be derived from the number of values needed by each process to begin sorting and the total number of inputs.
         Process $P_0$ requires $1$ input to start sorting and all remaining inputs will be processed in parallel with the rest
-        of the processes. Every other process requires the top queue to be full and the bottom queue to contain at least one value.
+        of the processes. Every remaining process requires the top queue to be full and the bottom queue to contain at least one value.
         This means $2^{i-1} + 1$ steps before the $i$-th process may start sorting. Generalized to the $k$-th process in the pipeline,
-        the following equation can be derived:
+        the equation
         \begin{equation}\label{eq:1}
-            1 + \sum_{i=1}^{k}(2^{i-1}+1) = 2^{k} + k\,.
+            1 + \sum_{i=1}^{k}(2^{i-1}+1) = 2^{k} + k
         \end{equation}
-        However the last process needs an additional $n-1$ steps until all values are merged. This yields
+        can be derived. However the last process needs an additional $n-1$ steps until all values are merged. This~yields
         \begin{equation}\label{eq:2}
             2^{k} + k + (n-1) = 2^{\log_{2}(n)} + \log_{2}(n) + (n-1)
         \end{equation}
