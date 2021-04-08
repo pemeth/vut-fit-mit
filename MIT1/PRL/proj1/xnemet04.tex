@@ -32,15 +32,16 @@
 
         The first process ($P_0$) serves as the input parser that loads the input values and sends them one by
         one to $P_1$. After parsing every input value, $P_0$ may exit. The rest of the processes
-        ($P_i | 1\leq{}i\leq{}k$) work very similarly to each other. They all carry out two operations (\emph{receive}
-        and \emph{merge})\footnote{Functions \texttt{receive()} and \texttt{merge()} in the implementation.} during each
-        sorting cycle.
+        ($P_i | 1\leq{}i\leq{}k$) work very similarly to each other. They all carry out two operations during each sorting cycle
+        (\emph{receive} and \emph{merge}, explained in sections \ref{receive} and \ref{merge} respectively)\footnote{Functions
+        \texttt{receive()} and \texttt{merge()} in the implementation.}.
 
         Figure \ref{sequence_diagram} shows the lifetimes of the processes. The first process receives no messages,
         it only sends the input values to the second process. The rest of the processes must first wait until they
         receive the appropriate number of values and only then they may begin sorting. This is signified by the slight delay
         between receiving the first value and sending the first sorted value to the next process. Every process terminates
-        after sorting $n$ values.
+        after sorting $n$ values. All inter-process communication is carried out by the \texttt{MPI\_Send()} and \texttt{MPI\_Recv()}
+        library functions within the \texttt{MPI\_COMM\_WORLD} communicator.
 
         \begin{figure}[h]
             \centering
@@ -50,14 +51,14 @@
             \label{sequence_diagram}
         \end{figure}
 
-        \subsection*{Receive}
+        \subsection{Receive} \label{receive}
         Every $Pi$ manages its input queues,
         so that they are assigned the correct number of incoming values sent from the previous process. This number, $q$, is
         governed by the rank of the current process, such that $q = 2^{i-1}$. The incoming values are first assigned to the
         top queue up until $q$ number of values is reached, after which the queue is switched and the incoming values are
         assigned to the bottom queue. After every $q$-th value, the queue is switched again.
 
-        \subsection*{Merge}
+        \subsection{Merge} \label{merge}
         This operation sorts the values contained in the input queues by merge sorting. The process merges the first value
         only after its top queue contains $q$ values and the bottom contains at least one. One full merge cycle is completed
         after taking $q$ number of values from both input queues (i.e. $2q$ values in total). The process compares the first
