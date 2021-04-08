@@ -35,6 +35,20 @@
         and \emph{merge})\footnote{Functions \texttt{receive()} and \texttt{merge()} in the implementation.} during each
         sorting cycle.
 
+        Figure \ref{sequence_diagram} shows the lifetimes of the processes. The first process receives no messages,
+        it only sends the input values to the second process. The rest of the processes must first wait until they
+        receive the appropriate number of values and only then they may begin sorting. This is signified by the slight delay
+        between receiving the first value and sending the first sorted value to the next process. Every process terminates
+        after sorting $n$ values.
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[scale=0.8]{sequence_diagram.pdf}
+            \caption{The sequence diagram of the pipeline merge sort implementation. The symbol $s_{i,j}$ represents
+            the $j$-th sorted value sent by process $i$.}
+            \label{sequence_diagram}
+        \end{figure}
+
         \subsection*{Receive}
         Every $Pi$ manages its input queues,
         so that they are assigned the correct number of incoming values sent from the previous process. This number, $q$, is
