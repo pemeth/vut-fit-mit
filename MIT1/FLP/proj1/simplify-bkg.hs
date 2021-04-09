@@ -63,6 +63,7 @@ validLRule nterm = isUpper nterm
 -- Check validity of the right hand side of a rule
 validRRule :: String -> String -> Bool
 validRRule ('-':'>':'#':[]) _       = True
+validRRule ('-':'>':[]) _           = False
 validRRule ('-':'>':rest) symbols   = inIterSet rest symbols
 validRRule _ _                      = False
 
