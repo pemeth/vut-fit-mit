@@ -16,14 +16,17 @@ isInLRules _ []                = False
 isInLRules nterm (rule : rest) =
     (nterm == fst rule) || isInLRules nterm rest
 
--- Returns an array of the right sides of rules for a specific non-terminal.
+-- Returns an array of the right sides of rules for a specific non-terminal
+-- given by nterm. The second argument is a list of tuplified rules.
 getRRulesOfNterm :: Char -> [(Char, String)] -> [String]
 getRRulesOfNterm _ []   = []
 getRRulesOfNterm nterm (rule : rules)
     | nterm == fst rule = (snd rule) : (getRRulesOfNterm nterm rules)
     | otherwise         = getRRulesOfNterm nterm rules
 
--- Step (2) of algorithm 4.1 from TIN scripts
+-- Step (2) of algorithm 4.1 from TIN scripts. Builds the set "Ni" based
+-- on the given non-terminals, terminals and rules that are passed as
+-- the second, third and fourth arguments respectively.
 buildNextNi :: String -> String -> String -> [(Char, String)] -> String
 buildNextNi _ [] _ _ = []
 buildNextNi ni (ntA : ntAs) terms rules
@@ -34,7 +37,10 @@ buildNextNi ni (ntA : ntAs) terms rules
     where
         addToNi = checkAlphas (getRRulesOfNterm ntA rules) (terms ++ ni)
 
--- Builds the 'Nt' set according to algorithm 4.1 from TIN.
+-- Builds the "Nt" set according to algorithm 4.1 from TIN. The "Nt" set
+-- is fully constructed after two succeeding "Ni" sets contain the same
+-- values. The "Ni" sets are built via `buildNextNi`. Returns the set
+-- "Nt" as a list.
 makeSetNt :: String -> String -> String -> [(Char, String)] -> String
 makeSetNt ni nterm term rules
     | ni' /= ni = nub (ni' ++ (makeSetNt ni' nterm term rules))
@@ -42,8 +48,8 @@ makeSetNt ni nterm term rules
     where
         ni' = buildNextNi ni nterm term rules
 
--- Builds an iteration of the 'V' (so technically builds Vi)
--- set for algorithm 4.2.
+-- Builds an iteration of the "V" set (so technically builds "Vi")
+-- for algorithm 4.2.
 buildNextVi :: String -> [(Char,String)] -> String
 buildNextVi _ []           = []
 buildNextVi vi (rule : rules)
@@ -52,9 +58,10 @@ buildNextVi vi (rule : rules)
             currVi ++ (buildNextVi currVi rules)
     | otherwise            = buildNextVi vi rules
 
--- Builds the 'V' set based on algorithm 4.2 from TIN.
+-- Builds the "V" set based on algorithm 4.2 from TIN.
 -- Takes an initialization value of Vi (the start symbol of the CFG), which
--- is an array of one non-terminal symbol. Returns the 'V' set.
+-- is an array of one non-terminal symbol. The second argument are the CFG
+-- rules. Returns the "V" set as a list.
 makeSetV :: String -> [(Char,String)] -> String
 makeSetV "" _     = error "Algorithm needs an initialization value"
 makeSetV vi rules

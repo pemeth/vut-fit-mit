@@ -102,18 +102,18 @@ tuplifyRules (x : xs) =
         Nothing -> []
         Just tuple -> tuple : (tuplifyRules xs)
 
--- Check validity of the left hand side of a rule
+-- Check validity of the left hand side of a rule.
 validLRule :: Char -> Bool
 validLRule nterm = isUpper nterm
 
--- Check validity of the right hand side of a rule
+-- Check validity of the right hand side of a rule.
 validRRule :: String -> String -> Bool
 validRRule ('-':'>':'#':[]) _     = True
 validRRule ('-':'>':[]) _         = False
 validRRule ('-':'>':rest) symbols = inIterSet rest symbols
 validRRule _ _                    = False
 
--- Check if an input String is a valid CFG rule
+-- Check if an input String is a valid CFG rule.
 validRule :: String -> String -> Bool
 validRule (x:xs) symbols = validLRule x && validRRule xs symbols
 validRule _ _            = False
