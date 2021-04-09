@@ -73,26 +73,26 @@ collectInput hdl = do
 -- without the commas (i.e. "f,o,o" -> "foo"). Multiple commas are fine,
 -- but multiple Chars without commas between each of them results in an error.
 charsByComma :: String -> String
-charsByComma "" = []
+charsByComma ""       = []
 charsByComma (',':"") = []
-charsByComma (s:"") = s : []
+charsByComma (s:"")   = s : []
 charsByComma (s:ss)
-    | s == ','          = charsByComma ss
-    | head ss /= ','    = error "Char not succeeded by comma"
-    | otherwise         = s : charsByComma ss
+    | s == ','        = charsByComma ss
+    | head ss /= ','  = error "Char not succeeded by comma"
+    | otherwise       = s : charsByComma ss
 
 -- A helper function for tuplifyRules. It takes the first letter of a rule,
 -- which is a non-terminal and separates it into a tuple for the left and
 -- right sides of a rule.
 tuplifyRules' :: String -> Maybe (Char, String)
-tuplifyRules' "" = Nothing
+tuplifyRules' ""             = Nothing
 tuplifyRules' (nterm : rest) = Just (nterm, rest)
 
 -- Take a [String] of CFG rules and return a [(Char, String)] of the same
 -- rules, only separated into tuples of left/right sides of the respective
 -- rules.
 tuplifyRules :: [String] -> [(Char, String)]
-tuplifyRules [] = []
+tuplifyRules []       = []
 tuplifyRules (x : xs) =
     case tuplifyRules' x of
         Nothing -> []
@@ -104,15 +104,15 @@ validLRule nterm = isUpper nterm
 
 -- Check validity of the right hand side of a rule
 validRRule :: String -> String -> Bool
-validRRule ('-':'>':'#':[]) _       = True
-validRRule ('-':'>':[]) _           = False
-validRRule ('-':'>':rest) symbols   = inIterSet rest symbols
-validRRule _ _                      = False
+validRRule ('-':'>':'#':[]) _     = True
+validRRule ('-':'>':[]) _         = False
+validRRule ('-':'>':rest) symbols = inIterSet rest symbols
+validRRule _ _                    = False
 
 -- Check if an input String is a valid CFG rule
 validRule :: String -> String -> Bool
 validRule (x:xs) symbols = validLRule x && validRRule xs symbols
-validRule _ _ = False
+validRule _ _            = False
 
 -- A loop to get all the CFG rules from Handle `hdl`.
 -- Finishes parsing if an empty line or EOF is encountered.
@@ -136,5 +136,5 @@ getRules hdl symbols = do
 -- a rule - just the terminal and nonterminal symbols without
 -- the arrow ("->") symbol.
 filterRule :: String -> Maybe String
-filterRule "" = Nothing
+filterRule ""   = Nothing
 filterRule line = Just (filter (\x -> isAlpha x || x == '#') line)

@@ -14,7 +14,7 @@ data Cfg = Cfg {
 -- and a newline at the end. If an empty string is supplied,
 -- print just a newline. (i.e. "hello" -> "h,e,l,l,o\n"
 printStringWithCommas :: [Char] -> IO ()
-printStringWithCommas [] = putChar '\n'
+printStringWithCommas []     = putChar '\n'
 printStringWithCommas (x:[]) = do
     putChar x
     putChar '\n'
@@ -26,7 +26,7 @@ printStringWithCommas (x:xs) = do
 -- A printing function for the correct output format of the CFG rules.
 -- (i.e. A->ab)
 printCfgRules :: [(Char, String)] -> IO ()
-printCfgRules [] = return ()
+printCfgRules []     = return ()
 printCfgRules (x:xs) = do
     putChar (fst x)
     putStrLn ("->" ++ (snd x))
@@ -50,5 +50,5 @@ inIterSet alpha set = all (\x -> x `elem` iterSet) alpha
 
 -- Uses `inIterSet` to check the same thing, only over an array of `alphas`.
 checkAlphas :: [String] -> String -> Bool
-checkAlphas [] _ = False
+checkAlphas [] _                 = False
 checkAlphas (alpha : alphas) set = inIterSet alpha set || checkAlphas alphas set
