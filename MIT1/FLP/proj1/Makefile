@@ -1,11 +1,12 @@
-SRC = simplify-bkg
+SRC = Main
+OUT = simplify-bkg
 
 .PHONY: clean build
 
 build : $(SRC).hs
-	ghc $(SRC).hs
+	ghc $(SRC).hs -o $(OUT)
 
 clean:
-	rm -f $(SRC) $(SRC).hi $(SRC).o
+	rm -f $(OUT) *.hi *.o
 
 
