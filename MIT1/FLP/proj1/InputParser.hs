@@ -1,3 +1,7 @@
+{-
+ - Input parsing functions.
+ - Author: Patrik Nemeth, xnemet04
+ -}
 module InputParser where
 import Data.Char
 import System.Console.GetOpt

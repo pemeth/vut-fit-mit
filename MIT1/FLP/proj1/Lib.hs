@@ -1,3 +1,7 @@
+{-
+ - Library with context-free grammar specific functions and types.
+ - Author: Patrik Nemeth, xnemet04
+ -}
 module Lib where
 
 import System.IO

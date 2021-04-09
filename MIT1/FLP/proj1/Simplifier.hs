@@ -1,3 +1,7 @@
+{-
+ - Functions used for simplifying context-free grammars.
+ - Author: Patrik Nemeth, xnemet04
+ -}
 module Simplifier where
 
 import Data.Char
