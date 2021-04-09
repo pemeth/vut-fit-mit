@@ -61,30 +61,30 @@ validLRule :: Char -> Bool
 validLRule nterm = isUpper nterm
 
 -- Check validity of the right hand side of a rule
-validRRule :: String -> Bool
-validRRule ('-':'>':'#':[]) = True
-validRRule ('-':'>':rest)   = all isAlpha rest
-validRRule _                = False
+validRRule :: String -> String -> Bool
+validRRule ('-':'>':'#':[]) _       = True
+validRRule ('-':'>':rest) symbols   = inIterSet rest symbols
+validRRule _ _                      = False
 
 -- Check if an input String is a valid CFG rule
-validRule :: String -> Bool
-validRule (x:xs) = validLRule x && validRRule xs
-validRule _ = False
+validRule :: String -> String -> Bool
+validRule (x:xs) symbols = validLRule x && validRRule xs symbols
+validRule _ _ = False
 
 -- A loop to get all the CFG rules from Handle `hdl`.
 -- Finishes parsing if an empty line or EOF is encountered.
-getRules :: Handle -> IO [String]
-getRules hdl = do
+getRules :: Handle -> String -> IO [String]
+getRules hdl symbols = do
     ineof <- hIsEOF hdl
     if ineof then
         return []
     else do
         line <- hGetLine hdl
-        if validRule line then
+        if validRule line symbols then
             case filterRule line of
                 Nothing -> return []
                 Just aString -> do
-                    nextLine <- getRules hdl
+                    nextLine <- getRules hdl symbols
                     return (aString : nextLine)
         else
             error "Invalid CFG rule encountered"
@@ -145,7 +145,7 @@ collectInput hdl = do
             return ()
     let start = head line
 
-    rls <- getRules hdl
+    rls <- getRules hdl (term ++ nterm)
     let rules = tuplifyRules rls
 
     if not (start `elem` nterm) then
