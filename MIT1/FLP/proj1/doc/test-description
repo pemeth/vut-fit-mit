@@ -1,0 +1,5 @@
+The files contained in the `test` directory have the following format:
+    *.in    - the input CFG,
+    *-i.out - the output of the program with option `-i`,
+    *-1.out - the output of the program with option `-1`,
+    *-2.out - the output of the program with option `-2`,
