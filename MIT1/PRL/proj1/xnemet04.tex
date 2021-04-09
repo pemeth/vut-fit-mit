@@ -33,8 +33,7 @@
         The first process ($P_0$) serves as the input parser that loads the input values and sends them one by
         one to $P_1$. After parsing every input value, $P_0$ may exit. The rest of the processes
         ($P_i | 1\leq{}i\leq{}k$) work very similarly to each other. They all carry out two operations during each sorting cycle
-        (\emph{receive} and \emph{merge}, explained in sections \ref{receive} and \ref{merge} respectively)\footnote{Functions
-        \texttt{receive()} and \texttt{merge()} in the implementation.}.
+        (\emph{receive} and \emph{merge}, explained in sections \ref{receive} and \ref{merge} respectively).
 
         Figure \ref{sequence_diagram} shows the lifetimes of the processes. The first process receives no messages,
         it only sends the input values to the second process. The rest of the processes must first wait until they
@@ -58,6 +57,11 @@
         assigned to the top queue up until $q$ number of values is reached, after which the queue is switched and the incoming values are
         assigned to the bottom queue. After every $q$-th value, the queue is switched again.
 
+        This operation is implemented as the \texttt{receive()} function. The static \texttt{q\_picker} variable is used to keep track of
+        the correct placement of the incoming values. It is incremented after every received value. If \texttt{q\_picker} is less than $q$,
+        then the value is placed to the top queue, otherwise it is placed to the bottom. Upon \texttt{q\_picker} reaching $2q$, it is reset
+        to 0 and the next value is again placed to the top queue.
+
         \subsection{Merge} \label{merge}
         This operation sorts the values contained in the input queues by merge sorting. The process merges the first value
         only after its top queue contains $q$ values and the bottom contains at least one. One full merge cycle is completed
@@ -68,6 +72,23 @@
         After a full merge cycle, the process restarts the merge cycle and repeats it until all input values have been merged.
         The last process in the pipeline is only different in that its output value is not sent to the next process, but rather
         to the output data structure (or, as in the case of this implementation, to the standard output stream).
+
+        This operation is implemented as the \texttt{merge()} function. Each of the input queues has its own $q$ counter
+        (\texttt{from\_top} and \texttt{from\_bot}) that are implemented as static variables. These are incremented depending on
+        from which input queue the last sorted value was taken. Upon one of the variables reaching $q$, the behaviour is changed
+        according to the specification above, and upon both counters reaching $q$, they are reset to $0$ to initialize
+        the next merge cycle.
+
+        \subsection{Implementation overview}
+        The program starts by loading the input values from the standard input stream. This is done by the first process.
+        As the value loading is quite quick, no measures were implemented for the other processes to passively wait
+        until loading is completed. After this the sorting begins. Each process counts the number of sorted values and after reaching
+        $n$, they exit. The sorting itself is driven by a loop, where the processes are divided into three distinct groups based on
+        their behaviour. These groups are for the first process, the intermediary processes and the last process. The first process
+        just sends the loaded values to the succeeding process. The intermediary processes call \texttt{receive()}, where they receive
+        the incoming value, and \texttt{merge()}, where they actually sort the values. The last process does the same as the intermediaries,
+        with the difference of calling \texttt{merge()} with a flag modifying its behaviour, so that it doesn't send the sorted value
+        to the succeeding process, but rather to the standard output stream.
 
         \section{Complexity and cost}
         The required number of processes is $p(n) = \log_{2}(n)+1$, where $n$ is the number of input values. The time complexity
