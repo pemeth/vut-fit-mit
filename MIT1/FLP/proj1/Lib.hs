@@ -8,10 +8,10 @@ import System.IO
 
 -- Record of a context-free grammar
 data Cfg = Cfg {
-    nterm :: [Char],
-    term :: [Char],
-    start :: Char,
-    rules :: [(Char, String)]
+    nterm :: [Char],    -- List of non-terminal symbols.
+    term :: [Char],     -- List of terminal symbols.
+    start :: Char,      -- The starting symbol.
+    rules :: [(Char, String)] -- List of rules of the CFG as (symbol,[symbol]).
 } deriving (Show)
 
 -- Print a string with a comma inserted between each character
