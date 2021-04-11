@@ -56,3 +56,10 @@ inIterSet alpha set = all (\x -> x `elem` iterSet) alpha
 checkAlphas :: [String] -> String -> Bool
 checkAlphas [] _                 = False
 checkAlphas (alpha : alphas) set = inIterSet alpha set || checkAlphas alphas set
+
+-- Checks if a non-terminal nterm is in the rules on the left side.
+-- The second argument is an array of tuplified rules.
+isInLRules :: Char -> [(Char, String)] -> Bool
+isInLRules _ []                = False
+isInLRules nterm (rule : rest) =
+    (nterm == fst rule) || isInLRules nterm rest

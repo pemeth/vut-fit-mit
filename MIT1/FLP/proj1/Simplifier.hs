@@ -9,13 +9,6 @@ import Data.List
 
 import Lib
 
--- Checks if a non-terminal nterm is in the rules on the left side.
--- The second argument is an array of tuplified rules.
-isInLRules :: Char -> [(Char, String)] -> Bool
-isInLRules _ []                = False
-isInLRules nterm (rule : rest) =
-    (nterm == fst rule) || isInLRules nterm rest
-
 -- Returns an array of the right sides of rules for a specific non-terminal
 -- given by nterm. The second argument is a list of tuplified rules.
 getRRulesOfNterm :: Char -> [(Char, String)] -> [String]
