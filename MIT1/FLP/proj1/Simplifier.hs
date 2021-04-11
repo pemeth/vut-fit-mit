@@ -70,7 +70,7 @@ getBarG :: Monad m => Cfg -> String -> m Cfg
 getBarG cfg nt = do
     let rulesOld = rules cfg
     let rulesNew' = filter (\x -> fst x `elem` nt) rulesOld
-    let rulesNew = filter (\x -> inIterSet (snd x) (nt ++ (term cfg))) rulesNew'
+    let rulesNew = nubRules (filter (\x -> inIterSet (snd x) (nt ++ (term cfg))) rulesNew')
 
     return (Cfg (nub (nt ++ [start cfg])) (term cfg) (start cfg) rulesNew)
 
@@ -81,6 +81,6 @@ getG' cfg v = do
     let termNew = nub (intersect v (term cfg))
     let rulesOld = rules cfg
     let rulesNew' = filter (\x -> fst x `elem` ntermNew) rulesOld
-    let rulesNew = filter (\x -> inIterSet (snd x) v) rulesNew'
+    let rulesNew = nubRules (filter (\x -> inIterSet (snd x) v) rulesNew')
 
     return (Cfg ntermNew termNew (start cfg) rulesNew)

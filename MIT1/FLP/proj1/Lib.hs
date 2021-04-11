@@ -72,3 +72,12 @@ isInLRules :: Char -> [(Char, String)] -> Bool
 isInLRules _ []                = False
 isInLRules nterm (rule : rest) =
     (nterm == fst rule) || isInLRules nterm rest
+
+-- Just a rewritten `nub` implementation for the CFG tuplified rules.
+nubRules :: (Eq a) => (Eq b) => [(a,b)] -> [(a,b)]
+nubRules l          = nubRules' l []
+  where
+    nubRules' [] _  = []
+    nubRules' (x:xs) ls
+        | x `elem` ls   = nubRules' xs ls
+        | otherwise     = x : nubRules' xs (x:ls)
