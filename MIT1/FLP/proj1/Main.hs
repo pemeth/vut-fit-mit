@@ -45,7 +45,7 @@ main = do
 
     -- The rest is reached only with option '-2'
 
-    if not ((start cfg) `elem` nt) then do
+    if emptyLanguage cfg then do
         -- Empty language -> print cfgBarG and exit
         printCfg cfgBarG
         exitWith ExitSuccess

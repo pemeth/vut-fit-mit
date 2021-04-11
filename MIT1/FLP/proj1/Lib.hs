@@ -57,6 +57,15 @@ checkAlphas :: [String] -> String -> Bool
 checkAlphas [] _                 = False
 checkAlphas (alpha : alphas) set = inIterSet alpha set || checkAlphas alphas set
 
+-- NOT A COMPREHENSIVE CHECK - SEE NOTE BELOW
+-- Checks if a CFG generates an empty language by checking if the starting CFG
+-- symbol is on the left side of any of the CFG rules.
+-- NOTE: As this function is used only after the first step of the algorithm
+-- (when calling the program with option `-2`), this form of checking for an empty
+-- language should be sufficient.
+emptyLanguage :: Cfg -> Bool
+emptyLanguage cfg = isInLRules (start cfg) (rules cfg)
+
 -- Checks if a non-terminal nterm is in the rules on the left side.
 -- The second argument is an array of tuplified rules.
 isInLRules :: Char -> [(Char, String)] -> Bool
