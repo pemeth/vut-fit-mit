@@ -72,7 +72,7 @@ getBarG cfg nt = do
     let rulesNew' = filter (\x -> fst x `elem` nt) rulesOld
     let rulesNew = filter (\x -> inIterSet (snd x) (nt ++ (term cfg))) rulesNew'
 
-    return (Cfg nt (term cfg) (start cfg) rulesNew)
+    return (Cfg (nub (nt ++ [start cfg])) (term cfg) (start cfg) rulesNew)
 
 -- Create the "G'" CFG as per algorithm 4.3.
 getG' :: Monad m => Cfg -> [Char] -> m Cfg
