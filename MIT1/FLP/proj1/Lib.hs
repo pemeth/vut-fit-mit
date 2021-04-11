@@ -64,7 +64,7 @@ checkAlphas (alpha : alphas) set = inIterSet alpha set || checkAlphas alphas set
 -- (when calling the program with option `-2`), this form of checking for an empty
 -- language should be sufficient.
 emptyLanguage :: Cfg -> Bool
-emptyLanguage cfg = isInLRules (start cfg) (rules cfg)
+emptyLanguage cfg = not (isInLRules (start cfg) (rules cfg))
 
 -- Checks if a non-terminal nterm is in the rules on the left side.
 -- The second argument is an array of tuplified rules.
