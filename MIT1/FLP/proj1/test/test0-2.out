@@ -1,0 +1,8 @@
+S,T
+a,b
+S
+S->aSTb
+S->T
+T->#
+T->TS
+T->a

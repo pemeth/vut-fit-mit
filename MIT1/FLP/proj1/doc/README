@@ -1,0 +1,39 @@
+                                    FLP project 1 - simplify-bkg
+                                      Patrik Németh, xnemet04
+
+    The output of this project is a Haskell program capable of simplifying context-free grammars (CFGs).
+    The input CFG may be supplied as a file or through the standard input stream. The haskell files can
+    be compiled by running the `make` utility in the main project directory. The output binary file
+    will be called "simplify-bkg".
+
+    The source code is divided into multiple source files:
+        - Main.hs is the entrypoint and it controls the flow of the program,
+        - InputParser.hs contain input parsing functions,
+        - Simplifier.hs contains the actual implementations of CFG simplification algorithms
+        - Lib.hs contains printing functions, data structures and generally useful functions.
+
+Input CFG format
+    Each of the following must be separated by a newline:
+        - nonterminal symbols separated by commas (characters [A-Z]),
+        - terminal symbols separated by commas (characters [a-z]),
+        - a single starting nonterminal symbol,
+        - any number of CFG rules, separated by a newline, in the form of "nonterminal->alpha",
+          where alpha is any combination of terminals and nonterminals or an empty string signified
+          by the '#' character.
+
+    Example:
+        S,A
+        a
+        S
+        S->aA
+        A->a
+        A->#
+
+Usage
+simplify-bkg opt [input]
+    Where opt is one of:
+        -i    print out the loaded CFG
+        -1    print out CFG after algorithm 4.1
+        -2    print out CFG after algorithm 4.3 or 4.1 if it generates empty language
+    and input is an optional input file with the CFG. If no input file is given, the CFG is loaded form
+    the standard input stream.

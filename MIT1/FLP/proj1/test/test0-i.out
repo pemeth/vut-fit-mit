@@ -1,0 +1,13 @@
+S,O,P,T,M
+a,b
+S
+S->aSTb
+S->aSM
+S->T
+M->aOM
+O->ab
+O->M
+P->a
+T->#
+T->TS
+T->a
