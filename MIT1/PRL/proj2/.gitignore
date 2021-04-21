@@ -1,5 +1,8 @@
 # Local VSCode settings
 .vscode
 
+# Compilation output
+mm
+
 # Test files with matrices
 mat*
