@@ -1,2 +1,5 @@
 # Local VSCode settings
 .vscode
+
+# Test files with matrices
+mat*
