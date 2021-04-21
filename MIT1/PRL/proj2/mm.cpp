@@ -90,6 +90,8 @@ int main(int argc, char *argv[])
             c += (a * b);
             std::cout << "val1: " << a << "|val2: " << b << "\n";
 
+            // TODO if cols is '1', then this will loop, as 1-1 = 0,
+            //  so the file pointer will move 0 places.
             bool end = move_by_n(&file2, cols - 1);
 
             if (end) {
