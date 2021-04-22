@@ -6,6 +6,7 @@
 #include <fstream>
 #include <mpi.h>
 #include <string.h> // malloc
+#include <limits> // numeric_limits
 
 #define FILE_MAT1 "mat1"
 #define FILE_MAT2 "mat2"
@@ -173,6 +174,36 @@ int main(int argc, char *argv[])
 
             bool end = move_by_n(&file2, cols-1);
             if (end) {
+                break;
+            }
+        } else if (rank % cols == 0 && rank != ROOT) {
+            // The first column of processes with the exception of ROOT.
+            if (!moved_to_init_pos) {
+                file1 >> a;
+                for (int i = 0; i < rank/cols; i++) {
+                    // Skip rank/cols number of lines.
+                    file1.ignore(std::numeric_limits<std::streamsize>::max(), (int) '\n');
+                }
+                moved_to_init_pos = true;
+            }
+
+            // Get a and b.
+            file1 >> a;
+            MPI_Status status;
+            MPI_Recv(&b, 1, MPI_INT, rank-cols, TAG, MPI_COMM_WORLD, &status);
+
+            c += (a * b);
+
+            if (cols > 1) {
+                // There is someone to the right, send it.
+                send_right(a, rank, size-1);
+            }
+            // send_down() will not allow sending to the bottom neighbour
+            //  because of how the mesh is set up.
+            send_down(b, cols, rank, size-1);
+
+            int next_char = file1.peek();
+            if (next_char == '\n' || next_char == EOF) {
                 break;
             }
         } else {
