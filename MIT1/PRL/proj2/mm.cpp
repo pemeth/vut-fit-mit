@@ -220,10 +220,15 @@ int main(int argc, char *argv[])
     MPI_Gather(&c, 1, MPI_INT, results, 1, MPI_INT, ROOT, MPI_COMM_WORLD);
 
     if (rank == ROOT) {
-        std::cout << rows << ':' << cols << '\n';
-        // TODO not correct printing format.
+        std::cout << rows << ':' << cols;
         for (int i = 0; i < size; i++) {
-            std::cout << results[i] << ' ';
+            if (i % cols == 0) {
+                std::cout << '\n';
+            }
+            if (i % cols != 0) {
+                std::cout << ' ';
+            }
+            std::cout << results[i];
         }
         std::cout << '\n';
 
