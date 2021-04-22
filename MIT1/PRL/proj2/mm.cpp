@@ -132,7 +132,10 @@ int main(int argc, char *argv[])
             // Send data to neighbours.
             send_right(a, rank, size-1);
             send_down(b, cols, rank, size-1);
-            if (end) {
+
+            // Finish if no more characters are to be read.
+            int next_char = file1.peek();
+            if (end || next_char == '\n' || next_char == EOF) {
                 break;
             }
         } else {
