@@ -12,6 +12,10 @@
 #define FILE_MAT2 "mat2"
 #define ROOT 0
 #define TAG 1
+#define TAG_FIN_A 2
+#define TAG_FIN_B 3
+#define FIN 11
+#define OK 0
 
 /**
  * Checks if a process to the right of `rank` exists and if it
@@ -23,9 +27,9 @@
  * @param rank the rank of the calling process.
  * @param max_rank the id of the last process in MPI_COMM_WORLD.
  */
-void send_right(int val, int rank, int max_rank) {
+void send_right(int val, int rank, int max_rank, int tag = TAG) {
     if (rank + 1 <= max_rank) {
-        MPI_Send(&val, 1, MPI_INT, rank+1, TAG, MPI_COMM_WORLD);
+        MPI_Send(&val, 1, MPI_INT, rank+1, tag, MPI_COMM_WORLD);
     }
 }
 
@@ -41,10 +45,63 @@ void send_right(int val, int rank, int max_rank) {
  * @param rank the rank of the calling process.
  * @param max_rank the id of the last process in MPI_COMM_WORLD.
  */
-void send_down(int val, int stride, int rank, int max_rank) {
+void send_down(int val, int stride, int rank, int max_rank, int tag = TAG) {
     if (rank + stride <= max_rank) {
-        MPI_Send(&val, 1, MPI_INT, rank+stride, TAG, MPI_COMM_WORLD);
+        MPI_Send(&val, 1, MPI_INT, rank+stride, tag, MPI_COMM_WORLD);
     }
+}
+
+// TODO doxygen documentation of these propagate functions
+void propagate_first_row(
+    int val_right,
+    int val_down,
+    int cols,
+    int rank,
+    int max_rank,
+    int tag_right = TAG,
+    int tag_down = TAG)
+{
+    if (!(rank == cols - 1)) {
+        // Not last in the first row - can send right.
+        send_right(val_right, rank, max_rank, tag_right);
+    }
+    // send_down will not allow sending one row lower if this is the
+    //  last row because of how the mesh is set up.
+    send_down(val_down, cols, rank, max_rank, tag_down);
+}
+
+void propagate_first_col(
+    int val_right,
+    int val_down,
+    int cols,
+    int rank,
+    int max_rank,
+    int tag_right = TAG,
+    int tag_down = TAG)
+{
+    if (cols > 1) {
+        // There is someone to the right, send it.
+        send_right(val_right, rank, max_rank, tag_right);
+    }
+    // send_down() will not allow sending to the bottom neighbour
+    //  because of how the mesh is set up.
+    send_down(val_down, cols, rank, max_rank, tag_down);
+}
+
+void propagate_rest(
+    int val_right,
+    int val_down,
+    int cols,
+    int rank,
+    int max_rank,
+    int tag_right = TAG,
+    int tag_down = TAG)
+{
+    if (!((rank + 1) % cols == 0)) {
+        // Someone to the right, send value.
+        send_right(val_right, rank, max_rank, tag_right);
+    }
+    send_down(val_down, cols, rank, max_rank, tag_down);
 }
 
 /**
@@ -154,6 +211,8 @@ int main(int argc, char *argv[])
             if (!moved_to_init_pos) {
                 // The initial position in the file for this process.
                 move_by_n(&file2, rank);
+                // Green light for other processes to start receiving.
+                propagate_first_row(OK, OK, cols, rank, size-1, TAG_FIN_A, TAG_FIN_B);
                 moved_to_init_pos = true;
             }
 
@@ -162,21 +221,20 @@ int main(int argc, char *argv[])
             MPI_Status status;
             MPI_Recv(&a, 1, MPI_INT, rank-1, TAG, MPI_COMM_WORLD, &status);
 
-            // TODO repeated code
-            if (!(rank == cols - 1)) {
-                // Not last in the first row - can send right.
-                send_right(a, rank, size-1);
-            }
-            // send_down will not allow sending one row lower if this is the
-            //  last row because of how the mesh is set up.
-            send_down(b, cols, rank, size-1);
+            // Propagate the a and b values.
+            propagate_first_row(a, b, cols, rank, size-1);
 
             // Calculate next c value.
             c += (a * b);
 
             bool end = move_by_n(&file2, cols-1);
             if (end) {
+                // Send notice, that no further values will be arriving.
+                propagate_first_row(FIN, FIN, cols, rank, size-1, TAG_FIN_A, TAG_FIN_B);
                 break;
+            } else {
+                // Send notice, that there will be more values arriving.
+                propagate_first_row(OK, OK, cols, rank, size-1, TAG_FIN_A, TAG_FIN_B);
             }
         } else if (rank % cols == 0 && rank != ROOT) {
             // The first column of processes with the exception of ROOT.
@@ -186,6 +244,8 @@ int main(int argc, char *argv[])
                     // Skip rank/cols number of lines.
                     file1.ignore(std::numeric_limits<std::streamsize>::max(), (int) '\n');
                 }
+                // Green light for other processes to start receiving.
+                propagate_first_col(OK, OK, cols, rank, size-1, TAG_FIN_A, TAG_FIN_B);
                 moved_to_init_pos = true;
             }
 
@@ -194,23 +254,43 @@ int main(int argc, char *argv[])
             MPI_Status status;
             MPI_Recv(&b, 1, MPI_INT, rank-cols, TAG, MPI_COMM_WORLD, &status);
 
-            c += (a * b);
+            // Propagate the a and b values.
+            propagate_first_col(a, b, cols, rank, size-1);
 
-            if (cols > 1) {
-                // There is someone to the right, send it.
-                send_right(a, rank, size-1);
-            }
-            // send_down() will not allow sending to the bottom neighbour
-            //  because of how the mesh is set up.
-            send_down(b, cols, rank, size-1);
+            c += (a * b);
 
             int next_char = file1.peek();
             if (next_char == '\n' || next_char == EOF) {
+                // Send notice, that no further values will be arriving.
+                propagate_first_col(FIN, FIN, cols, rank, size-1, TAG_FIN_A, TAG_FIN_B);
                 break;
+            } else {
+                // Send notice, that there will be more values arriving.
+                propagate_first_col(OK, OK, cols, rank, size-1, TAG_FIN_A, TAG_FIN_B);
             }
         } else {
             // The rest of the processes.
-            break;
+
+            // Receive notices whether or not more values will be arriving.
+            MPI_Status status;
+            int end_a = OK, end_b = OK;
+            MPI_Recv(&end_a, 1, MPI_INT, rank-1, TAG_FIN_A, MPI_COMM_WORLD, &status);
+            MPI_Recv(&end_b, 1, MPI_INT, rank-cols, TAG_FIN_B, MPI_COMM_WORLD, &status);
+
+            // Propagate whether or not more values will arrive.
+            propagate_rest(end_a, end_b, cols, rank, size-1, TAG_FIN_A, TAG_FIN_B);
+
+            if (end_a != OK && end_b != OK) {
+                // No more values will arrive, exit.
+                break;
+            }
+            // More values will arrive, receive them and propagate them further.
+            MPI_Recv(&a, 1, MPI_INT, rank-1, TAG, MPI_COMM_WORLD, &status);
+            MPI_Recv(&b, 1, MPI_INT, rank-cols, TAG, MPI_COMM_WORLD, &status);
+
+            propagate_rest(a, b, cols, rank, size-1);
+
+            c += (a * b);
         }
     }
 
