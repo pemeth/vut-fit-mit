@@ -164,10 +164,9 @@ int main(int argc, char *argv[])
                 // Not last in the first row - can send right.
                 send_right(a, rank, size-1);
             }
-            if (!(rank == size - 1 - (size/cols))) {
-                // Not last in the first column - can send down.
-                send_down(b, cols, rank, size-1);
-            }
+            // send_down will not allow sending one row lower if this is the
+            //  last row because of how the mesh is set up.
+            send_down(b, cols, rank, size-1);
 
             // Calculate next c value.
             c += (a * b);
