@@ -104,6 +104,8 @@ int main(int argc, char *argv[])
     pos_f2 = sndr[3];
 
     if (rank != ROOT) {
+        // TODO only the processes in the first row and first column need
+        //      to open the input files.
         // Open the files on the rest of the processes and seek
         //  to correct position.
         file1.open(FILE_MAT1, std::ios_base::in);
