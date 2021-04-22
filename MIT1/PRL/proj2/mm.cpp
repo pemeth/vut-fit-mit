@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
 
     int a, b, c = 0;
     int cnt = 0;
+    bool moved_to_init_pos = false;
     while (true) {
         // The main loop...
 
@@ -139,7 +140,29 @@ int main(int argc, char *argv[])
             if (end || next_char == '\n' || next_char == EOF) {
                 break;
             }
+        } else if (rank < cols && rank != ROOT) {
+            // The first row of processes with the exception of ROOT.
+            if (!moved_to_init_pos) {
+                // The initial position in the file for this process.
+                move_by_n(&file2, rank);
+                moved_to_init_pos = true;
+            }
+
+            file2 >> b;
+            bool end = move_by_n(&file2, cols-1);
+
+            MPI_Status status;
+            MPI_Recv(&a, 1, MPI_INT, rank-1, TAG, MPI_COMM_WORLD, &status);
+
+            send_right(a, rank, size-1);
+            send_down(b, cols, rank, size-1);
+
+            c += (a * b);
+            if (end) {
+                break;
+            }
         } else {
+            // The rest of the processes.
             break;
         }
     }
