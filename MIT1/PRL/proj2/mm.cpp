@@ -9,6 +9,41 @@
 #define FILE_MAT1 "mat1"
 #define FILE_MAT2 "mat2"
 #define ROOT 0
+#define TAG 1
+
+/**
+ * Checks if a process to the right of `rank` exists and if it
+ * does, then send value `val` to it. The process to the right
+ * is always `rank`+1, so it is up to the caller to check if
+ * the calling process is or isn't at the rightmost edge of
+ * the process mesh.
+ * @param val the value to be sent.
+ * @param rank the rank of the calling process.
+ * @param max_rank the id of the last process in MPI_COMM_WORLD.
+ */
+void send_right(int val, int rank, int max_rank) {
+    if (rank + 1 <= max_rank) {
+        MPI_Send(&val, 1, MPI_INT, rank+1, TAG, MPI_COMM_WORLD);
+    }
+}
+
+/**
+ * Checks if a process to the bottom of `rank` exists and if it does,
+ * then send value `val` to it. The process to the bottom of
+ * the current one is always `rank`+`stride`, so it is up to
+ * the caller to check if the calling process is or isn't at
+ * the bottommost edge of the process mesh.
+ * @param val the value to be sent.
+ * @param stride the number of processes to skip to land on the one
+ *  below `rank` (generally the width of the process mesh).
+ * @param rank the rank of the calling process.
+ * @param max_rank the id of the last process in MPI_COMM_WORLD.
+ */
+void send_down(int val, int stride, int rank, int max_rank) {
+    if (rank + stride <= max_rank) {
+        MPI_Send(&val, 1, MPI_INT, rank+stride, TAG, MPI_COMM_WORLD);
+    }
+}
 
 /**
  * Discards `n` number of integer values from the input stream.
@@ -88,12 +123,15 @@ int main(int argc, char *argv[])
             file2 >> b;
 
             c += (a * b);
-            std::cout << "val1: " << a << "|val2: " << b << "\n";
+            //std::cerr << "a: " << a << "|b: " << b << "\n";
 
             // TODO if cols is '1', then this will loop, as 1-1 = 0,
             //  so the file pointer will move 0 places.
             bool end = move_by_n(&file2, cols - 1);
 
+            // Send data to neighbours.
+            send_right(a, rank, size-1);
+            send_down(b, cols, rank, size-1);
             if (end) {
                 break;
             }
