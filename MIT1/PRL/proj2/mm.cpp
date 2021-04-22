@@ -132,8 +132,14 @@ int main(int argc, char *argv[])
             bool end = move_by_n(&file2, cols - 1);
 
             // Send data to neighbours.
-            send_right(a, rank, size-1);
-            send_down(b, cols, rank, size-1);
+            if (!(rank == cols - 1)) {
+                // Not last in the first row - can send right.
+                send_right(a, rank, size-1);
+            }
+            if (!(rank == size - 1 - (size/cols))) {
+                // Not last in the first column - can send down.
+                send_down(b, cols, rank, size-1);
+            }
 
             // Finish if no more characters are to be read.
             int next_char = file1.peek();
@@ -154,8 +160,15 @@ int main(int argc, char *argv[])
             MPI_Status status;
             MPI_Recv(&a, 1, MPI_INT, rank-1, TAG, MPI_COMM_WORLD, &status);
 
-            send_right(a, rank, size-1);
-            send_down(b, cols, rank, size-1);
+            // TODO repeated code
+            if (!(rank == cols - 1)) {
+                // Not last in the first row - can send right.
+                send_right(a, rank, size-1);
+            }
+            if (!(rank == size - 1 - (size/cols))) {
+                // Not last in the first column - can send down.
+                send_down(b, cols, rank, size-1);
+            }
 
             c += (a * b);
             if (end) {
