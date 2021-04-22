@@ -124,8 +124,8 @@ int main(int argc, char *argv[])
             file1 >> a;
             file2 >> b;
 
+            // Calculate next c value.
             c += (a * b);
-            //std::cerr << "a: " << a << "|b: " << b << "\n";
 
             // TODO if cols is '1', then this will loop, as 1-1 = 0,
             //  so the file pointer will move 0 places.
@@ -154,9 +154,8 @@ int main(int argc, char *argv[])
                 moved_to_init_pos = true;
             }
 
+            // Get a and b.
             file2 >> b;
-            bool end = move_by_n(&file2, cols-1);
-
             MPI_Status status;
             MPI_Recv(&a, 1, MPI_INT, rank-1, TAG, MPI_COMM_WORLD, &status);
 
@@ -170,7 +169,10 @@ int main(int argc, char *argv[])
                 send_down(b, cols, rank, size-1);
             }
 
+            // Calculate next c value.
             c += (a * b);
+
+            bool end = move_by_n(&file2, cols-1);
             if (end) {
                 break;
             }
