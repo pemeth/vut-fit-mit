@@ -160,11 +160,10 @@ int main(int argc, char *argv[])
     pos_f1 = sndr[2];
     pos_f2 = sndr[3];
 
-    if (rank != ROOT) {
-        // TODO only the processes in the first row and first column need
-        //      to open the input files.
-        // Open the files on the rest of the processes and seek
-        //  to correct position.
+    if (rank != ROOT &&
+        (rank < cols || rank % cols == 0)) {
+        // Open the files on the rest of the processes that need them
+        //  (i.e. the first row and column) and seek to correct position.
         file1.open(FILE_MAT1, std::ios_base::in);
         file2.open(FILE_MAT2, std::ios_base::in);
 
