@@ -31,6 +31,12 @@
     from the top left corner of the matrix (i.e. the first value of matrix $A$ would
     be $a_{0,0}$). Processes will be denoted and indexed similarly, only with the
     symbol $P$ (the first process in the mesh is $P_{0,0}$)
+
+    The time complexity of this algorithm depends on the number of steps until
+    the last values of $A$ and $B$ reach the last process, which is $r + c + m - 2$,
+    where $m$ is the shared dimension of $A$ and $B$. This means, that the time
+    complexity of the algorithm is $t(n) = O(n)$. The space complexity is given by
+    the input as $p(n) = O(n^2)$. This results in a cost of $c(n) = t(n)p(n) = O(n^3)$.
     % // TODO maybe add an image showing how the processes are set up?
 
     Every process corresponds to a position of the output matrix $C$ and is initialized
