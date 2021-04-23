@@ -186,8 +186,7 @@ int main(int argc, char *argv[])
             // Calculate next c value.
             c += (a * b);
 
-            // TODO if cols is '1', then this will loop, as 1-1 = 0,
-            //  so the file pointer will move 0 places.
+            // Move to the next row in file2.
             bool end = move_by_n(&file2, cols - 1);
 
             // Send data to neighbours.
