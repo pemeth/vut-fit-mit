@@ -65,6 +65,14 @@
     as needed, directly from the files. The next sections describe how each process
     group behaves. After every process finishes its computation, the root process
     gathers their respective $c$ values and prints them in the correct format.
+    A general sequence diagram can be seen in figure \ref{fig:sequence_diagram}.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=0.8]{sequence_diagram.pdf}
+        \caption{A general representation of the sequence of messages.}
+        \label{fig:sequence_diagram}
+    \end{figure}
 
     \subsubsection*{Root}
     This group contains only the root process. It is the only process that reads from
