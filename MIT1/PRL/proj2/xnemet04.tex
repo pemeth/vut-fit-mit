@@ -15,4 +15,44 @@
             Login: & \textbf{xnemet04}
         \end{tabular}
     \end{center}
+
+    \section{The algorithm and its implementation}
+    The mesh multiplication algorithm multiplies two matrices by utilizing multiple
+    processes.
+    The algorithm is initialized with $n$ processors, where $n$ is the product of
+    the number of rows of the first matrix ($r$) and the number of columns of the
+    second matrix ($c$) - i.e. $n = rc$. The processes are generally viewed as
+    a mesh of $r$ rows and $c$ columns.
+
+    The following conventions are used in this text: the first input matrix is
+    denoted as $A$, the second input matrix is denoted as $B$, the output matrix
+    is denoted as $C$. For specific values of matrices their lowercase counterpart
+    letters will be used with $0$-based indices $i$ (row) and $j$ (column) counted
+    from the top left corner of the matrix (i.e. the first value of matrix $A$ would
+    be $a_{0,0}$). Processes will be denoted and indexed similarly, only with the
+    symbol $P$ (the first process in the mesh is $P_{0,0}$)
+
+    Every process corresponds to a position of the output matrix $C$ and is initialized
+    by setting its output value $c_{i,j}$ to $0$.
+    The algorithm works by dividing the input matrices between the processes. This is
+    done by feeding each row of $A$ to the rows of the process mesh and
+    each column of $B$ to the columns of the process mesh. After receiving one value
+    from each of the input matrices, an iteration of the $c_{i,j}$ value calculation
+    in the form of $c_{i,j} = c_{i,j} + (a_{i,j-1} b_{i-1,j})$ is carried out.
+    Each process, after its computation step, propagates the received values further
+    by sending value $a$ to the right and value $b$ downward in the process mesh.
+    Every process works until there are incoming values. If there are no more incoming
+    values to $P_{i,j}$, it has finished computing value $c_{i,j}$.
+    The processes can be divided into four groups based on behaviour:
+    \begin{itemize}
+        \item \textbf{root} - this group contains only the first process (if viewed as a mesh,
+                mapped to the top left corner),
+        \item \textbf{first row} - the first row of the mesh, excluding the root,
+        \item \textbf{first column} - the first column of the mesh, excluding the root,
+        \item \textbf{the rest} - this is the rest of the processes that do not fit into the
+                other groups.
+    \end{itemize}
+    This division is not particularly important in the mathematical sense, but was
+    used during the implementation of the algorithm.
+
 \end{document}
