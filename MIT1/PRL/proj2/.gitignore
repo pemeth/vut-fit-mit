@@ -6,3 +6,7 @@ mm
 
 # Test files with matrices
 mat*
+
+# LaTeX output files.
+*.aux
+*.out
