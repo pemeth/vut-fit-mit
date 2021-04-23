@@ -51,7 +51,20 @@ void send_down(int val, int stride, int rank, int max_rank, int tag = TAG) {
     }
 }
 
-// TODO doxygen documentation of these propagate functions
+/**
+ * * This is a shared documentation comment with the functions
+ * * propagate_first_col() and propagate_rest().
+ * This function is meant to be used by the first row of processes in the mesh.
+ * The function issues a send_right() and send_down() with respective
+ * values `val_right` and `val_down` and MPI_Send tags `tag_right` and `tag_down`.
+ * @param val_right the value to be sent to the right.
+ * @param val_down the value to be sent downward.
+ * @param cols the number of columns in the process mesh
+ * @param rank the rank of the calling process.
+ * @param max_rank the highest rank in MPI_COMM_WORLD.
+ * @param tag_right (default = TAG) the tag for MPI_Send() when sending to the right.
+ * @param tag_down (default = TAG) the tag for MPI_Send() when sending downward.
+ */
 void propagate_first_row(
     int val_right,
     int val_down,
@@ -70,6 +83,10 @@ void propagate_first_row(
     send_down(val_down, cols, rank, max_rank, tag_down);
 }
 
+/**
+ * * See documentation comment for function propagate_first_row().
+ * This function is meant to be used by the first column of processes in the mesh.
+ */
 void propagate_first_col(
     int val_right,
     int val_down,
@@ -88,6 +105,11 @@ void propagate_first_col(
     send_down(val_down, cols, rank, max_rank, tag_down);
 }
 
+/**
+ * * See documentation comment for function propagate_first_row().
+ * This function is meant to be used by processes NOT in the first row or the first
+ * column of the process mesh.
+ */
 void propagate_rest(
     int val_right,
     int val_down,
