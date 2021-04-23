@@ -55,4 +55,45 @@
     This division is not particularly important in the mathematical sense, but was
     used during the implementation of the algorithm.
 
+    \subsection{The implementation}
+    The program starts by parsing the first line of the input files. This is carried out
+    by the root process. The parsed values, along with the file seek positions, are broadcast
+    to every process. Next, processes of the \textbf{first row} and \textbf{first column}
+    open the input files and seek to the position of the first values of the matrices.
+    From this point on, no preemptive data loading is done, so all processes read data
+    as needed, directly from the files. The next sections describe how each process
+    group behaves. After every process finishes its computation, the root process
+    gathers their respective $c$ values and prints them in the correct format.
+
+    \subsubsection*{Root}
+    This group contains only the root process. It is the only process that reads from
+    both files. After reading the inputs, the next iteration of $c$ is computed and
+    the input values are propagated into the mesh. It finishes its computations after
+    encountering a newline or EOF in the first file.
+
+    \subsubsection*{First row}
+    During the first iteration, all processes in this group move to their respective
+    initial positions in the second file. This means to the top of the \texttt{rank}-th
+    column of matrix $B$. After this these processes read the next value from $B$ and
+    wait for the next value from $A$ sent from the process to their left.
+    The next iteration of $c$ is computed and the incoming values are propagated into
+    the mesh. If there are no more values to be sent, then a message indicating this
+    is propagated as well.
+
+    \subsubsection*{First column}
+    Similar to the previous group. During the first iteration all processes in this
+    group move to their respective positions in the first file, so to
+    the $\frac{\texttt{rank}}{\texttt{cols}}$-th row of matrix $A$. After this these
+    processes read the next value from $A$ and wait for the next value from $B$ sent
+    from theprocess to their top. The next iteration of $c$ is computed and the
+    incoming values are propagated into the mesh. If there are no more values
+    to be sent, then a message indicating this is propagated as well.
+
+    \subsubsection*{The rest}
+    These processes listen to their neighbours for values, as well as to the message
+    indicating no more incoming values. The next iteration of $c$ is computed and
+    all received messages are propagated further into the mesh. If a message
+    indicating the exhaustion of input values is received, the process may finish
+    the computation.
+
 \end{document}
