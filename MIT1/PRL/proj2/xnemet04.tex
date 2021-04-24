@@ -5,6 +5,9 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{hyperref}
+\usepackage{pgfplots}
+
+\pgfplotsset{width=10cm,compat=1.9}
 
 \begin{document}
     \begin{center}
@@ -111,4 +114,64 @@
     indicating the exhaustion of input values is received, the process may finish
     the computation.
 
+    \section{Experiments}
+    Experiments were done on the \emph{Merlin} server and the maximum number of processes
+    used was $12$. The experiments were conducted as follows.
+
+    For every combination of output matrix dimensions (that required at most 12 processes),
+    6 timed runs of the program were completed. The 6 runs were done for the purpose of
+    averaging run times for a given matrix pair input, therefore during these 6 runs the
+    input matrices did not change.
+
+    As only the number of rows of matrix $A$ and the number of columns of matrix $B$
+    dictate the dimensions of the output matrix $C$, three variations of the experiment
+    were conducted. These variations change the size of the shared dimension of $A$
+    and $B$ (dimenion $m$ when $A = r \times m$ and $B = m \times c$). The sizes of
+    this dimension were $1$, $100$ and $500$ for the experiments. The results of the
+    experiments are shown in the plot below.
+
+    \begin{center}
+        \begin{tikzpicture}
+            \begin{axis}[
+                axis lines = left,
+                xlabel = {Number of processes},
+                ylabel = {Time},
+                xmin = 1, xmax = 12,
+                ymin = 0, ymax = 0.27,
+                xtick = {1,2,3,4,5,6,7,8,9,10,11,12},
+                legend pos = north west,
+                ymajorgrids = true,
+                grid style = dashed,
+            ]
+
+            \addplot [
+                color = blue,
+                mark = square,
+                ]
+                coordinates {
+                    (1,0.0297)(2,0.0479)(3,0.0642)(4,0.0839)(5,0.099)(6,0.1191)
+                    (7,0.1338)(8,0.1576)(9,0.1779)(10,0.1970)(11,0.2153)(12,0.2376)
+                };
+            \addplot [
+                color = red,
+                mark = o,
+                ]
+                coordinates {
+                    (1,0.033)(2,0.0491)(3,0.0681)(4,0.0838)(5,0.1045)(6,0.1239)
+                    (7,0.1481)(8,0.1628)(9,0.1815)(10,0.2027)(11,0.2198)(12,0.2409)
+                    };
+
+            \addplot [
+                color = green,
+                mark = triangle,
+                ]
+                coordinates {
+                    (1,0.0317)(2,0.0504)(3,0.0717)(4,0.0904)(5,0.1088)(6,0.1319)
+                    (7,0.1593)(8,0.1781)(9,0.1979)(10,0.2238)(11,0.2552)(12,0.2688)
+                    };
+
+            \legend{$m=1$,$m=100$,$m=500$}
+            \end{axis}
+        \end{tikzpicture}
+    \end{center}
 \end{document}
