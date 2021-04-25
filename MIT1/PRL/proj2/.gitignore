@@ -1,0 +1,18 @@
+# Local VSCode settings
+.vscode
+
+# Compilation output
+mm
+
+# Test files with matrices
+mat*
+
+# LaTeX output files.
+*.aux
+*.out
+
+# Timing/profiling data
+timings/*
+
+# draw.io diagrams
+*.drawio
