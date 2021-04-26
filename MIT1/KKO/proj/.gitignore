@@ -1,0 +1,6 @@
+# VSCode local settings
+.vscode
+
+# Testing input data
+data/*
+data.zip
