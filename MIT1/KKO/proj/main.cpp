@@ -20,7 +20,7 @@ void print_help(const char *prepend = "")
 int main(int argc, char *argv[])
 {
     int opt;
-    bool compress, model = false, adapt = false;
+    bool compress, model = false, adaptive = false;
     int width = 0;
     std::string f_in = "", f_out = "";
     bool compress_set = false;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
             model = true;
             break;
         case 'a':
-            adapt = true;
+            adaptive = true;
             break;
         case 'i':
             f_in = optarg;
