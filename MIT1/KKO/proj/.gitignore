@@ -1,6 +1,10 @@
 # VSCode local settings
 .vscode
 
+# Compilation output
+kko
+*.o
+
 # Testing input data
 data/*
 data.zip
