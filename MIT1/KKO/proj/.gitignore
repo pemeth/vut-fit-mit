@@ -5,6 +5,8 @@
 kko
 *.o
 
-# Testing input data
+# Testing input/output data
 data/*
 data.zip
+*.raw
+*.kko
