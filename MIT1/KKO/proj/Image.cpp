@@ -32,6 +32,10 @@ Image::Image(std::string path, uint32_t width)
     }
 }
 
+Image::Image()
+{
+}
+
 Image::~Image()
 {
 }

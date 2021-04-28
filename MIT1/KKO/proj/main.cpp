@@ -68,9 +68,10 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    Image img;
     try
     {
-        Image img = Image(f_in, width);
+        img = Image(f_in, width);
     }
     catch(const char *e)
     {
