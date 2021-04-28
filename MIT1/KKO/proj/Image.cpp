@@ -30,6 +30,8 @@ Image::Image(std::string path, uint32_t width)
     if (this->img.size() != this->width * this->height) {
         throw "Image load encountered an error.";
     }
+
+    this->img_size = this->img.size();
 }
 
 Image::Image()
@@ -54,4 +56,13 @@ void Image::write_out(std::string path)
     }
 
     fs.close();
+}
+
+/**
+ * Returns the image size.
+ * @returns The image size.
+ */
+uint32_t Image::size()
+{
+    return this->img.size();
 }
