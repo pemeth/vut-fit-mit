@@ -1,6 +1,6 @@
 CC := g++
 FLAGS := -pedantic -Wall
-NAME := kko
+NAME := huff_codec
 
 .PHONY: build clean
 

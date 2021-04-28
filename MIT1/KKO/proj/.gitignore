@@ -2,7 +2,7 @@
 .vscode
 
 # Compilation output
-kko
+huff_codec
 *.o
 
 # Testing input/output data
