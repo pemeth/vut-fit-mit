@@ -18,6 +18,7 @@ public:
     ~Image();
     void write_out(std::string);
     uint32_t size();
+    void dimensions(uint32_t *width, uint32_t *height);
 };
 
 #endif /* IMAGE_HPP */

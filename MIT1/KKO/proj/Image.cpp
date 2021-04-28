@@ -66,3 +66,12 @@ uint32_t Image::size()
 {
     return this->img.size();
 }
+
+/**
+ * Returns the dimensions of the image via the `width` and `height` pointers.
+ */
+void Image::dimensions(uint32_t *width, uint32_t *height)
+{
+    (*width) = this->width;
+    (*height) = this->height;
+}
