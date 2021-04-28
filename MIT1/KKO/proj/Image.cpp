@@ -75,3 +75,14 @@ void Image::dimensions(uint32_t *width, uint32_t *height)
     (*width) = this->width;
     (*height) = this->height;
 }
+
+/**
+ * Indexing of the image. Image is in a single row of pixels.
+ * Basically a getter for the underlying image data in the image vector.
+ * @param idx the index, from which to return the value.
+ * @returns The pixel value at position `idx`.
+ */
+uint8_t Image::operator[](size_t idx)
+{
+    return this->img[idx];
+}
