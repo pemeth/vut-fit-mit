@@ -2,6 +2,8 @@
 #include <string>
 #include <unistd.h>
 
+#include "Image.hpp"
+
 void print_help(const char *prepend = "")
 {
     printf("%s", prepend);
@@ -63,6 +65,16 @@ int main(int argc, char *argv[])
 
     if (!compress_set || f_in.length() == 0 || f_out.length() == 0 || width < 1) {
         print_help("Missing required argument or argument value.\n");
+        return EXIT_FAILURE;
+    }
+
+    try
+    {
+        Image img = Image(f_in, width);
+    }
+    catch(const char *e)
+    {
+        std::cerr << e << '\n';
         return EXIT_FAILURE;
     }
 
