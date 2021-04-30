@@ -1,4 +1,13 @@
+#include <iostream> // cerr
 #include "Codec.hpp"
+
+#define C_0x00 0x00
+#define P_0x00 0x00
+#define P_0x01 0x01
+#define P_0x02 0x02
+
+#include <fstream>
+#include <vector>
 
 Codec::Codec(Image *img)
 {
@@ -7,6 +16,58 @@ Codec::Codec(Image *img)
 
 Codec::~Codec()
 {
+}
+
+void Codec::encode()
+{
+    std::vector<uint8_t> encoded;
+
+    rle(&encoded);
+
+    std::fstream fs;
+    fs.open("./enc.kko", std::ios_base::out | std::ios_base::binary);
+
+    for (uint64_t i = 0; i < encoded.size(); i++) {
+        fs.write((char *) &(encoded[i]), sizeof(uint8_t) * 1);
+    }
+
+    fs.close();
+}
+
+void Codec::rle(std::vector<uint8_t> *result)
+{
+    const size_t size = this->img->size();
+    uint8_t previous = (*this->img)[0];
+    uint32_t counter = 1;
+    uint32_t width, height;
+    this->img->dimensions(&width, &height);
+
+    for (size_t i = 1; i < size; i++) {
+        if (previous == (*this->img)[i] && counter <= 257) { // 258 - 3 = 255
+            counter++;
+        } else {
+            std::cerr << counter << ' ';
+            enc(counter, previous, result);
+            counter = 1;
+            previous = (*this->img)[i];
+        }
+    }
+    enc(counter, previous, result);
+    std::cerr << '\n';
+}
+
+void Codec::enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result)
+{
+    if (count < 3) {
+        for (uint32_t i = 0; i < count; i++) {
+            result->push_back(value);
+        }
+    } else {
+        for (uint8_t i = 0; i < 3; i++) {
+            result->push_back(value);
+        }
+        result->push_back(count-3);
+    }
 }
 
 /**

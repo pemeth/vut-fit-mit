@@ -16,9 +16,13 @@ private:
     uint32_t changes_vertically();
     uint32_t changes_horizontally();
     uint8_t best_encoding_direction();
+    void rle(std::vector<uint8_t> *result);
+    void enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result);
 public:
     Codec(Image *);
     ~Codec();
+
+    void encode();
 };
 
 #endif /* CODEC_HPP */
