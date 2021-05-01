@@ -46,14 +46,12 @@ void Codec::rle(std::vector<uint8_t> *result)
         if (previous == (*this->img)[i] && counter <= 257) { // 258 - 3 = 255
             counter++;
         } else {
-            std::cerr << counter << ' ';
             enc(counter, previous, result);
             counter = 1;
             previous = (*this->img)[i];
         }
     }
     enc(counter, previous, result);
-    std::cerr << '\n';
 }
 
 void Codec::enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result)
