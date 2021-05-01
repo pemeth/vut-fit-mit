@@ -1,6 +1,7 @@
 #include <iostream> // cerr
 #include "Codec.hpp"
 
+// TODO remove these #defines and #includes if not needed
 #define C_0x00 0x00
 #define P_0x00 0x00
 #define P_0x01 0x01
@@ -24,6 +25,7 @@ void Codec::encode()
 
     rle(&encoded);
 
+    // TODO This is here mainly for debugging purposes. This needs to be changed.
     std::fstream fs;
     fs.open("./enc.kko", std::ios_base::out | std::ios_base::binary);
 
