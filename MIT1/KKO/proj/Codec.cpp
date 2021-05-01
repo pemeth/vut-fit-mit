@@ -86,6 +86,7 @@ void Codec::decode(std::string in_path, std::string out_path)
     irle(&fs, &decoded);
     fs.close();
 
+    // TODO repeated code (Codec::save_raw()) - probably call save_raw() here.
     // Write it to file.
     fs.open(out_path, std::ios_base::out | std::ios_base::binary);
     for (uint64_t i = 0; i < decoded.size(); i++) {
