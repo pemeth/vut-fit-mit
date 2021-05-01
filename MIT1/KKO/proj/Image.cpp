@@ -34,6 +34,16 @@ Image::Image(std::string path, uint32_t width)
     this->img_size = this->img.size();
 }
 
+/**
+ * Construct an Image object from raw pixel data.
+ * @param data pointer to the raw pixel data.
+ */
+Image::Image(std::vector<uint8_t> *data)
+{
+    // TODO this way Image does not know the image dimensions!
+    this->img = std::vector<uint8_t>(*data);
+}
+
 Image::Image()
 {
 }
