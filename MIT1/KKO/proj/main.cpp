@@ -80,25 +80,13 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    Image img;
-
-    // TODO this is terrible.
+    Codec img;
     if (compress) {
-        try
-        {
-            img = Image(f_in, width);
-        }
-        catch(const char *e)
-        {
-            std::cerr << e << '\n';
-            return EXIT_FAILURE;
-        }
-
-        Codec codec = Codec(&img);
-        codec.encode(f_out);
+        img.open_image(f_in, width);
+        img.encode(f_out);
     } else {
-        Codec codec = Codec(&img);
-        codec.decode(f_in, f_out);
+        img.open_image(f_in);
+        img.save_raw(f_out);
     }
 
     return 0;
