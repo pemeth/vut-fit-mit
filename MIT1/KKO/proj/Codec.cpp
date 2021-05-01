@@ -19,6 +19,30 @@ Codec::~Codec()
 {
 }
 
+/**
+ * Decode an encoded image saved in `in_path` and write the output decoded
+ * image as RAW pixel data into file `out_path`.
+ * @param in_path path to file containing an encoded image.
+ * @param out_path path to file, to which to write the decoded raw image.
+ */
+void Codec::decode(std::string in_path, std::string out_path)
+{
+    std::vector<uint8_t> decoded;
+    std::fstream fs;
+
+    // Load and decode the encoded image file.
+    fs.open(in_path, std::ios_base::in | std::ios_base::binary);
+    irle(&fs, &decoded);
+    fs.close();
+
+    // Write it to file.
+    fs.open(out_path, std::ios_base::out | std::ios_base::binary);
+    for (uint64_t i = 0; i < decoded.size(); i++) {
+        fs.write((char *) &(decoded[i]), sizeof(uint8_t));
+    }
+    fs.close();
+}
+
 void Codec::encode()
 {
     std::vector<uint8_t> encoded;
@@ -37,6 +61,61 @@ void Codec::encode()
     }
 
     fs.close();
+}
+
+/** RLE decoding in the horizontal direction.
+ * @param fs pointer to fstream for the file wwith encoded image.
+ * @param decoded pointer to vector, which will contain the decoded image.
+ */
+void Codec::irle(std::fstream *fs, std::vector<uint8_t> *decoded)
+{
+    uint8_t byte, previous;
+    // First 4 bytes are the image width.
+    uint32_t width = read_width(fs);
+
+    fs->read((char *) &byte, sizeof(uint8_t));
+    decoded->push_back(byte);
+
+    previous = byte;
+    while (true) {
+        if (fs->eof()) {
+            break;
+        }
+
+        fs->read((char *) &byte, sizeof(uint8_t));
+        if (fs->eof()) {
+            break;
+        }
+
+        if (byte == previous) {
+            decoded->push_back(byte);
+
+            fs->read((char *) &byte, sizeof(uint8_t));
+            if (fs->eof()) {
+                break;
+            }
+
+            if (byte == previous) {
+                decoded->push_back(byte);
+                fs->read((char *) &byte, sizeof(uint8_t));
+                push_n(previous, byte, decoded);
+
+                fs->read((char *) &byte, sizeof(uint8_t));
+                if (fs->eof()) {
+                    break;
+                }
+
+                decoded->push_back(byte);
+                previous = byte;
+            } else {
+                decoded->push_back(byte);
+                previous = byte;
+            }
+        } else {
+            decoded->push_back(byte);
+            previous = byte;
+        }
+    }
 }
 
 void Codec::rle(std::vector<uint8_t> *result)
@@ -70,6 +149,19 @@ void Codec::enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result)
             result->push_back(value);
         }
         result->push_back(count-3);
+    }
+}
+
+/**
+ * Pushes value `val` `n`-times into vector `vect`.
+ * @param val the value to be pushed.
+ * @param n how many times to push it.
+ * @param vect pointer to the vector to be pushed in.
+ */
+void Codec::push_n(const uint8_t val, uint8_t n, std::vector<uint8_t> *vect)
+{
+    for (uint8_t i = 0; i < n; i++) {
+        vect->push_back(val);
     }
 }
 
