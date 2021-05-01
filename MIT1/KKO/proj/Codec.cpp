@@ -63,7 +63,8 @@ void Codec::encode(std::string out_path)
 }
 
 /** RLE decoding in the horizontal direction.
- * @param fs pointer to fstream for the file wwith encoded image.
+ * @param fs pointer to fstream (opened for binary read) for the file with
+ * encoded image.
  * @param decoded pointer to vector, which will contain the decoded image.
  */
 void Codec::irle(std::fstream *fs, std::vector<uint8_t> *decoded)
