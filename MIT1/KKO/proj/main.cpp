@@ -2,6 +2,7 @@
 #include <string>
 #include <unistd.h>
 
+#include "Codec.hpp"
 #include "Image.hpp"
 
 void print_help(const char *prepend = "")
@@ -63,19 +64,19 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (!compress_set || f_in.length() == 0 || f_out.length() == 0 || width < 1) {
-        print_help("Missing required argument or argument value.\n");
+    if (!compress_set) {
+        print_help("Choose -c or -d for compression/decompression.\n");
         return EXIT_FAILURE;
     }
 
-    Image img;
-    try
-    {
-        img = Image(f_in, width);
+    if (f_in.length() == 0 || f_out.length() == 0) {
+        print_help("Input and output files must always be set.\n");
+        return EXIT_FAILURE;
     }
-    catch(const char *e)
-    {
-        std::cerr << e << '\n';
+
+
+    if (compress && width < 1) {
+        print_help("When compressing, the -w parameter must be set.\n");
         return EXIT_FAILURE;
     }
 
