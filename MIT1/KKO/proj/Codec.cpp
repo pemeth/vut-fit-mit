@@ -29,6 +29,9 @@ void Codec::encode()
     std::fstream fs;
     fs.open("./enc.kko", std::ios_base::out | std::ios_base::binary);
 
+    // First 4 bytes are the image width.
+    write_width(&fs);
+
     for (uint64_t i = 0; i < encoded.size(); i++) {
         fs.write((char *) &(encoded[i]), sizeof(uint8_t) * 1);
     }
@@ -142,4 +145,42 @@ uint32_t Codec::changes_vertically()
     }
 
     return change_count;
+}
+
+/**
+ * Writes 4 bytes to `*fs`. These 4 bytes represent the original width
+ * of the encoded image.
+ * @param fs pointer to an outbound fstream.
+ */
+void Codec::write_width(std::fstream *fs)
+{
+    // First 4 bytes of the encoded image are the image width.
+    uint32_t width, height;
+    this->img->dimensions(&width, &height);
+
+    uint8_t byte;
+    for (int shift = 24; shift >= 0; shift -= 8) {
+        byte = width >> shift;
+        fs->write((char *) &(byte), sizeof(uint8_t));
+    }
+}
+
+/**
+ * Reads 4 bytes from fstream `*fs`, interprets them as an
+ * unsigned 32 bit integer, and returns this value.
+ * @param fs pointer to an inbound fstream.
+ * @returns A 32 bit unsigned integer.
+ */
+uint32_t Codec::read_width(std::fstream *fs)
+{
+    uint32_t width = 0;
+    uint8_t byte = 0;
+
+    for (int shift = 24; shift >= 0; shift -= 8) {
+        fs->read((char *) &byte, sizeof(uint8_t));
+
+        width |= byte<<shift;
+    }
+
+    return width;
 }
