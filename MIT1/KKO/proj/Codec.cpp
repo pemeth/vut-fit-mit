@@ -43,15 +43,14 @@ void Codec::decode(std::string in_path, std::string out_path)
     fs.close();
 }
 
-void Codec::encode()
+void Codec::encode(std::string out_path)
 {
     std::vector<uint8_t> encoded;
 
     rle(&encoded);
 
-    // TODO This is here mainly for debugging purposes. This needs to be changed.
     std::fstream fs;
-    fs.open("./enc.kko", std::ios_base::out | std::ios_base::binary);
+    fs.open(out_path, std::ios_base::out | std::ios_base::binary);
 
     // First 4 bytes are the image width.
     write_width(&fs);

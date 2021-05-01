@@ -27,7 +27,7 @@ public:
     Codec(Image *);
     ~Codec();
 
-    void encode();
+    void encode(std::string out_path);
     void decode(std::string in_path, std::string out_path);
 };
 
