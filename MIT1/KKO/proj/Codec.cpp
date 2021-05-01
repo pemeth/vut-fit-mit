@@ -15,8 +15,59 @@ Codec::Codec(Image *img)
     this->img = img;
 }
 
+/** Default constructor.
+ */
+Codec::Codec()
+{
+}
+
 Codec::~Codec()
 {
+}
+
+/**
+ * Load RAW image from `img_path` with `width`.
+ */
+void Codec::open_image(std::string img_path, uint32_t width)
+{
+    this->img_data = Image(img_path, width);
+    this->img = &(this->img_data);
+}
+
+/**
+ * Load encoded image from file `img_path`.
+ * @param img_path the path to encoded image file.
+ */
+void Codec::open_image(std::string img_path)
+{
+    std::vector<uint8_t> decoded;
+    std::fstream fs;
+    fs.open(img_path, std::ios_base::in | std::ios_base::binary);
+    irle(&fs, &decoded);
+    fs.close();
+
+    // TODO This way the Image object has no idea what dimensions
+    //  the image has! the `irle()` method reads the width encoded
+    //  in the compressed image file, but does not return it - possible fix??
+    this->img_data = Image(&decoded);
+    this->img = &(this->img_data);
+}
+
+/**
+ * Save pixel data to file `out_path` as raw pixel data.
+ * @param out_path specifies the file, to which to save the image.
+ */
+void Codec::save_raw(std::string out_path)
+{
+    std::fstream fs;
+    fs.open(out_path, std::ios_base::out | std::ios_base::binary);
+
+    for (uint64_t i = 0; i < this->img->size(); i++) {
+        uint8_t pixel = (*this->img)[i];
+        fs.write((char *) &pixel, sizeof(uint8_t));
+    }
+
+    fs.close();
 }
 
 /**

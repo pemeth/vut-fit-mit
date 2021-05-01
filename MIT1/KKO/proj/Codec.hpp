@@ -12,7 +12,8 @@
 class Codec
 {
 private:
-    Image *img; //!< Pointer to an image to be encoded/decoded.
+    Image *img = nullptr; //!< Pointer to an image to be encoded/decoded.
+    Image img_data;
 
     uint32_t changes_vertically();
     uint32_t changes_horizontally();
@@ -24,9 +25,13 @@ private:
     uint32_t read_width(std::fstream *fs);
     void push_n(const uint8_t val, uint8_t n, std::vector<uint8_t> *vect);
 public:
+    Codec();
     Codec(Image *);
     ~Codec();
 
+    void open_image(std::string img_path, uint32_t width);
+    void open_image(std::string img_path);
+    void save_raw(std::string out_path);
     void encode(std::string out_path);
     void decode(std::string in_path, std::string out_path);
 };
