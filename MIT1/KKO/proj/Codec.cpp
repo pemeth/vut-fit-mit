@@ -108,7 +108,7 @@ void Codec::encode(std::string out_path)
     std::fstream fs;
     fs.open(out_path, std::ios_base::out | std::ios_base::binary);
 
-    // First 4 bytes are the image width.
+    // First 8 bytes are the image width.
     write_dimensions(&fs);
 
     for (uint64_t i = 0; i < encoded.size(); i++) {
