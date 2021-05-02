@@ -21,8 +21,8 @@ private:
     void irle(std::fstream *fs, std::vector<uint8_t> *decoded);
     void rle(std::vector<uint8_t> *result);
     void enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result);
-    void write_width(std::fstream *fs);
-    uint32_t read_width(std::fstream *fs);
+    void write_dimensions(std::fstream *fs);
+    void read_dimensions(std::fstream *fs, uint32_t *width, uint32_t *height);
     void push_n(const uint8_t val, uint8_t n, std::vector<uint8_t> *vect);
     void model_sub();
     void model_sub_inverse();

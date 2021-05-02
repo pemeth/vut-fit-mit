@@ -105,7 +105,7 @@ void Codec::encode(std::string out_path)
     fs.open(out_path, std::ios_base::out | std::ios_base::binary);
 
     // First 4 bytes are the image width.
-    write_width(&fs);
+    write_dimensions(&fs);
 
     for (uint64_t i = 0; i < encoded.size(); i++) {
         fs.write((char *) &(encoded[i]), sizeof(uint8_t) * 1);
@@ -122,8 +122,10 @@ void Codec::encode(std::string out_path)
 void Codec::irle(std::fstream *fs, std::vector<uint8_t> *decoded)
 {
     uint8_t byte, previous;
-    // First 4 bytes are the image width.
-    uint32_t width = read_width(fs);
+
+    // First 8 bytes are the image dimensions.
+    uint32_t width, height;
+    read_dimensions(fs, &width, &height);
 
     fs->read((char *) &byte, sizeof(uint8_t));
     decoded->push_back(byte);
@@ -334,39 +336,50 @@ uint32_t Codec::changes_vertically()
 }
 
 /**
- * Writes 4 bytes to `*fs`. These 4 bytes represent the original width
- * of the encoded image.
+ * Writes 8 bytes to `*fs`. These 8 bytes represent the original width
+ * and height of the encoded image.
  * @param fs pointer to an outbound fstream.
  */
-void Codec::write_width(std::fstream *fs)
+void Codec::write_dimensions(std::fstream *fs)
 {
-    // First 4 bytes of the encoded image are the image width.
     uint32_t width, height;
     this->img->dimensions(&width, &height);
 
+    // First 4 bytes of the encoded image are the image width.
     uint8_t byte;
     for (int shift = 24; shift >= 0; shift -= 8) {
         byte = width >> shift;
         fs->write((char *) &(byte), sizeof(uint8_t));
     }
+
+    // Next 4 bytes of the encoded image are the image height.
+    for (int shift = 24; shift >= 0; shift -= 8) {
+        byte = height >> shift;
+        fs->write((char *) &(byte), sizeof(uint8_t));
+    }
 }
 
 /**
- * Reads 4 bytes from fstream `*fs`, interprets them as an
- * unsigned 32 bit integer, and returns this value.
+ * Reads 8 bytes from fstream `*fs`, interprets them as
+ * two unsigned 32 bit integers, and returns these values via the `width`
+ * and `height` pointers. Used to read the first 8 bytes of an encoded
+ * image, where the dimensions of the image are stored.
  * @param fs pointer to an inbound fstream.
- * @returns A 32 bit unsigned integer.
  */
-uint32_t Codec::read_width(std::fstream *fs)
+void Codec::read_dimensions(std::fstream *fs, uint32_t *width, uint32_t *height)
 {
-    uint32_t width = 0;
+    *width = 0, *height = 0;
     uint8_t byte = 0;
 
     for (int shift = 24; shift >= 0; shift -= 8) {
         fs->read((char *) &byte, sizeof(uint8_t));
 
-        width |= byte<<shift;
+        *width |= byte<<shift;
     }
 
-    return width;
+    for (int shift = 24; shift >= 0; shift -= 8) {
+        fs->read((char *) &byte, sizeof(uint8_t));
+
+        *height |= byte<<shift;
+    }
 }
