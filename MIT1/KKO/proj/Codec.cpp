@@ -84,31 +84,6 @@ void Codec::save_raw(std::string out_path)
     fs.close();
 }
 
-/**
- * Decode an encoded image saved in `in_path` and write the output decoded
- * image as RAW pixel data into file `out_path`.
- * @param in_path path to file containing an encoded image.
- * @param out_path path to file, to which to write the decoded raw image.
- */
-void Codec::decode(std::string in_path, std::string out_path)
-{
-    std::vector<uint8_t> decoded;
-    std::fstream fs;
-
-    // Load and decode the encoded image file.
-    fs.open(in_path, std::ios_base::in | std::ios_base::binary);
-    irle(&fs, &decoded);
-    fs.close();
-
-    // TODO repeated code (Codec::save_raw()) - probably call save_raw() here.
-    // Write it to file.
-    fs.open(out_path, std::ios_base::out | std::ios_base::binary);
-    for (uint64_t i = 0; i < decoded.size(); i++) {
-        fs.write((char *) &(decoded[i]), sizeof(uint8_t));
-    }
-    fs.close();
-}
-
 void Codec::encode(std::string out_path, struct enc_options opts)
 {
     std::vector<uint8_t> encoded;
