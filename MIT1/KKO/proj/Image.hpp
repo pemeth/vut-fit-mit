@@ -15,7 +15,7 @@ private:
 public:
     Image();
     Image(std::string, uint32_t);
-    Image(std::vector<uint8_t> *data);
+    Image(std::vector<uint8_t> *data, uint32_t width, uint32_t height);
     ~Image();
     void write_out(std::string);
     uint32_t size();

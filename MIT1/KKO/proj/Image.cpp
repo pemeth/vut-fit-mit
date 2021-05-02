@@ -37,11 +37,15 @@ Image::Image(std::string path, uint32_t width)
 /**
  * Construct an Image object from raw pixel data.
  * @param data pointer to the raw pixel data.
+ * @param width the width of the image.
+ * @param height the height of the image.
  */
-Image::Image(std::vector<uint8_t> *data)
+Image::Image(std::vector<uint8_t> *data, uint32_t width, uint32_t height)
 {
-    // TODO this way Image does not know the image dimensions!
     this->img = std::vector<uint8_t>(*data);
+    this->width = width;
+    this->height = height;
+    this->img_size = width * height;
 }
 
 Image::Image()

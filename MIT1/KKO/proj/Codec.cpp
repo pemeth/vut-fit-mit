@@ -41,15 +41,19 @@ void Codec::open_image(std::string img_path, uint32_t width)
 void Codec::open_image(std::string img_path)
 {
     std::vector<uint8_t> decoded;
+    uint32_t width, height;
     std::fstream fs;
+
     fs.open(img_path, std::ios_base::in | std::ios_base::binary);
+
+    // First 8 bytes are the image dimensions.
+    read_dimensions(&fs, &width, &height);
     irle(&fs, &decoded);
+
     fs.close();
 
-    // TODO This way the Image object has no idea what dimensions
-    //  the image has! the `irle()` method reads the width encoded
-    //  in the compressed image file, but does not return it - possible fix??
-    this->img_data = Image(&decoded);
+    // Save image data.
+    this->img_data = Image(&decoded, width, height);
     this->img = &(this->img_data);
 }
 
@@ -122,10 +126,6 @@ void Codec::encode(std::string out_path)
 void Codec::irle(std::fstream *fs, std::vector<uint8_t> *decoded)
 {
     uint8_t byte, previous;
-
-    // First 8 bytes are the image dimensions.
-    uint32_t width, height;
-    read_dimensions(fs, &width, &height);
 
     fs->read((char *) &byte, sizeof(uint8_t));
     decoded->push_back(byte);
@@ -235,7 +235,10 @@ void Codec::model_sub()
         subd.push_back((*this->img)[i] - (*this->img)[i-1]);
     }
 
-    this->img_data = Image(&subd);
+    uint32_t width, height;
+    this->img->dimensions(&width, &height);
+
+    this->img_data = Image(&subd, width, height);
     this->img = &(this->img_data);
 }
 
@@ -257,7 +260,10 @@ void Codec::model_sub_inverse()
         unsubd.push_back((*this->img)[i] + unsubd[i-1]);
     }
 
-    this->img_data = Image(&unsubd);
+    uint32_t width, height;
+    this->img->dimensions(&width, &height);
+
+    this->img_data = Image(&unsubd, width, height);
     this->img = &(this->img_data);
 }
 
