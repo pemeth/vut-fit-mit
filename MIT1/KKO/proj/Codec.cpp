@@ -55,6 +55,11 @@ void Codec::open_image(std::string img_path)
 
     irle(&fs, &decoded);
 
+    // Invert the subtraction model if it was used during encoding.
+    if (opts.model) {
+        model_sub_inverse(&decoded);
+    }
+
     fs.close();
 
     // Save image data.
@@ -107,6 +112,11 @@ void Codec::decode(std::string in_path, std::string out_path)
 void Codec::encode(std::string out_path, struct enc_options opts)
 {
     std::vector<uint8_t> encoded;
+
+    // Apply subtraction model if requested.
+    if (opts.model) {
+        model_sub();
+    }
 
     rle(&encoded);
 
@@ -253,26 +263,18 @@ void Codec::model_sub()
 /**
  * Apply an inverse of the pixel subtraction model to the loaded image.
  * The model works in the horizontal direction, where
- * each pixel new value is calculated as `Old_Image[i] + New_Image[i-1]`,
- * where Old_Image is the subtracted image data from `Codec::model_sub()`
- * and New_Image is the image gotten by inverting the model.
- * **!!The old image data stored in `Codec::img` is overwritten.!!**
+ * each new pixel value is calculated as `Image[i] = Image[i] + Image[i-1]`.
+ * The resulting image data is modified in-place, therefore the resulting
+ * modified data is returned via the `subd` pointer.
+ * @param subd is the subtracted image data calculated by `Codec::model_sub()`.
  */
-void Codec::model_sub_inverse()
+void Codec::model_sub_inverse(std::vector<uint8_t> *subd)
 {
-    const size_t size = this->img->size();
-    std::vector<uint8_t> unsubd;
+    const size_t size = subd->size();
 
-    unsubd.push_back((*this->img)[0]);
     for (size_t i = 1; i < size; i++) {
-        unsubd.push_back((*this->img)[i] + unsubd[i-1]);
+        (*subd)[i] = (*subd)[i] + (*subd)[i-1];
     }
-
-    uint32_t width, height;
-    this->img->dimensions(&width, &height);
-
-    this->img_data = Image(&unsubd, width, height);
-    this->img = &(this->img_data);
 }
 
 /**
