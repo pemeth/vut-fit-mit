@@ -92,7 +92,7 @@ void Image::dimensions(uint32_t *width, uint32_t *height)
  * @param idx the index, from which to return the value.
  * @returns The pixel value at position `idx`.
  */
-uint8_t Image::operator[](size_t idx)
+uint8_t& Image::operator[](size_t idx)
 {
     return this->img[idx];
 }

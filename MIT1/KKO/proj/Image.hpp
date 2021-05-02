@@ -20,7 +20,7 @@ public:
     void write_out(std::string);
     uint32_t size();
     void dimensions(uint32_t *width, uint32_t *height);
-    uint8_t operator[](size_t idx);
+    uint8_t& operator[](size_t idx);
 };
 
 #endif /* IMAGE_HPP */
