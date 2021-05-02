@@ -48,6 +48,11 @@ void Codec::open_image(std::string img_path)
 
     // First 8 bytes are the image dimensions.
     read_dimensions(&fs, &width, &height);
+
+    // Next byte is the encoding options.
+    struct enc_options opts;
+    read_options(&fs, &opts);
+
     irle(&fs, &decoded);
 
     fs.close();
@@ -99,7 +104,7 @@ void Codec::decode(std::string in_path, std::string out_path)
     fs.close();
 }
 
-void Codec::encode(std::string out_path)
+void Codec::encode(std::string out_path, struct enc_options opts)
 {
     std::vector<uint8_t> encoded;
 
@@ -110,6 +115,9 @@ void Codec::encode(std::string out_path)
 
     // First 8 bytes are the image width.
     write_dimensions(&fs);
+
+    // Next byte is the encoding options.
+    write_options(&fs, opts);
 
     for (uint64_t i = 0; i < encoded.size(); i++) {
         fs.write((char *) &(encoded[i]), sizeof(uint8_t) * 1);
@@ -388,4 +396,39 @@ void Codec::read_dimensions(std::fstream *fs, uint32_t *width, uint32_t *height)
 
         *height |= byte<<shift;
     }
+}
+
+/**
+ * Writes one byte to `*fs`. This byte will hold the encoding options,
+ * that were used during encoding.
+ * @param fs pointer to an outbound filestream.
+ * @param opts structure with the encoding options.
+ */
+void Codec::write_options(std::fstream *fs, struct enc_options opts)
+{
+    uint8_t byte = 0;
+    byte |= opts.model << 0;
+    byte |= opts.adaptive << 1;
+    // More options may be added.
+
+    fs->write((char *) &(byte), sizeof(uint8_t));
+}
+
+/**
+ * Reads one byte from `*fs` and interprets it as options set during encoding.
+ * the options are returned via the `*opts` pointer.
+ * @param fs pointer to an inbound filestream.
+ * @param opts pointer to a structure of options, which will hold the parsed
+ * options.
+ */
+void Codec::read_options(std::fstream *fs, struct enc_options *opts)
+{
+    uint8_t byte = 0, mask = 0x01;
+    fs->read((char *) &byte, sizeof(uint8_t));
+
+    byte & mask ? opts->model = true : opts->model = false;
+    mask = mask << 1;
+    byte & mask ? opts->adaptive = true : opts->adaptive = false;
+    mask = mask << 1;
+    // More options may be added.
 }

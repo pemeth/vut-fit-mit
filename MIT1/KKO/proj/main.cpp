@@ -80,10 +80,17 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    struct enc_options opts;
+    opts.model = false; // Default is without model.
+    opts.adaptive = false; // Default is non-adaptive.
+
+    model ? opts.model = true : opts.model = false;
+    adaptive ? opts.adaptive = true : opts.adaptive = false;
+
     Codec img;
     if (compress) {
         img.open_image(f_in, width);
-        img.encode(f_out);
+        img.encode(f_out, opts);
     } else {
         img.open_image(f_in);
         img.save_raw(f_out);
