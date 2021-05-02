@@ -38,6 +38,7 @@ private:
     void push_n(const uint8_t val, uint8_t n, std::vector<uint8_t> *vect);
     void model_sub();
     void model_sub_inverse();
+    void load_encoded_data(std::fstream *fs, std::vector<uint8_t> *loaded);
 public:
     Codec();
     Codec(Image *);

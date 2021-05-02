@@ -432,3 +432,16 @@ void Codec::read_options(std::fstream *fs, struct enc_options *opts)
     mask = mask << 1;
     // More options may be added.
 }
+
+void Codec::load_encoded_data(std::fstream *fs, std::vector<uint8_t> *loaded)
+{
+    uint8_t byte;
+
+    while (true) {
+        if (fs->peek() == EOF) {
+            break;
+        }
+        fs->read((char *) &byte, sizeof(uint8_t));
+        loaded->push_back(byte);
+    }
+}
