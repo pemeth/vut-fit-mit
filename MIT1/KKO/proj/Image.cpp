@@ -45,7 +45,7 @@ Image::Image(std::vector<uint8_t> *data, uint32_t width, uint32_t height)
     this->img = std::vector<uint8_t>(*data);
     this->width = width;
     this->height = height;
-    this->img_size = width * height;
+    this->img_size = width * height; //TODO maybe check if this == data->size()
 }
 
 Image::Image()
