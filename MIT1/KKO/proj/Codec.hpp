@@ -24,6 +24,8 @@ private:
     void write_width(std::fstream *fs);
     uint32_t read_width(std::fstream *fs);
     void push_n(const uint8_t val, uint8_t n, std::vector<uint8_t> *vect);
+    void model_sub();
+    void model_sub_inverse();
 public:
     Codec();
     Codec(Image *);
