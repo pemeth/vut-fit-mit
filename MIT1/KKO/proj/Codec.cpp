@@ -231,7 +231,7 @@ void Codec::push_n(const uint8_t val, uint8_t n, std::vector<uint8_t> *vect)
  * Apply a pixel subtraction model to the loaded image.
  * The model works in the horizontal direction, where
  * each pixel new value is calculated as `Image[i] - Image[i-1]`.
- * ~!!The old image data stored in `Codec::img` is overwritten.!!~
+ * **!!The old image data stored in `Codec::img` is overwritten.!!**
  */
 void Codec::model_sub()
 {
@@ -256,7 +256,7 @@ void Codec::model_sub()
  * each pixel new value is calculated as `Old_Image[i] + New_Image[i-1]`,
  * where Old_Image is the subtracted image data from `Codec::model_sub()`
  * and New_Image is the image gotten by inverting the model.
- * ~!!The old image data stored in `Codec::img` is overwritten.!!~
+ * **!!The old image data stored in `Codec::img` is overwritten.!!**
  */
 void Codec::model_sub_inverse()
 {
