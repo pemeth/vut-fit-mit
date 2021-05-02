@@ -9,8 +9,8 @@ The following byte contains used compression methods.
 The following definitions of individual bits rise from the LSb
 to the MSb of this byte.
     bit0: Set if the pixel subtraction model was used. Unset otherwise.
-    bit1: Set if encoded in horizontal direction. Unset if in vertical.
-    bit2: Set if adaptive image scanning was used. Unset otherwise.
+    bit1: Set if adaptive image scanning was used. Unset otherwise.
+    bit2: RESERVED
     bit3: RESERVED
     bit4: RESERVED
     bit5: RESERVED
