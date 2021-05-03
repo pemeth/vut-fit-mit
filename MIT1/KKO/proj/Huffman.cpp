@@ -8,7 +8,7 @@
 Huffman::Huffman()
 {
     this->tree = new HuffmanNode(NYT_KEY, 0);
-    //std::cerr << "Created NYT node\n\t" << this->tree << ". Left: " << this->tree->left << " | Right: " << this->tree->right << '\n';
+    this->nyt = this->tree;
 }
 
 Huffman::~Huffman()
@@ -31,12 +31,8 @@ void Huffman::insert(uint8_t key) {
         return;
     }
 
-    HuffmanNode *nyt = find_nyt(this->tree);
-    if (nyt == nullptr) {
-        throw "NYT node not found.";
-    }
-
-    split_nyt(nyt, key);
+    // Pointer to NYT should never change.
+    split_nyt(this->nyt, key);
 
     // TODO the new node must contain the summed frequencies
     // of its children + tree rebalancing

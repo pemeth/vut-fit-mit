@@ -40,7 +40,7 @@ struct HuffmanNode {
 class Huffman
 {
 private:
-    HuffmanNode *tree;
+    HuffmanNode *tree, *nyt;
     std::vector<uint8_t> keys;
 
     void split_nyt(HuffmanNode *nyt, uint8_t key);
