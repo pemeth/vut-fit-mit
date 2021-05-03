@@ -32,7 +32,7 @@ void Huffman::insert(uint8_t key) {
     }
 
     // Pointer to NYT should never change.
-    split_nyt(this->nyt, key);
+    HuffmanNode *new_node = split_nyt(this->nyt, key);
 
     // TODO the new node must contain the summed frequencies
     // of its children + tree rebalancing
@@ -41,11 +41,12 @@ void Huffman::insert(uint8_t key) {
 /**
  * Split the NYT leaf into a new non-leaf node and two children.
  * The left child is the NYT leaf and the right child is a new leaf
- * containing `key` as key.
+ * containing `key` as key. Returns a pointer to the newly created node.
  * @param nyt pointer to the original NYT leaf to be split.
  * @param key is the key of the new leaf.
+ * @returns Pointer to the new node.
  */
-void Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
+HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
 {
     HuffmanNode *right = new HuffmanNode(key, 1);
     HuffmanNode *new_node = new HuffmanNode(NOT_LEAF, 0, nyt->parent, nyt, right);
@@ -63,6 +64,8 @@ void Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
     }
     nyt->parent = new_node;
     right->parent = new_node;
+
+    return new_node;
 }
 
 /**
