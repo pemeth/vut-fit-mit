@@ -131,14 +131,14 @@ void Huffman::delete_tree(HuffmanNode *node)
 }
 
 // TODO THESE ARE ONLY FOR DEBUGGING PURPOSES
-void Huffman::getVerticalOrder(HuffmanNode* root, int hd, std::map<int, std::vector<int>> &m)
+void Huffman::getVerticalOrder(HuffmanNode* root, int hd, std::map<int, std::vector<HuffmanNode *>> &m)
 {
     // Base case
     if (root == nullptr)
         return;
 
     // Store current node in map 'm'
-    m[hd].push_back(root->key);
+    m[hd].push_back(root);
 
     // Store nodes in left subtree
     getVerticalOrder(root->left, hd-1, m);
@@ -156,17 +156,17 @@ void Huffman::printVerticalOrder()
     // Create a map and store vertical order in map using
     // function getVerticalOrder()
     HuffmanNode* root = this->tree;
-    std::map < int, std::vector<int> > m;
+    std::map < int, std::vector<HuffmanNode *> > m;
     int hd = 0;
     getVerticalOrder(root, hd,m);
 
     // Traverse the map and print nodes at every horigontal
     // distance (hd)
-    std::map< int,std::vector<int> > :: iterator it;
+    std::map< int,std::vector<HuffmanNode *> > :: iterator it;
     for (it=m.begin(); it!=m.end(); it++)
     {
         for (size_t i=0; i<it->second.size(); ++i)
-            std::cout << it->second[i] << " ";
+            std::cout << "(" << it->second[i]->key << "," << it->second[i]->freq << ") ";
         std::cout << '\n';
     }
 }

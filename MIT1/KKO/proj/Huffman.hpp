@@ -49,7 +49,7 @@ private:
     void delete_tree(HuffmanNode *node);
 
     // TODO DEBUGGING FUNCTIONS - DELETE
-    void getVerticalOrder(HuffmanNode* root, int hd, std::map<int, std::vector<int>> &m);
+    void getVerticalOrder(HuffmanNode* root, int hd, std::map<int, std::vector<HuffmanNode *>> &m);
 public:
     Huffman();
     ~Huffman();
