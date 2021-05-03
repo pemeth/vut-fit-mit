@@ -44,7 +44,7 @@ private:
     std::vector<uint8_t> keys;
 
     HuffmanNode *split_nyt(HuffmanNode *nyt, uint8_t key);
-    HuffmanNode *find_nyt(HuffmanNode *root);
+    HuffmanNode *find_node(HuffmanNode *current, uint16_t key);
     int8_t which_child(HuffmanNode *parent, HuffmanNode *child);
     void delete_tree(HuffmanNode *node);
 

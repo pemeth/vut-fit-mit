@@ -24,16 +24,16 @@ Huffman::~Huffman()
  */
 void Huffman::insert(uint8_t key) {
     // Check if `key` is already in tree.
-    bool in_tree = std::any_of(this->keys.begin(), this->keys.end(), [&key](uint8_t i){return i==key;});
+    HuffmanNode *found = find_node(this->tree, key);
 
-    if (in_tree) {
+    if (found != nullptr) {
+        // The requested key is already in the tree.
         // TODO find the node with `key` and increment frequency + check if rebalance is needed
         return;
     }
 
     // Pointer to NYT should never change.
     HuffmanNode *new_node = split_nyt(this->nyt, key);
-    this->keys.push_back(key);
 
     // TODO tree rebalancing?
 }
@@ -76,22 +76,22 @@ HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
  * @param current reference to node, from which to start the search.
  * @returns A reference to the nyt node or nullptr if not found.
  */
-HuffmanNode *Huffman::find_nyt(HuffmanNode *current)
+HuffmanNode *Huffman::find_node(HuffmanNode *current, uint16_t key)
 {
     if (current == nullptr) {
         return nullptr;
     }
 
-    if (current->key == NYT_KEY) {
+    if (current->key == key) {
         return current;
     }
 
-    HuffmanNode *found = find_nyt(current->left);
+    HuffmanNode *found = find_node(current->left, key);
     if (found != nullptr) {
         return found;
     }
 
-    found = find_nyt(current->right);
+    found = find_node(current->right, key);
     if (found != nullptr) {
         return found;
     }
