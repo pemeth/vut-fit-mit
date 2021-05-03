@@ -33,9 +33,9 @@ void Huffman::insert(uint8_t key) {
 
     // Pointer to NYT should never change.
     HuffmanNode *new_node = split_nyt(this->nyt, key);
+    this->keys.push_back(key);
 
-    // TODO the new node must contain the summed frequencies
-    // of its children + tree rebalancing
+    // TODO tree rebalancing?
 }
 
 /**
@@ -64,6 +64,8 @@ HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
     }
     nyt->parent = new_node;
     right->parent = new_node;
+
+    new_node->freq = nyt->freq + right->freq;
 
     return new_node;
 }
