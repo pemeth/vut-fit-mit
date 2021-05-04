@@ -48,8 +48,8 @@ void Huffman::insert(uint8_t key) {
  */
 HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
 {
-    HuffmanNode *right = new HuffmanNode(key, 1);
-    HuffmanNode *new_node = new HuffmanNode(NOT_LEAF, 0, nyt->parent, nyt, right);
+    HuffmanNode *right = new HuffmanNode(key, 1, nyt->node_num - 1);
+    HuffmanNode *new_node = new HuffmanNode(NOT_LEAF, 0, nyt->node_num, nyt->parent, nyt, right);
 
     int8_t child = which_child(nyt->parent, nyt);
     if (child == LEFT_CHILD) {
@@ -67,6 +67,7 @@ HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
 
     new_node->freq = nyt->freq + right->freq;
 
+    nyt->node_num -= 2;
     return new_node;
 }
 
@@ -168,7 +169,8 @@ void Huffman::printVerticalOrder()
     for (it=m.begin(); it!=m.end(); it++)
     {
         for (size_t i=0; i<it->second.size(); ++i)
-            std::cout << "(" << it->second[i]->key << "," << it->second[i]->freq << ") ";
+            std::cout << "(" << it->second[i]->key << "," << it->second[i]->freq << "|" <<
+                        it->second[i]->node_num << ") ";
         std::cout << '\n';
     }
 }

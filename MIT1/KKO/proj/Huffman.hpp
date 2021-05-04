@@ -11,30 +11,39 @@
 
 #define NYT_KEY 300
 #define NOT_LEAF 400
+#define SYMBOL_SET_SIZE 257 // The maximum number of symbols the tree will
+                            // hold. 256 pixel values + 1 NYT node.
 
 struct HuffmanNode {
+    HuffmanNode(uint16_t k, uint32_t f, uint16_t n) :
+        key(k),
+        freq(f),
+        node_num(n)
+    {}
+
+    /* Set key and frequency. Node number defaults to 2 * SYMBOL_SET_SIZE - 1. */
     HuffmanNode(uint16_t k, uint32_t f) :
         key(k),
         freq(f),
-        parent(nullptr),
-        left(nullptr),
-        right(nullptr)
+        node_num(2 * SYMBOL_SET_SIZE - 1)
     {}
 
-    HuffmanNode(uint16_t k, uint32_t f, HuffmanNode *p,
+    HuffmanNode(uint16_t k, uint32_t f, uint16_t n, HuffmanNode *p,
                 HuffmanNode *l, HuffmanNode *r) :
         key(k),
         freq(f),
+        node_num(n),
         parent(p),
         left(l),
         right(r)
     {}
 
-    uint16_t key; //!< The key (should be 8-bit) or NYT node (value of > 255).
-    uint32_t freq; //!< The frequency of the key.
-    struct HuffmanNode *parent;
-    struct HuffmanNode *left;
-    struct HuffmanNode *right;
+    uint16_t key = 0; //!< The key (should be 8-bit) or NYT node (value of > 255).
+    uint32_t freq = 0; //!< The frequency of the key.
+    uint16_t node_num = 0; //!< The node number. Numbered bottom up, left to right.
+    struct HuffmanNode *parent = nullptr;
+    struct HuffmanNode *left = nullptr;
+    struct HuffmanNode *right = nullptr;
 };
 
 class Huffman
