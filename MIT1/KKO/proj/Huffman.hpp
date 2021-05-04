@@ -54,7 +54,12 @@ private:
 
     HuffmanNode *split_nyt(HuffmanNode *nyt, uint8_t key);
     HuffmanNode *find_node(HuffmanNode *current, uint16_t key);
+    void get_nodes_by_freq(HuffmanNode *current, uint32_t freq, std::vector<HuffmanNode *> *nodes);
     int8_t which_child(HuffmanNode *parent, HuffmanNode *child);
+    void rebalance_tree(HuffmanNode *current);
+    HuffmanNode *highest_number_node_in_block(HuffmanNode *current, uint32_t block_freq);
+    void swap(HuffmanNode *a, HuffmanNode *b);
+    void swap_with_root(HuffmanNode *node);
     void delete_tree(HuffmanNode *node);
 
     // TODO DEBUGGING FUNCTIONS - DELETE
