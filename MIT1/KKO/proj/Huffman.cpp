@@ -17,14 +17,22 @@ Huffman::~Huffman()
     this->tree = nullptr;
 }
 
+// TODO possibly rework this, so that an EOF code could be added.
 /**
- * Insert a key into the Huffman tree. If key already exists in the tree,
+ * Insert a key into the Huffman tree. If `key` already exists in the tree,
  * then only its frequency is incremented. The tree is adjusted as needed.
+ * Before insertion, an Adaptive Huffman code for that `key` is generated
+ * (that means NYT code + normal `key` value in binary if `key` is not in
+ * the tree OR the `key`'s Huffman code if the key is in the tree) and
+ * appended to the vector `bits`.
  * @param key the key to be inserted.
+ * @param bits pointer to a bool vector, to which the Adaptive Huffman
+ * code for `key` will be appended.
  */
-void Huffman::insert(uint8_t key) {
+void Huffman::insert(uint8_t key, std::vector<bool> *bits) {
     // Check if `key` is already in tree.
     HuffmanNode *found = find_node(this->tree, key);
+    get_code(found, key, bits);
 
     if (found != nullptr) {
         // The requested key is already in the tree.
@@ -38,6 +46,78 @@ void Huffman::insert(uint8_t key) {
     if (new_node != this->tree) {
         rebalance_tree(new_node->parent);
     }
+}
+
+/**
+ * Appends an Adaptive Huffman code of key `key` to `bits`. The `node` contains
+ * the `key`, for which to calculate the Adaptive Huffman code. If `node`
+ * is a nullptr, then it is assumed, that `key` is not in the Huffman tree
+ * and therefore, the NYT code + the raw (non-huffman) 8-bit pixel value
+ * for `key` is appended to `bits`.
+ * @note NOTE: The vector<bool> may or may not be space efficient. Depends on vector
+ * implementation.
+ * @param node pointer to a node, which contains `key`.
+ * @param key the value of the key.
+ * @param bits pointer to bool vector that hold the coded bits.
+ */
+void Huffman::get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits)
+{
+    if (node == nullptr) {
+        // First appearance of `key`
+
+        if (this->tree->key == NYT_KEY) {
+            // Only NYT is in the tree, start with a 0.
+            bits->push_back(0);
+        } else {
+            // NYT has a path with a code - find NYT and get its code.
+            node = find_node(this->tree, NYT_KEY);
+            code_for_node(node, bits);
+        }
+
+        // And then get the non-encoded bits for `key`.
+        uint32_t mask = 1;
+        for (int i = 7; i >= 0; i--) { // 8 bits for a pixel value
+            bool bit = key & (mask << i);
+            bits->push_back(bit);
+        }
+        return;
+    }
+
+    code_for_node(node, bits);
+}
+
+/** Appends a Huffman code for `node` to vector `bits`.
+ * @param node pointer to node, for which to append the Huffman code.
+ * @param bits pointer to vector, to which to append the code.
+ */
+void Huffman::code_for_node(HuffmanNode *node, std::vector<bool> *bits)
+{
+    // Crawl upward from the node containing `key` and build
+    // the Huffman code backwards.
+    std::vector<bool> bits_reversed;
+    while (node != nullptr) {
+        int8_t child_side = which_child(node->parent, node);
+        switch (child_side)
+        {
+        case LEFT_CHILD:
+            bits_reversed.push_back(0);
+            break;
+        case RIGHT_CHILD:
+            bits_reversed.push_back(1);
+            break;
+        case NULL_PARENT:
+            // TODO check if some behavior should be set for these...
+            // But none should be required.
+        case NOT_PARENT:
+        default:
+            break;
+        }
+        node = node->parent;
+    }
+
+    // Reverse to correct order and append to `bits`.
+    std::reverse(bits_reversed.begin(), bits_reversed.end());
+    bits->insert(bits->end(), bits_reversed.begin(), bits_reversed.end());
 }
 
 /**

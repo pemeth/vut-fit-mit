@@ -52,6 +52,8 @@ private:
     HuffmanNode *tree, *nyt;
     std::vector<uint8_t> keys;
 
+    void get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits);
+    void code_for_node(HuffmanNode *node, std::vector<bool> *bits);
     HuffmanNode *split_nyt(HuffmanNode *nyt, uint8_t key);
     HuffmanNode *find_node(HuffmanNode *current, uint16_t key);
     void get_nodes_by_freq(HuffmanNode *current, uint32_t freq, std::vector<HuffmanNode *> *nodes);
@@ -67,7 +69,7 @@ private:
 public:
     Huffman();
     ~Huffman();
-    void insert(uint8_t key);
+    void insert(uint8_t key, std::vector<bool> *bits);
 
     // TODO DEBUGGING FUNCTIONS - DELETE
     void printVerticalOrder();
