@@ -49,6 +49,77 @@ void Huffman::insert(uint8_t key, std::vector<bool> *bits) {
 }
 
 /**
+ * Decode encoded data represented by a bool vector "bitstream" `bits`.
+ * The decoded values are appended to `data`.
+ * Exceptions ERR_NON_EMPTY_TREE or ERR_FIRST_BIT_NOT_0 may be thrown.
+ * @param bits pointer to code bitstream represented by a bool vector.
+ * @param data pointer to vector, to which to append decoded data.
+ * @throws ERR_NON_EMPTY_TREE Thrown when a non-empty instance of the Huffman
+ * tree class is attempted to be used for decoding.
+ * @throws ERR_FIRST_BIT_NOT_0 If the first bit of the input bitstream `bits`
+ * is not a 0.
+ */
+void Huffman::decode(std::vector<bool> *bits, std::vector<uint8_t> *data)
+{
+    // The decoder tree must be an empty tree.
+    // TODO maybe write a public wrapper function for deleting a tree?
+    if (this->tree->left != nullptr || this->tree->right != nullptr) {
+        throw ERR_NON_EMPTY_TREE;
+    }
+
+    if ((*bits)[0] != (bool) 0) {
+        throw ERR_FIRST_BIT_NOT_0;
+    }
+
+    // Start from pos = 1, because position 0 should always have
+    // a "0" initial NYT code.
+    size_t pos = 1; // Position in the `bits` vector.
+    size_t bits_size = bits->size();
+
+    HuffmanNode *current;
+    uint8_t pixel = 0;
+    while (true) {
+        current = this->tree; // Go to root.
+
+        // Navigate to external node based on incoming code.
+        while (current->left != nullptr) {//External nodes don't have children.
+            // If true (1) go right, false (0) go left.
+            (*bits)[pos] ?
+                current = current->right : current = current->left;
+            pos++;
+        }
+
+        if (current->key == NYT_KEY) {
+            // NYT code received, read raw pixel value (8-bits).
+            pixel = 0;
+            uint8_t mask = 128;
+            for (size_t i = 0; i < 8; i++, pos++) {
+                // There is probably a better way...
+                if ((*bits)[pos]) {
+                    pixel += mask;
+                }
+                mask = mask >> 1;
+            }
+            data->push_back(pixel);
+
+            // Make a new node with new pixel value as key.
+            HuffmanNode *new_node = split_nyt(this->nyt, pixel);
+            if (new_node != this->tree) {
+                rebalance_tree(new_node->parent);
+            }
+        } else {
+            // Valid pixel code received.
+            data->push_back(current->key);
+        }
+
+        if (pos >= bits_size) {
+            // All bits read, exit.
+            break;
+        }
+    }
+}
+
+/**
  * Appends an Adaptive Huffman code of key `key` to `bits`. The `node` contains
  * the `key`, for which to calculate the Adaptive Huffman code. If `node`
  * is a nullptr, then it is assumed, that `key` is not in the Huffman tree

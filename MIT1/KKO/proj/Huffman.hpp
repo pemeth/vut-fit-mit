@@ -14,6 +14,11 @@
 #define SYMBOL_SET_SIZE 257 // The maximum number of symbols the tree will
                             // hold. 256 pixel values + 1 NYT node.
 
+
+// These ERR codes are used in Huffman::decode() as exceptions.
+#define ERR_NON_EMPTY_TREE 1 // Tree not empty. Use only empty tree for decode.
+#define ERR_FIRST_BIT_NOT_0 2 // First bit of code bitstream is not 0.
+
 struct HuffmanNode {
     HuffmanNode(uint16_t k, uint32_t f, uint16_t n) :
         key(k),
@@ -70,6 +75,7 @@ public:
     Huffman();
     ~Huffman();
     void insert(uint8_t key, std::vector<bool> *bits);
+    void decode(std::vector<bool> *bits, std::vector<uint8_t> *data);
 
     // TODO DEBUGGING FUNCTIONS - DELETE
     void printVerticalOrder();
