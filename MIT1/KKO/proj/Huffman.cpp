@@ -110,6 +110,7 @@ void Huffman::decode(std::vector<bool> *bits, std::vector<uint8_t> *data)
         } else {
             // Valid pixel code received.
             data->push_back(current->key);
+            rebalance_tree(current);
         }
 
         if (pos >= bits_size) {
