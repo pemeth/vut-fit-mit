@@ -24,13 +24,20 @@ Huffman::~Huffman()
  * Before insertion, an Adaptive Huffman code for that `key` is generated
  * (that means NYT code + normal `key` value in binary if `key` is not in
  * the tree OR the `key`'s Huffman code if the key is in the tree) and
- * appended to the vector `bits`.
+ * appended to the vector `bits`. Throws ERR_LARGE_KEY when a key
+ * over 255 is given that is not the EOF_KEY.
+ * @throws ERR_LARGE_KEY when a key over 255 is given that is not the EOF_KEY.
  * @param key the key to be inserted (values 0-255 for pixels or EOF_KEY
  * when EOF should be encoded).
  * @param bits pointer to a bool vector, to which the Adaptive Huffman
  * code for `key` will be appended.
  */
 void Huffman::insert(uint16_t key, std::vector<bool> *bits) {
+    if (key > 255 && key != EOF_KEY) {
+        // Only values 0-255 are valid + the EOF key.
+        throw ERR_LARGE_KEY;
+    }
+
     // Check if `key` is already in tree.
     HuffmanNode *found = find_node(this->tree, key);
     get_code(found, key, bits);

@@ -19,6 +19,7 @@
 // These ERR codes are used in Huffman::decode() as exceptions.
 #define ERR_NON_EMPTY_TREE 1 // Tree not empty. Use only empty tree for decode.
 #define ERR_FIRST_BIT_NOT_0 2 // First bit of code bitstream is not 0.
+#define ERR_LARGE_KEY 3
 
 struct HuffmanNode {
     HuffmanNode(uint16_t k, uint32_t f, uint16_t n) :
