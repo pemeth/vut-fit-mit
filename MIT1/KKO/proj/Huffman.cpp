@@ -162,8 +162,7 @@ void Huffman::get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits)
             bits->push_back(0);
         } else {
             // NYT has a path with a code - find NYT and get its code.
-            node = find_node(this->tree, NYT_KEY);
-            code_for_node(node, bits);
+            code_for_node(this->nyt, bits);
         }
 
         // And then get the non-encoded bits for `key`.
