@@ -63,7 +63,7 @@ private:
     void code_for_node(HuffmanNode *node, std::vector<bool> *bits);
     HuffmanNode *split_nyt(HuffmanNode *nyt, uint16_t key);
     HuffmanNode *find_node(HuffmanNode *current, uint16_t key);
-    void get_nodes_by_freq(HuffmanNode *current, uint32_t freq, std::vector<HuffmanNode *> *nodes);
+    void get_nodes_by_freq(HuffmanNode *current, uint32_t freq, std::vector<HuffmanNode *> *nodes, uint16_t node_num);
     int8_t which_child(HuffmanNode *parent, HuffmanNode *child);
     void rebalance_tree(HuffmanNode *current);
     HuffmanNode *highest_number_node_in_block(HuffmanNode *current, uint32_t block_freq);

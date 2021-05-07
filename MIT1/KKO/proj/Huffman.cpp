@@ -324,17 +324,28 @@ void Huffman::rebalance_tree(HuffmanNode *current)
 /**
  * Searches for nodes, that have frequency `freq` and adds them to
  * the vector `nodes`. Searches recursively downward from node `current`.
+ * The `current` node should therefore be the root node upon first call.
  * @param current pointer to  node which is currently being checked (first call
  * to this function should have this param set as the tree root).
  * @param freq the frequency, based on which the nodes should be added
  * to `nodes`.
  * @param nodes is the vector, to which pointers to nodes with frequency `freq`
  * will be pushed.
+ * @param node_num number (index) of the node, for which we are trying to find
+ * a pair, with which to swap places.
  */
 void Huffman::get_nodes_by_freq(
-    HuffmanNode *current, uint32_t freq, std::vector<HuffmanNode *> *nodes)
+    HuffmanNode *current, uint32_t freq,
+    std::vector<HuffmanNode *> *nodes, uint16_t node_num)
 {
     if (current == nullptr) {
+        return;
+    }
+
+    // If the node number is below the one we are attempting to find a pair for
+    // in Huffman::highest_number_node_in_block(), then there is no need to
+    // search further.
+    if (current->node_num < node_num) {
         return;
     }
 
@@ -344,8 +355,8 @@ void Huffman::get_nodes_by_freq(
     }
 
     // Recurse to subtrees
-    get_nodes_by_freq(current->left, freq, nodes);
-    get_nodes_by_freq(current->right, freq, nodes);
+    get_nodes_by_freq(current->left, freq, nodes, node_num);
+    get_nodes_by_freq(current->right, freq, nodes, node_num);
 }
 
 /**
@@ -362,7 +373,7 @@ HuffmanNode *Huffman::highest_number_node_in_block(
     HuffmanNode *current, uint32_t block_freq)
 {
     std::vector<HuffmanNode *> nodes;
-    get_nodes_by_freq(this->tree, block_freq, &nodes);
+    get_nodes_by_freq(this->tree, block_freq, &nodes, current->node_num);
 
     std::sort(nodes.begin(), nodes.end(),
         [](const HuffmanNode * a, const HuffmanNode * b)
