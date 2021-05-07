@@ -25,11 +25,12 @@ Huffman::~Huffman()
  * (that means NYT code + normal `key` value in binary if `key` is not in
  * the tree OR the `key`'s Huffman code if the key is in the tree) and
  * appended to the vector `bits`.
- * @param key the key to be inserted.
+ * @param key the key to be inserted (values 0-255 for pixels or EOF_KEY
+ * when EOF should be encoded).
  * @param bits pointer to a bool vector, to which the Adaptive Huffman
  * code for `key` will be appended.
  */
-void Huffman::insert(uint8_t key, std::vector<bool> *bits) {
+void Huffman::insert(uint16_t key, std::vector<bool> *bits) {
     // Check if `key` is already in tree.
     HuffmanNode *found = find_node(this->tree, key);
     get_code(found, key, bits);
@@ -50,7 +51,9 @@ void Huffman::insert(uint8_t key, std::vector<bool> *bits) {
 
 /**
  * Decode encoded data represented by a bool vector "bitstream" `bits`.
- * The decoded values are appended to `data`.
+ * The decoded values are appended to `data`. If an EOF code is reached,
+ * then the decoder stops and does not decode the rest of the code stream
+ * (all codes before EOF are decoded, but not after).
  * Exceptions ERR_NON_EMPTY_TREE or ERR_FIRST_BIT_NOT_0 may be thrown.
  * @param bits pointer to code bitstream represented by a bool vector.
  * @param data pointer to vector, to which to append decoded data.
@@ -93,6 +96,16 @@ void Huffman::decode(std::vector<bool> *bits, std::vector<uint8_t> *data)
             // NYT code received, read raw pixel value (8-bits).
             pixel = 0;
             uint8_t mask = 128;
+
+            // If EOF, then the first bit after NYT code is set.
+            // This is because after NYT 9 bit codes are sent - lower 8 for
+            // pixel values and the MSB as an EOF flag.
+            if ((*bits)[pos]) {
+                // EOF
+                return;
+            }
+            pos++;
+
             for (size_t i = 0; i < 8; i++, pos++) {
                 // There is probably a better way...
                 if ((*bits)[pos]) {
@@ -148,7 +161,10 @@ void Huffman::get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits)
 
         // And then get the non-encoded bits for `key`.
         uint32_t mask = 1;
-        for (int i = 7; i >= 0; i--) { // 8 bits for a pixel value
+
+        // 9 bits for an ucoded value (MSb for EOF flag
+        // and the remaining 8 bits for pixel value).
+        for (int i = 8; i >= 0; i--) {
             bool bit = key & (mask << i);
             bits->push_back(bit);
         }
@@ -200,7 +216,7 @@ void Huffman::code_for_node(HuffmanNode *node, std::vector<bool> *bits)
  * @param key is the key of the new leaf.
  * @returns Pointer to the new node.
  */
-HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint8_t key)
+HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint16_t key)
 {
     HuffmanNode *right = new HuffmanNode(key, 1, nyt->node_num - 1);
     HuffmanNode *new_node = new HuffmanNode(NOT_LEAF, 0, nyt->node_num, nyt->parent, nyt, right);

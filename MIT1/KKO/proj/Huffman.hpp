@@ -10,9 +10,10 @@
 #include <iostream>
 
 #define NYT_KEY 300
+#define EOF_KEY 256
 #define NOT_LEAF 400
-#define SYMBOL_SET_SIZE 257 // The maximum number of symbols the tree will
-                            // hold. 256 pixel values + 1 NYT node.
+#define SYMBOL_SET_SIZE 258 // The maximum number of symbols the tree will
+                            // hold. 256 pixel values + 1 NYT node + EOF node.
 
 
 // These ERR codes are used in Huffman::decode() as exceptions.
@@ -59,7 +60,7 @@ private:
 
     void get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits);
     void code_for_node(HuffmanNode *node, std::vector<bool> *bits);
-    HuffmanNode *split_nyt(HuffmanNode *nyt, uint8_t key);
+    HuffmanNode *split_nyt(HuffmanNode *nyt, uint16_t key);
     HuffmanNode *find_node(HuffmanNode *current, uint16_t key);
     void get_nodes_by_freq(HuffmanNode *current, uint32_t freq, std::vector<HuffmanNode *> *nodes);
     int8_t which_child(HuffmanNode *parent, HuffmanNode *child);
@@ -74,7 +75,7 @@ private:
 public:
     Huffman();
     ~Huffman();
-    void insert(uint8_t key, std::vector<bool> *bits);
+    void insert(uint16_t key, std::vector<bool> *bits);
     void decode(std::vector<bool> *bits, std::vector<uint8_t> *data);
 
     // TODO DEBUGGING FUNCTIONS - DELETE
