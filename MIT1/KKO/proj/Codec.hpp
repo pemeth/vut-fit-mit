@@ -5,6 +5,7 @@
 #include <fstream> // TODO possibly delete if unneeded
 #include <vector>
 #include "Image.hpp"
+#include "Huffman.hpp"
 
 #define DIRECTION_VERTICAL 1
 #define DIRECTION_HORIZONTAL 2
@@ -29,8 +30,12 @@ private:
     uint32_t changes_horizontally();
     uint8_t best_encoding_direction();
     void irle(std::fstream *fs, std::vector<uint8_t> *decoded);
+    void irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded);
     void rle(std::vector<uint8_t> *result);
     void enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result);
+    void huffman_enc(std::vector<uint8_t> *encoded);
+    void huffman_dec(std::vector<uint8_t> *decoded);
+    uint8_t rotr8(uint8_t x, uint8_t n);
     void write_dimensions(std::fstream *fs);
     void read_dimensions(std::fstream *fs, uint32_t *width, uint32_t *height);
     void write_options(std::fstream *fs, struct enc_options opts);

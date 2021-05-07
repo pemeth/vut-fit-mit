@@ -40,7 +40,7 @@ void Codec::open_image(std::string img_path, uint32_t width)
  */
 void Codec::open_image(std::string img_path)
 {
-    std::vector<uint8_t> decoded;
+    std::vector<uint8_t> original, decoded;
     uint32_t width, height;
     std::fstream fs;
 
@@ -53,7 +53,13 @@ void Codec::open_image(std::string img_path)
     struct enc_options opts;
     read_options(&fs, &opts);
 
-    irle(&fs, &decoded);
+    // Load data from file to memory.
+    load_encoded_data(&fs, &original);
+
+    // Huffman decoding
+    huffman_dec(&original);
+
+    irle(&original, &decoded);
 
     // Invert the subtraction model if it was used during encoding.
     if (opts.model) {
@@ -95,6 +101,9 @@ void Codec::encode(std::string out_path, struct enc_options opts)
 
     rle(&encoded);
 
+    // Huffman encoding
+    huffman_enc(&encoded);
+
     std::fstream fs;
     fs.open(out_path, std::ios_base::out | std::ios_base::binary);
 
@@ -109,6 +118,103 @@ void Codec::encode(std::string out_path, struct enc_options opts)
     }
 
     fs.close();
+}
+
+/**
+ * Overwrites the input parameter `data` containing adaptive Huffman encoded
+ * data with the decoded data. The `data` vector will therefore have
+ * a different size after this method finishes.
+ * @param data pointer to data encoded with adaptive Huffman encoding, which
+ * will be replaced with decoded data.
+ */
+void Codec::huffman_dec(std::vector<uint8_t> *data)
+{
+    uint8_t mask = 128;
+    std::vector<bool> bits;
+
+    // Parse each byte into 8 bits.
+    for (auto byte : (*data)) {
+        mask = 128;
+        for (int i = 8; i > 0; i--) {
+            bits.push_back(byte & mask);
+            mask = mask >> 1;
+        }
+    }
+
+    Huffman *huf = new Huffman();
+    std::vector<uint8_t> dec_tmp;
+
+    try
+    {
+        huf->decode(&bits, &dec_tmp);
+    }
+    catch(int e)
+    {
+        std::cerr << "Huffman decoder error: "
+            << (e == ERR_FIRST_BIT_NOT_0 ?
+                "first bit not 0." : "non-empty decoder tree.")
+            << '\n';
+        // TODO figure out how to handle this.
+    }
+    delete huf;
+
+    // Replace original data with Huffman decoded data in the caller's vector.
+    data->swap(dec_tmp);
+}
+
+/**
+ * Overwrites the input parameter `data` containing 8-bit valued data with
+ * adaptive Huffman encoded data. As Huffman codes are variable length codes,
+ * the end of the encoded data is always padded to a multiple of 8 (which means
+ * at most 7 bits of overall overhead) for easier handling
+ * with byte sized data structures.
+ * @param data pointer to data to be replaced with Huffman encoded data.
+ */
+void Codec::huffman_enc(std::vector<uint8_t> *data)
+{
+    std::vector<bool> bits;
+    Huffman *huf = new Huffman();
+
+    for (auto elem : (*data)) {
+        huf->insert(elem, &bits);
+    }
+    huf->insert(EOF_KEY, &bits);
+
+    delete huf;
+
+    std::vector<uint8_t> enc_tmp;
+    uint8_t mask = 128, byte = 0;
+    for (auto bit : bits) {
+        if (bit) {
+            byte += mask;
+        }
+        mask = rotr8(mask, 1);
+
+        if (mask == 128) {
+            enc_tmp.push_back(byte);
+            byte = 0;
+        }
+    }
+
+    if (mask != 128) {
+        // Huffman code ended before completing a byte. Push it as well.
+        enc_tmp.push_back(byte);
+    }
+
+    // Replace original data with Huffman encoded data in the caller's vector.
+    data->swap(enc_tmp);
+}
+
+/**
+ * Efficient bitwise right-rotation of 8-bit value `x` by `n` positions.
+ * Modified from: https://blog.regehr.org/archives/1063
+ * @param x value to be rotated to the right.
+ * @param n by how many bits to rotate.
+ * @returns The right-rotated value `x` by `n` bit positions.
+ */
+uint8_t Codec::rotr8(uint8_t x, uint8_t n)
+{
+    return (x>>n) | (x<<(8-n));
 }
 
 /** RLE decoding in the horizontal direction.
@@ -149,6 +255,66 @@ void Codec::irle(std::fstream *fs, std::vector<uint8_t> *decoded)
 
                 fs->read((char *) &byte, sizeof(uint8_t));
                 if (fs->eof()) {
+                    break;
+                }
+
+                decoded->push_back(byte);
+                previous = byte;
+            } else {
+                decoded->push_back(byte);
+                previous = byte;
+            }
+        } else {
+            decoded->push_back(byte);
+            previous = byte;
+        }
+    }
+}
+
+/** RLE decoding in the horizontal direction.
+ * @param original pointer to data to be decoded.
+ * @param decoded pointer to vector, which will contain the decoded data.
+ */
+void Codec::irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded)
+{
+    uint8_t byte, previous;
+    const size_t size = original->size();
+    size_t i = 0;
+
+    byte = (*original)[i];
+    i++;
+    decoded->push_back(byte);
+
+    previous = byte;
+    while (true) {
+        if (i > size) {
+            break;
+        }
+
+        byte = (*original)[i];
+        i++;
+        if (i > size) {
+            break;
+        }
+
+        if (byte == previous) {
+            decoded->push_back(byte);
+
+            byte = (*original)[i];
+            i++;
+            if (i > size) {
+                break;
+            }
+
+            if (byte == previous) {
+                decoded->push_back(byte);
+                byte = (*original)[i];
+                i++;
+                push_n(previous, byte, decoded);
+
+                byte = (*original)[i];
+                i++;
+                if (i > size) {
                     break;
                 }
 
@@ -410,6 +576,11 @@ void Codec::read_options(std::fstream *fs, struct enc_options *opts)
     // More options may be added.
 }
 
+/**
+ * Load all data from filestream `fs` until EOF into vector `loaded`
+ * @param fs pointer to fstream opened for binary reading.
+ * @param loaded pointer to vector, to which the read data will be pushed.
+ */
 void Codec::load_encoded_data(std::fstream *fs, std::vector<uint8_t> *loaded)
 {
     uint8_t byte;
