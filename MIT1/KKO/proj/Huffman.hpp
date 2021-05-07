@@ -56,6 +56,7 @@ struct HuffmanNode {
 class Huffman
 {
 private:
+    //HuffmanNode *nodes[SYMBOL_SET_SIZE]; // TODO maybe use this instead of find_node()
     HuffmanNode *tree, *nyt;
     std::vector<uint8_t> keys;
 
