@@ -9,6 +9,12 @@ Huffman::Huffman()
 {
     this->tree = new HuffmanNode(NYT_KEY, 0);
     this->nyt = this->tree;
+
+    // By default no keys are in tree, therefore no node for the corresponding
+    // keys.
+    for (int i = 0; i < SYMBOL_SET_SIZE; i ++) {
+        this->nodes[i] = nullptr;
+    }
 }
 
 Huffman::~Huffman()
@@ -38,7 +44,7 @@ void Huffman::insert(const uint16_t key, std::vector<bool> *bits) {
     }
 
     // Check if `key` is already in tree.
-    HuffmanNode *found = find_node(this->tree, key);
+    HuffmanNode *found = find_node(key);
     get_code(found, key, bits);
 
     if (found != nullptr) {
@@ -243,36 +249,22 @@ HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, const uint16_t key)
     new_node->freq = nyt->freq + right->freq;
 
     nyt->node_num -= 2;
+
+    // Save reference to new key node.
+    this->nodes[key] = right;
+
     return new_node;
 }
 
 /**
  * Search the Huffman tree for the nyt node and return a reference to it.
  * If the node is not found, return nullptr.
- * @param current reference to node, from which to start the search.
+ * @param key the key, for which its corresponding node should be returned.
  * @returns A reference to the nyt node or nullptr if not found.
  */
-HuffmanNode *Huffman::find_node(HuffmanNode *current, const uint16_t key)
+HuffmanNode *Huffman::find_node(const uint16_t key)
 {
-    if (current == nullptr) {
-        return nullptr;
-    }
-
-    if (current->key == key) {
-        return current;
-    }
-
-    HuffmanNode *found = find_node(current->left, key);
-    if (found != nullptr) {
-        return found;
-    }
-
-    found = find_node(current->right, key);
-    if (found != nullptr) {
-        return found;
-    }
-
-    return nullptr;
+    return this->nodes[key];
 }
 
 /**

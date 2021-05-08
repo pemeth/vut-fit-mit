@@ -56,14 +56,14 @@ struct HuffmanNode {
 class Huffman
 {
 private:
-    //HuffmanNode *nodes[SYMBOL_SET_SIZE]; // TODO maybe use this instead of find_node()
+    HuffmanNode *nodes[SYMBOL_SET_SIZE];
     HuffmanNode *tree, *nyt;
     std::vector<uint8_t> keys;
 
     void get_code(HuffmanNode *node, const uint16_t key, std::vector<bool> *bits);
     void code_for_node(HuffmanNode *node, std::vector<bool> *bits);
     HuffmanNode *split_nyt(HuffmanNode *nyt, const uint16_t key);
-    HuffmanNode *find_node(HuffmanNode *current, const uint16_t key);
+    HuffmanNode *find_node(const uint16_t key);
     void get_nodes_by_freq(HuffmanNode *current, const uint32_t freq, std::vector<HuffmanNode *> *nodes, const uint16_t node_num);
     int8_t which_child(HuffmanNode *parent, HuffmanNode *child);
     void rebalance_tree(HuffmanNode *current);
