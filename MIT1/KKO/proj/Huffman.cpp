@@ -17,7 +17,6 @@ Huffman::~Huffman()
     this->tree = nullptr;
 }
 
-// TODO possibly rework this, so that an EOF code could be added.
 /**
  * Insert a key into the Huffman tree. If `key` already exists in the tree,
  * then only its frequency is incremented. The tree is adjusted as needed.
