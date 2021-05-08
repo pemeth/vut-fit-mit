@@ -60,14 +60,14 @@ private:
     HuffmanNode *tree, *nyt;
     std::vector<uint8_t> keys;
 
-    void get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits);
+    void get_code(HuffmanNode *node, const uint16_t key, std::vector<bool> *bits);
     void code_for_node(HuffmanNode *node, std::vector<bool> *bits);
-    HuffmanNode *split_nyt(HuffmanNode *nyt, uint16_t key);
-    HuffmanNode *find_node(HuffmanNode *current, uint16_t key);
-    void get_nodes_by_freq(HuffmanNode *current, uint32_t freq, std::vector<HuffmanNode *> *nodes, uint16_t node_num);
+    HuffmanNode *split_nyt(HuffmanNode *nyt, const uint16_t key);
+    HuffmanNode *find_node(HuffmanNode *current, const uint16_t key);
+    void get_nodes_by_freq(HuffmanNode *current, const uint32_t freq, std::vector<HuffmanNode *> *nodes, const uint16_t node_num);
     int8_t which_child(HuffmanNode *parent, HuffmanNode *child);
     void rebalance_tree(HuffmanNode *current);
-    HuffmanNode *highest_number_node_in_block(HuffmanNode *current, uint32_t block_freq);
+    HuffmanNode *highest_number_node_in_block(HuffmanNode *current, const uint32_t block_freq);
     void swap(HuffmanNode *a, HuffmanNode *b);
     void swap_with_root(HuffmanNode *node);
     void delete_tree(HuffmanNode *node);

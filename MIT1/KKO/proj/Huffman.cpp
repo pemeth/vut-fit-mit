@@ -31,7 +31,7 @@ Huffman::~Huffman()
  * @param bits pointer to a bool vector, to which the Adaptive Huffman
  * code for `key` will be appended.
  */
-void Huffman::insert(uint16_t key, std::vector<bool> *bits) {
+void Huffman::insert(const uint16_t key, std::vector<bool> *bits) {
     if (key > 255 && key != EOF_KEY) {
         // Only values 0-255 are valid + the EOF key.
         throw ERR_LARGE_KEY;
@@ -83,7 +83,7 @@ void Huffman::decode(std::vector<bool> *bits, std::vector<uint8_t> *data)
     // Start from pos = 1, because position 0 should always have
     // a "0" initial NYT code.
     size_t pos = 1; // Position in the `bits` vector.
-    size_t bits_size = bits->size();
+    const size_t bits_size = bits->size();
 
     HuffmanNode *current;
     uint8_t pixel = 0;
@@ -151,7 +151,7 @@ void Huffman::decode(std::vector<bool> *bits, std::vector<uint8_t> *data)
  * @param key the value of the key.
  * @param bits pointer to bool vector that hold the coded bits.
  */
-void Huffman::get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits)
+void Huffman::get_code(HuffmanNode *node, const uint16_t key, std::vector<bool> *bits)
 {
     if (node == nullptr) {
         // First appearance of `key`
@@ -165,7 +165,7 @@ void Huffman::get_code(HuffmanNode *node, uint16_t key, std::vector<bool> *bits)
         }
 
         // And then get the non-encoded bits for `key`.
-        uint32_t mask = 1;
+        const uint32_t mask = 1;
 
         // 9 bits for an ucoded value (MSb for EOF flag
         // and the remaining 8 bits for pixel value).
@@ -189,7 +189,7 @@ void Huffman::code_for_node(HuffmanNode *node, std::vector<bool> *bits)
     // the Huffman code backwards.
     std::vector<bool> bits_reversed;
     while (node != nullptr) {
-        int8_t child_side = which_child(node->parent, node);
+        const int8_t child_side = which_child(node->parent, node);
         switch (child_side)
         {
         case LEFT_CHILD:
@@ -221,12 +221,12 @@ void Huffman::code_for_node(HuffmanNode *node, std::vector<bool> *bits)
  * @param key is the key of the new leaf.
  * @returns Pointer to the new node.
  */
-HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint16_t key)
+HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, const uint16_t key)
 {
     HuffmanNode *right = new HuffmanNode(key, 1, nyt->node_num - 1);
     HuffmanNode *new_node = new HuffmanNode(NOT_LEAF, 0, nyt->node_num, nyt->parent, nyt, right);
 
-    int8_t child = which_child(nyt->parent, nyt);
+    const int8_t child = which_child(nyt->parent, nyt);
     if (child == LEFT_CHILD) {
         nyt->parent->left = new_node;
     } else if (child == RIGHT_CHILD) {
@@ -252,7 +252,7 @@ HuffmanNode *Huffman::split_nyt(HuffmanNode *nyt, uint16_t key)
  * @param current reference to node, from which to start the search.
  * @returns A reference to the nyt node or nullptr if not found.
  */
-HuffmanNode *Huffman::find_node(HuffmanNode *current, uint16_t key)
+HuffmanNode *Huffman::find_node(HuffmanNode *current, const uint16_t key)
 {
     if (current == nullptr) {
         return nullptr;
@@ -333,8 +333,8 @@ void Huffman::rebalance_tree(HuffmanNode *current)
  * a pair, with which to swap places.
  */
 void Huffman::get_nodes_by_freq(
-    HuffmanNode *current, uint32_t freq,
-    std::vector<HuffmanNode *> *nodes, uint16_t node_num)
+    HuffmanNode *current, const uint32_t freq,
+    std::vector<HuffmanNode *> *nodes, const uint16_t node_num)
 {
     if (current == nullptr) {
         return;
@@ -368,7 +368,7 @@ void Huffman::get_nodes_by_freq(
  * If the returned node would have been `current`'s parent, return second best.
  */
 HuffmanNode *Huffman::highest_number_node_in_block(
-    HuffmanNode *current, uint32_t block_freq)
+    HuffmanNode *current, const uint32_t block_freq)
 {
     std::vector<HuffmanNode *> nodes;
     get_nodes_by_freq(this->tree, block_freq, &nodes, current->node_num);
@@ -449,7 +449,7 @@ void Huffman::swap(HuffmanNode *a, HuffmanNode *b)
     a->parent = b->parent;
     b->parent = foster_parent;
 
-    uint16_t dummy = a->node_num;
+    const uint16_t dummy = a->node_num;
     a->node_num = b->node_num;
     b->node_num = dummy;
 }
@@ -465,7 +465,7 @@ void Huffman::swap_with_root(HuffmanNode *node)
     root->left->parent = node;
     root->right->parent = node;
 
-    int8_t child_side = which_child(node->parent, node);
+    const int8_t child_side = which_child(node->parent, node);
 
     switch (child_side)
     {
