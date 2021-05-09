@@ -92,6 +92,13 @@ void Codec::save_raw(std::string out_path)
 
 void Codec::encode(std::string out_path, struct enc_options opts)
 {
+    // If adaptive, then choose best direction. Otherwise use horizontal
+    if (opts.adaptive) {
+        opts.direction = (bool) best_encoding_direction();
+    } else {
+        opts.direction = (bool) DIRECTION_HORIZONTAL;
+    }
+
     std::vector<uint8_t> encoded;
 
     // Apply subtraction model if requested.
@@ -551,7 +558,7 @@ void Codec::write_options(std::fstream *fs, struct enc_options opts)
 {
     uint8_t byte = 0;
     byte |= opts.model << 0;
-    byte |= opts.adaptive << 1;
+    byte |= opts.direction << 1;
     // More options may be added.
 
     fs->write((char *) &(byte), sizeof(uint8_t));
@@ -571,7 +578,7 @@ void Codec::read_options(std::fstream *fs, struct enc_options *opts)
 
     byte & mask ? opts->model = true : opts->model = false;
     mask = mask << 1;
-    byte & mask ? opts->adaptive = true : opts->adaptive = false;
+    byte & mask ? opts->direction = true : opts->direction = false;
     mask = mask << 1;
     // More options may be added.
 }

@@ -15,8 +15,12 @@
  */
 struct enc_options
 {
+    /* Defined by user. */
     bool model;     //!< True if a model should be used.
     bool adaptive;  //!< True if adaptive encoding should be used.
+
+    /* Set by program based on user's settings. */
+    bool direction; //!< True if vertical scanning is used during encoding.
     // More may be added.
 };
 
