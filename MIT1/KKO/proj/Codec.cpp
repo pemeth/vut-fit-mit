@@ -338,6 +338,10 @@ void Codec::irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded)
     }
 }
 
+/**
+ * Encode a loaded image using run-length encoding.
+ * @param result pointer to vector, to which to save the encoded pixels.
+ */
 void Codec::rle(std::vector<uint8_t> *result)
 {
     const size_t size = this->img->size();
@@ -358,6 +362,13 @@ void Codec::rle(std::vector<uint8_t> *result)
     enc(counter, previous, result);
 }
 
+/**
+ * Helper function for rle(). This is the function that actually encodes
+ * the pixel run-lengths.
+ * @param count the run-length of pixel `value`.
+ * @param value the pixel value of the current run.
+ * @param result pointer to vector, to which to save the encoded pixels.
+ */
 void Codec::enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result)
 {
     if (count < 3) {
