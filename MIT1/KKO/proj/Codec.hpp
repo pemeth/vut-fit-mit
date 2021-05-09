@@ -8,7 +8,7 @@
 #include "Huffman.hpp"
 
 #define DIRECTION_VERTICAL 1
-#define DIRECTION_HORIZONTAL 2
+#define DIRECTION_HORIZONTAL 0
 
 /**
  * Options for the encoder.
