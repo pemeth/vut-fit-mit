@@ -34,8 +34,11 @@ private:
     uint32_t changes_horizontally();
     uint8_t best_encoding_direction();
     void irle(std::fstream *fs, std::vector<uint8_t> *decoded);
-    void irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded);
-    void rle(std::vector<uint8_t> *result);
+    void irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded,uint32_t width, uint32_t height, bool direction);
+    void irle_horizontal(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded);
+    void irle_vertical(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded,uint32_t width, uint32_t height);
+    size_t increment_vertical_index(uint32_t *x, uint32_t *y, const uint32_t width, const uint32_t height);
+    void rle(std::vector<uint8_t> *result, bool direction);
     void enc(uint32_t count, uint8_t value, std::vector<uint8_t> *result);
     void huffman_enc(std::vector<uint8_t> *encoded);
     void huffman_dec(std::vector<uint8_t> *decoded);

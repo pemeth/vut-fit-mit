@@ -59,7 +59,8 @@ void Codec::open_image(std::string img_path)
     // Huffman decoding
     huffman_dec(&original);
 
-    irle(&original, &decoded);
+    // Run-length decoding
+    irle(&original, &decoded, width, height, opts.direction);
 
     // Invert the subtraction model if it was used during encoding.
     if (opts.model) {
@@ -106,7 +107,8 @@ void Codec::encode(std::string out_path, struct enc_options opts)
         model_sub();
     }
 
-    rle(&encoded);
+    // Run-length encoding
+    rle(&encoded, opts.direction);
 
     // Huffman encoding
     huffman_enc(&encoded);
@@ -278,11 +280,33 @@ void Codec::irle(std::fstream *fs, std::vector<uint8_t> *decoded)
     }
 }
 
+/**
+ * Decode an RLE encoded image saved in `original`. The decoded image
+ * is returned via the `decoded` vector.
+ * @param original pointer to data to be decoded.
+ * @param decoded pointer to vector, which will contain the decoded data.
+ * @param width width of the image after decoding.
+ * @param height height of the image after decoding.
+ * @param direction the direction, in which the image was RLE encoded
+ * (true for vertical, false for horizontal).
+ */
+void Codec::irle(
+    std::vector<uint8_t> *original, std::vector<uint8_t> *decoded,
+    uint32_t width, uint32_t height,
+    bool direction)
+{
+    if (direction == (bool) DIRECTION_HORIZONTAL) {
+        irle_horizontal(original, decoded);
+    } else {
+        irle_vertical(original, decoded, width, height);
+    }
+}
+
 /** RLE decoding in the horizontal direction.
  * @param original pointer to data to be decoded.
  * @param decoded pointer to vector, which will contain the decoded data.
  */
-void Codec::irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded)
+void Codec::irle_horizontal(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded)
 {
     uint8_t byte, previous;
     const size_t size = original->size();
@@ -339,10 +363,120 @@ void Codec::irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded)
 }
 
 /**
+ * RLE decoding in the vertical direction.
+ * @param original pointer to data to be decoded.
+ * @param decoded pointer to vector, which will contain the decoded data.
+ * @param width width of the image after decoding.
+ * @param height height of the image after decoding.
+ */
+void Codec::irle_vertical(
+    std::vector<uint8_t> *original, std::vector<uint8_t> *decoded,
+    uint32_t width, uint32_t height)
+{
+    uint8_t byte, previous;
+    const size_t size = original->size();
+    size_t i = 0;
+
+    // Easier if I have the array preemptively resized
+    // and then accessed by index as needed.
+    decoded->resize(width*height);
+
+    uint32_t y = 0, x = 0;
+    size_t j = y * width + x;
+
+    byte = (*original)[i];
+    i++;
+    (*decoded)[j] = byte;
+    j = increment_vertical_index(&x, &y, width, height);
+
+    previous = byte;
+    while (true) {
+        if (i > size) {
+            break;
+        }
+
+        byte = (*original)[i];
+        i++;
+        if (i > size) {
+            break;
+        }
+
+        if (byte == previous) {
+            (*decoded)[j] = byte;
+            j = increment_vertical_index(&x, &y, width, height);
+
+            byte = (*original)[i];
+            i++;
+            if (i > size) {
+                break;
+            }
+
+            if (byte == previous) {
+                (*decoded)[j] = byte;
+                j = increment_vertical_index(&x, &y, width, height);
+
+                byte = (*original)[i];
+                i++;
+                for (uint8_t k = 0; k < byte; k++) {
+                    (*decoded)[j] = previous;
+                    j = increment_vertical_index(&x, &y, width, height);
+                }
+
+                byte = (*original)[i];
+                i++;
+                if (i > size) {
+                    break;
+                }
+
+                (*decoded)[j] = byte;
+                j = increment_vertical_index(&x, &y, width, height);
+
+                previous = byte;
+            } else {
+                (*decoded)[j] = byte;
+                j = increment_vertical_index(&x, &y, width, height);
+
+                previous = byte;
+            }
+        } else {
+            (*decoded)[j] = byte;
+            j = increment_vertical_index(&x, &y, width, height);
+
+            previous = byte;
+        }
+    }
+}
+
+/**
+ * Given a 2D array of `width` and `height`, for which coordinates `x` and `y`
+ * address an element, return an *incremented* index that is usable in the
+ * flattened (to 1D) representation of that 2D array, so that this new index
+ * is incremented in the vertical direction.
+ * Basically just increment index in the vertical direction.
+ * @param x pointer to x coordinate (may get incremented).
+ * @param y pointer to y coordinate (may get incremented or reset to 0).
+ * @param width width of the 2D array.
+ * @param height height of the 2D array.
+ * @returns Index `j`, that is the index to the next element in the 2D array
+ * when traversed vertically.
+ */
+size_t Codec::increment_vertical_index(
+    uint32_t *x, uint32_t *y,
+    const uint32_t width, const uint32_t height)
+{
+    (*y)++;
+    if ((*y) >= height) {
+        (*y) = 0;
+        (*x)++;
+    }
+    return (*y) * width + (*x);
+}
+
+/**
  * Encode a loaded image using run-length encoding.
  * @param result pointer to vector, to which to save the encoded pixels.
  */
-void Codec::rle(std::vector<uint8_t> *result)
+void Codec::rle(std::vector<uint8_t> *result, bool direction)
 {
     const size_t size = this->img->size();
     uint8_t previous = (*this->img)[0];
@@ -350,16 +484,39 @@ void Codec::rle(std::vector<uint8_t> *result)
     uint32_t width, height;
     this->img->dimensions(&width, &height);
 
-    for (size_t i = 1; i < size; i++) {
-        if (previous == (*this->img)[i] && counter <= 257) { // 258 - 3 = 255
-            counter++;
-        } else {
-            enc(counter, previous, result);
-            counter = 1;
-            previous = (*this->img)[i];
+    if (direction == DIRECTION_HORIZONTAL) {
+        // Horizontal encoding
+        for (size_t i = 1; i < size; i++) {
+            if (previous == (*this->img)[i] && counter <= 257) { // 258 - 3 = 255
+                counter++;
+            } else {
+                enc(counter, previous, result);
+                counter = 1;
+                previous = (*this->img)[i];
+            }
         }
+        enc(counter, previous, result);
+    } else {
+        // Vertical encoding
+        // TODO repeated code... Check if these loops could somehow be merged.
+        uint32_t y = 1, x = 0;
+        for (size_t i = y * width + x; x < width; i = y * width + x) {
+            if (previous == (*this->img)[i] && counter <= 257) { // 258 - 3 = 255
+                counter++;
+            } else {
+                enc(counter, previous, result);
+                counter = 1;
+                previous = (*this->img)[i];
+            }
+
+            y++;
+            if (y >= height) {
+                y = 0;
+                x++;
+            }
+        }
+        enc(counter, previous, result);
     }
-    enc(counter, previous, result);
 }
 
 /**
