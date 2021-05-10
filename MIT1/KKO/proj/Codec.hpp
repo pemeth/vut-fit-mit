@@ -2,7 +2,7 @@
 #define CODEC_HPP
 
 #include <cstdint>
-#include <fstream> // TODO possibly delete if unneeded
+#include <fstream>
 #include <vector>
 #include "Image.hpp"
 #include "Huffman.hpp"

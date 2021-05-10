@@ -1,12 +1,6 @@
 #include <iostream> // cerr
 #include "Codec.hpp"
 
-// TODO remove these #defines and #includes if not needed
-#define C_0x00 0x00
-#define P_0x00 0x00
-#define P_0x01 0x01
-#define P_0x02 0x02
-
 #include <fstream>
 #include <vector>
 
