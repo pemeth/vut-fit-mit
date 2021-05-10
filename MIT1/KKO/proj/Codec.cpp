@@ -656,7 +656,7 @@ uint32_t Codec::changes_vertically()
 
     for (uint32_t i = 0; i < width; i++) {
         for (uint32_t k = 0, j = i; k < height; k++, j += stride) {
-            // Used two variables in this loop so I don't have to do arithmetic.
+            // Used two variables in this loop so I don't have to do arithmetics.
             if (previous != (*this->img)[j]) {
                 change_count++;
             }
