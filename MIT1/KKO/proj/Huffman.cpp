@@ -15,14 +15,7 @@
 
 Huffman::Huffman()
 {
-    this->tree = new HuffmanNode(NYT_KEY, 0);
-    this->nyt = this->tree;
-
-    // By default no keys are in the tree, therefore no node
-    // for the corresponding keys.
-    for (int i = 0; i < SYMBOL_SET_SIZE; i ++) {
-        this->nodes[i] = nullptr;
-    }
+    init_tree();
 }
 
 Huffman::~Huffman()
@@ -85,7 +78,6 @@ void Huffman::insert(const uint16_t key, std::vector<bool> *bits) {
 void Huffman::decode(std::vector<bool> *bits, std::vector<uint8_t> *data)
 {
     // The decoder tree must be an empty tree.
-    // TODO maybe write a public wrapper function for deleting a tree?
     if (this->tree->left != nullptr || this->tree->right != nullptr) {
         throw ERR_NON_EMPTY_TREE;
     }
@@ -151,6 +143,18 @@ void Huffman::decode(std::vector<bool> *bits, std::vector<uint8_t> *data)
             break;
         }
     }
+}
+
+/**
+ * Reset the Huffman tree to its initial state (a single NYT node
+ * in the tree). This deletes the original tree!
+ */
+void Huffman::reset_tree()
+{
+    delete_tree(this->tree);
+    this->tree = nullptr;
+
+    init_tree();
 }
 
 /**
@@ -494,6 +498,23 @@ void Huffman::swap_with_root(HuffmanNode *node)
 
     root->parent = node->parent;
     node->parent = nullptr;
+}
+
+/**
+ * Initialize the Huffman tree into its starting state. This means
+ * a single NYT node in the tree, which acts as the root until
+ * new symbols are added.
+ */
+void Huffman::init_tree()
+{
+    this->tree = new HuffmanNode(NYT_KEY, 0);
+    this->nyt = this->tree;
+
+    // By default no keys are in the tree, therefore no node
+    // for the corresponding keys.
+    for (int i = 0; i < SYMBOL_SET_SIZE; i ++) {
+        this->nodes[i] = nullptr;
+    }
 }
 
 void Huffman::delete_tree(HuffmanNode *node)

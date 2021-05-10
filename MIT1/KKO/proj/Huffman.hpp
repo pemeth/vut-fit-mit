@@ -76,6 +76,7 @@ private:
     HuffmanNode *highest_number_node_in_block(HuffmanNode *current, const uint32_t block_freq);
     void swap(HuffmanNode *a, HuffmanNode *b);
     void swap_with_root(HuffmanNode *node);
+    void init_tree();
     void delete_tree(HuffmanNode *node);
 
     // TODO DEBUGGING FUNCTIONS - DELETE
@@ -85,6 +86,7 @@ public:
     ~Huffman();
     void insert(uint16_t key, std::vector<bool> *bits);
     void decode(std::vector<bool> *bits, std::vector<uint8_t> *data);
+    void reset_tree();
 
     // TODO DEBUGGING FUNCTIONS - DELETE
     void printVerticalOrder();
