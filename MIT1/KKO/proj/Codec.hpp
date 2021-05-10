@@ -33,7 +33,6 @@ private:
     uint32_t changes_vertically();
     uint32_t changes_horizontally();
     uint8_t best_encoding_direction();
-    void irle(std::fstream *fs, std::vector<uint8_t> *decoded);
     void irle(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded,uint32_t width, uint32_t height, bool direction);
     void irle_horizontal(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded);
     void irle_vertical(std::vector<uint8_t> *original, std::vector<uint8_t> *decoded,uint32_t width, uint32_t height);

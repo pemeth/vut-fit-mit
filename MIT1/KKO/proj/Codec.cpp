@@ -226,60 +226,6 @@ uint8_t Codec::rotr8(uint8_t x, uint8_t n)
     return (x>>n) | (x<<(8-n));
 }
 
-/** RLE decoding in the horizontal direction.
- * @param fs pointer to fstream (opened for binary read) for the file with
- * encoded image.
- * @param decoded pointer to vector, which will contain the decoded image.
- */
-void Codec::irle(std::fstream *fs, std::vector<uint8_t> *decoded)
-{
-    uint8_t byte, previous;
-
-    fs->read((char *) &byte, sizeof(uint8_t));
-    decoded->push_back(byte);
-
-    previous = byte;
-    while (true) {
-        if (fs->eof()) {
-            break;
-        }
-
-        fs->read((char *) &byte, sizeof(uint8_t));
-        if (fs->eof()) {
-            break;
-        }
-
-        if (byte == previous) {
-            decoded->push_back(byte);
-
-            fs->read((char *) &byte, sizeof(uint8_t));
-            if (fs->eof()) {
-                break;
-            }
-
-            if (byte == previous) {
-                decoded->push_back(byte);
-                fs->read((char *) &byte, sizeof(uint8_t));
-                push_n(previous, byte, decoded);
-
-                fs->read((char *) &byte, sizeof(uint8_t));
-                if (fs->eof()) {
-                    break;
-                }
-
-                decoded->push_back(byte);
-                previous = byte;
-            } else {
-                decoded->push_back(byte);
-                previous = byte;
-            }
-        } else {
-            decoded->push_back(byte);
-            previous = byte;
-        }
-    }
-}
-
 /**
  * Decode an RLE encoded image saved in `original`. The decoded image
  * is returned via the `decoded` vector.
