@@ -1,3 +1,9 @@
+/**
+ * Header file for the Image class.
+ * @author Patrik Nemeth (xnemet04)
+ *
+ * File created: 28.04.2021
+ */
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 

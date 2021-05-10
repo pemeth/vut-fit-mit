@@ -1,3 +1,11 @@
+/**
+ * Implementation of the Image class. A simple class for holding image
+ * data (pixel data). Can open raw image files or can construct an instance
+ * from data in vectors. Can write raw image data to file.
+ * @author Patrik Nemeth (xnemet04)
+ *
+ * File created: 28.04.2021
+ */
 #include "Image.hpp"
 #include <sys/stat.h>
 

@@ -1,3 +1,9 @@
+/**
+ * Header for the Codec class.
+ * @author Patrik Nemeth (xnemet04)
+ *
+ * File created: 28.04.2021
+ */
 #ifndef CODEC_HPP
 #define CODEC_HPP
 

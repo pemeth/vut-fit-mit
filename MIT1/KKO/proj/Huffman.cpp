@@ -1,3 +1,11 @@
+/**
+ * Implementation of the Huffman class. Handles adding symbols
+ * to an adaptive Huffman tree and retrieving Huffman codes
+ * of newly added keys. The implemented Huffman tree is an FGK adaptive tree.
+ * @author Patrik Nemeth (xnemet04)
+ *
+ * File created: 03.05.2021
+ */
 #include "Huffman.hpp"
 
 #define LEFT_CHILD 1

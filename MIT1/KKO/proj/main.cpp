@@ -1,3 +1,9 @@
+/**
+ * Entrypoint of the program.
+ * @author Patrik Nemeth (xnemet04)
+ *
+ * File created: 27.04.2021
+ */
 #include <iostream>
 #include <string>
 #include <unistd.h>

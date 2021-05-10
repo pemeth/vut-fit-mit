@@ -1,3 +1,9 @@
+/**
+ * Header file for the Huffman class.
+ * @author Patrik Nemeth (xnemet04)
+ *
+ * File created: 03.05.2021
+ */
 #ifndef HUFFMAN_HPP
 #define HUFFMAN_HPP
 

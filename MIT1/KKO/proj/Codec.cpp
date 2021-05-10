@@ -1,3 +1,9 @@
+/**
+ * Implementation of the Codec class. Handles all aspects of encoding/decoding.
+ * @author Patrik Nemeth (xnemet04)
+ *
+ * File created: 28.04.2021
+ */
 #include <iostream> // cerr
 #include "Codec.hpp"
 
