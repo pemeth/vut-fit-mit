@@ -18,8 +18,8 @@ Huffman::Huffman()
     this->tree = new HuffmanNode(NYT_KEY, 0);
     this->nyt = this->tree;
 
-    // By default no keys are in tree, therefore no node for the corresponding
-    // keys.
+    // By default no keys are in the tree, therefore no node
+    // for the corresponding keys.
     for (int i = 0; i < SYMBOL_SET_SIZE; i ++) {
         this->nodes[i] = nullptr;
     }
