@@ -328,6 +328,7 @@ void Huffman::get_nodes_by_freq(
     HuffmanNode *current, const uint32_t freq,
     std::vector<HuffmanNode *> *nodes, const uint16_t node_num)
 {
+    // TODO this method significantly slows down the encoding/decoding
     if (current == nullptr) {
         return;
     }
