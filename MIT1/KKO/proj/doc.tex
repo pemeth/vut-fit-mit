@@ -73,6 +73,14 @@
     one that is better suited for RLE. The rationale is that if there are fewer value changes between
     neighboring pixels, then there are more frequent (and potentially longer) runs of same-value pixels.
 
+    \section{Image decompression}
+    The image is loaded by calling \code{Codec::open\_image()}, which decodes the image.
+    The decoding process is the inverse of the encoding process. This means that first, the metadata
+    is read. Next, the Huffman coded data is loaded into a vector container for easier handling.
+    After decoding the Huffman coded data, an inverse of RLE is applied to this data (in the correct
+    direction based on the metadata). Next, if needed, the subtraction model is inverted and an instance
+    of \code{Image} is created. After this, the image is written to file via \code{Codec::save\_raw()}.
+
     \section{Implementation}
     This section contains implementation information for individual classes, datatypes or other aspects
     of the program implementation.
