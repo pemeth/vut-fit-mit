@@ -120,4 +120,20 @@
     This class handles all the steps necessary for image encoding and image decoding. Its functionality
     was described in sections \ref{sec:compression} and \ref{sec:decompression}.
 
+    \section{Usage}
+    Before the application can be used, it needs to be compiled. An up-to-date \code{g++} compiler
+    is required. To compile the program, use command \code{make} in the same directory as the source files.
+    After compilation, the program can be launched with \code{./huff\_codec \{-c|-d\} \{-i in\_file\} \{-o out\_file\} \{-w width\} [OPTIONS]}.
+    Option \code{-c} tells the program to compress a RAW image stored in \code{in\_file} and store it in \code{out\_file}.
+    The \code{-c} option requires the \code{-w} option, which tells the program how wide the RAW image is.
+    Option \code{-d} tells the program to decompress an encoded image stored in \code{in\_file} and store it in \code{out\_file}.
+    Additional options denoted by \code{[OPTIONS]} are:
+    \begin{itemize}
+        \item \code{-m} : use the subtraction model before encoding (has effect only with \code{-c}),
+        \item \code{-a} : use adaptive scanning during encoding (has effect only with \code{-c}),
+        \item \code{-h} : print help and exit.
+    \end{itemize}
+
+
+
 \end{document}
