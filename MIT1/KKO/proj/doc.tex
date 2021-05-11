@@ -29,7 +29,7 @@
     The compressed images are saved to a custom file format (figure \ref{fig:encoded_format}).
     All of the compression and decompression is handled by the \code{Codec} class.
 
-    \section{Image compression and representation}
+    \section{Image compression and representation} \label{sec:compression}
     During compression, the image is first loaded from file by calling the \code{Codec::open\_image()} method.
     This method is overloaded to be able to handle RAW images, as well as encoded ones. The RAW image
     is loaded via the \code{Image} class (section \ref{sec:Image_class}). Then the \code{Codec::encode()}
@@ -73,7 +73,7 @@
     one that is better suited for RLE. The rationale is that if there are fewer value changes between
     neighboring pixels, then there are more frequent (and potentially longer) runs of same-value pixels.
 
-    \section{Image decompression}
+    \section{Image decompression} \label{sec:decompression}
     The image is loaded by calling \code{Codec::open\_image()}, which decodes the image.
     The decoding process is the inverse of the encoding process. This means that first, the metadata
     is read. Next, the Huffman coded data is loaded into a vector container for easier handling.
@@ -115,5 +115,9 @@
     bitstream to be decoded. The decoded data will be appended to the second parameter.
 
     \code{Huffman::reset\_tree()} simply resets the Huffman tree to its initial state.
+
+    \subsection{\code{Codec} class}
+    This class handles all the steps necessary for image encoding and image decoding. Its functionality
+    was described in sections \ref{sec:compression} and \ref{sec:decompression}.
 
 \end{document}
