@@ -30,10 +30,11 @@
     All of the compression and decompression is handled by the \code{Codec} class.
 
     \section{Image compression and representation}
-    During compression, the image is first loaded from file via the \code{Image} class (section
-    \ref{sec:Image_class}). Then the \code{Codec::encode()} method is called with the output file name
-    and encoding options. Next, the subtraction model is applied, if needed, and the
-    \code{Codec::rle()} method is called. If adaptive image scanning was requested by the user,
+    During compression, the image is first loaded from file by calling the \code{Codec::open\_image()} method.
+    This method is overloaded to be able to handle RAW images, as well as encoded ones. The RAW image
+    is loaded via the \code{Image} class (section \ref{sec:Image_class}). Then the \code{Codec::encode()}
+    method is called with the output file name and encoding options. Next, the subtraction model is applied,
+    if needed, and the \code{Codec::rle()} method is called. If adaptive image scanning was requested by the user,
     then the best encoding direction is applied (see section \ref{sec:adaptive_scan}). Last in the
     encoding process is the adaptive Huffman coding, which is handled by the \code{Huffman} class
     (section \ref{sec:Huffman_class}).
@@ -78,7 +79,9 @@
 
     \subsection{\code{Image} class} \label{sec:Image_class}
     This is a simple class for basic image data representation. The image data is held in a vector
-    container of type \code{uint8\_t}, where each element represents a pixel value. This class has
+    container of type \code{uint8\_t}, where each element represents a pixel value. The constructor is
+    overloaded to be able to construct an instance based on RAW image data from a file or from a vector
+    container. This class has
     methods for retrieving the image size, dimensions, has an overloaded indexing operator for direct
     access to pixel data. A method for writing raw pixel data to file was also implemented.
 
