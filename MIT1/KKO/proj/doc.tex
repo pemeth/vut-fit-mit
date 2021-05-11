@@ -42,7 +42,9 @@
     is 9 bytes wide and contains the image dimensions and encoding options. The compressed image file format
     is shown in figure \ref{fig:encoded_format}. The encoding options have only 2 used bits, where the first
     6 (most significant) bits are reserved and always set to zero, the 7-nth bit is set if vertical image scanning
-    was used, and the last bit is set if the pixel subtraction model was used.
+    was used, and the last bit is set if the pixel subtraction model was used. The Huffman coded data directly
+    follows the metadata. This data is to be read sequentially until EOF. The Huffman coded data always
+    starts with a 0 bit.
     \begin{figure}[h]
         % This is a hack, but I really didn't feel like drawing with tikz. Or anything else for that matter.
         \begin{alltt}
