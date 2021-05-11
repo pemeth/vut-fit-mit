@@ -94,6 +94,26 @@
     access to pixel data. A method for writing raw pixel data to file was also implemented.
 
     \subsection{\code{Huffman} class} \label{sec:Huffman_class}
-    % // TODO describe the Huffman class
+    This class manages adaptive Huffman trees and handles all Huffman tree related operations. This class
+    implements the FGK (Faller-Gallager-Knuth) algorithm. Upon
+    instantiation, an initial tree is constructed, which is a single NYT node with no children. The Huffman tree
+    is built specifically for pixel values (or any 8-bit symbols for that matter). However an additional
+    value is expected to be inserted into the tree when no more values will follow, which is the EOF symbol
+    defined in \code{Huffman.hpp} as \code{EOF\_KEY}. This introduces an additional bit in the
+    output code stream every time a new symbol is added to the tree (9 bits per symbol instead of 8).
+    The EOF symbol is represented as value 256 and upon encountering this value during decoding, no more
+    values are read from the input bit stream. The only public methods of this class are \code{Huffman::insert()},
+    \code{Huffman::decode()}, and \code{Huffman::reset\_tree()}.
+
+    \code{Huffman::insert()} handles insertion of a symbol into the tree. This may be a new symbol or
+    a symbol that is already in the tree. This method takes two parameters; the symbol to be inserted,
+    and a pointer to a vector container of type \code{bool}. Upon symbol insertion, the Huffman code for
+    the inserted symbol is appended to this vector.
+
+    \code{Huffman::decode()} takes two parameters; a pointer to a vector container of type \code{bool},
+    and a pointer to a vector container of type \code{uint8\_t}. The first parameter must contain the
+    bitstream to be decoded. The decoded data will be appended to the second parameter.
+
+    \code{Huffman::reset\_tree()} simply resets the Huffman tree to its initial state.
 
 \end{document}
