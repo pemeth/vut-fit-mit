@@ -14,7 +14,7 @@
 void print_help(const char *prepend = "")
 {
     printf("%s", prepend);
-    printf("./kko {-c|-d} {-i in_file} {-o out_file} {-w width} [OPTIONS]\n");
+    printf("./huff_codec {-c|-d} {-i in_file} {-o out_file} {-w width} [OPTIONS]\n");
     printf("DESCTRIPTION\n");
     printf("\tCompress (`-c`) or decompress (`-d`) an image from input\n");
     printf("\tfile `in_file` to output file `out_file`. The option `-w`\n");
