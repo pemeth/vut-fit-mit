@@ -11,3 +11,8 @@ data.zip
 *.raw
 *.kko
 test/*
+
+# LaTeX output
+doc.*
+!doc.tex
+!doc.pdf
