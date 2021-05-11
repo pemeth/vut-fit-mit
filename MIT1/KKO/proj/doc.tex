@@ -5,6 +5,9 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{hyperref}
+\usepackage{alltt}
+
+\newcommand{\code}{\texttt}
 
 \begin{document}
     \begin{center}
@@ -15,4 +18,69 @@
             Login: & \textbf{xnemet04}
         \end{tabular}
     \end{center}
+
+    \section{Overview}
+    The output of this project is a program capable of compressing and decompressing RAW image files.
+    The default compression method may be altered by the user via program options. By default, the
+    images are compressed using run-length encoding, after which an adaptive Huffman tree is applied
+    to the run-length encoded data. This results in a variable length coded compressed image.
+    Two behaviour altering options were implemented: one for applying a subtraction model on the input
+    image and one for adaptive image scanning (section \ref{sec:adaptive_scan}).
+    The compressed images are saved to a custom file format (figure \ref{fig:encoded_format}).
+    All of the compression and decompression is handled by the \code{Codec} class.
+
+    \section{Image compression and representation}
+    During compression, the image is first loaded from file via the \code{Image} class (section
+    \ref{sec:Image_class}). Then the \code{Codec::encode()} method is called with the output file name
+    and encoding options. Next, the subtraction model is applied, if needed, and the
+    \code{Codec::rle()} method is called. If adaptive image scanning was requested by the user,
+    then the best encoding direction is applied (see section \ref{sec:adaptive_scan}). Last in the
+    encoding process is the adaptive Huffman coding, which is handled by the \code{Huffman} class
+    (section \ref{sec:Huffman_class}).
+
+    Before the encoded image data is written to file, some metadata is saved first. This metadata
+    is 9 bytes wide and contains the image dimensions and encoding options. The compressed image file format
+    is shown in figure \ref{fig:encoded_format}. The encoding options have only 2 used bits, where the first
+    6 (most significant) bits are reserved and always set to zero, the 7-nth bit is set if vertical image scanning
+    was used, and the last bit is set if the pixel subtraction model was used.
+    \begin{figure}[h]
+        % This is a hack, but I really didn't feel like drawing with tikz. Or anything else for that matter.
+        \begin{alltt}
+            \centering{
+    4 bytes     4 bytes     1 byte       n bytes    ...
+|------------|-----------|----------|------------------
+|    width   |  height   | options  |  encoded data ...
+|------------|-----------|----------|------------------
+}
+        \end{alltt}
+        \caption{The file  format for encoded images. Width and height are stored
+        as big endian with relation to the start of the file. The encoded data is an adaptive Huffman code
+        stream to be read sequentially from left to right.}
+        \label{fig:encoded_format}
+    \end{figure}
+
+    \subsection{Adaptive encoding direction} \label{sec:adaptive_scan}
+    This was not implemented to specification due to time constraints. The \code{-a} program option
+    changes the behaviour of the program, so that the best encoding direction for RLE (run-length encoding)
+    is picked. The encoding directions are horizontal (same as default) or vertical. No per-block encoding
+    is implemented.
+
+    The best encoding direction is picked by scanning over the input image in both directions and counting
+    the number of times neighboring pixel values change. The scan direction with the fewer changes is the
+    one that is better suited for RLE. The rationale is that if there are fewer value changes between
+    neighboring pixels, then there are more frequent (and potentially longer) runs of same-value pixels.
+
+    \section{Implementation}
+    This section contains implementation information for individual classes, datatypes or other aspects
+    of the program implementation.
+
+    \subsection{\code{Image} class} \label{sec:Image_class}
+    This is a simple class for basic image data representation. The image data is held in a vector
+    container of type \code{uint8\_t}, where each element represents a pixel value. This class has
+    methods for retrieving the image size, dimensions, has an overloaded indexing operator for direct
+    access to pixel data. A method for writing raw pixel data to file was also implemented.
+
+    \subsection{\code{Huffman} class} \label{sec:Huffman_class}
+    % // TODO describe the Huffman class
+
 \end{document}
