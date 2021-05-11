@@ -134,6 +134,45 @@
         \item \code{-h} : print help and exit.
     \end{itemize}
 
+    \section{Program evaluation}
+    The following table shows some stastics for each of the provided RAW image files.
+    All input files were of size 262144 bytes. The \emph{Enc. size} column shows the encoded image
+    size in bytes, \emph{Enc. time} shows the time it took to encode the RAW image, \emph{Dec. time}
+    shows the time it took to decode the encoded image, and \emph{bpc} shows bits per character, which
+    shows how many bits were on average used in the encoded image per byte of the RAW image. The bpc
+    value is calculated as $\text{bpc} = \cfrac{\text{(encoded file size)} * 8}{\text{original file size}}$.
 
+    \begin{tabular}{ l c c c c || l c c c c }
+        \hline\hline
+        \multicolumn{5}{c ||}{No additional options} & \multicolumn{5}{c}{Option \code{-m}} \\\hline
+        File          & Enc. size    & Enc. time     & Dec. time     & bpc    & File          & Enc. size    & Enc. time     & Dec. time     & bpc  \\\hline
+        \code{df1h}   & 262571       & 3.111s        & 2.631s        & 8.01   & \code{df1h}   & 650          & 0.042s        & 0.024s        & 0.01    \\
+        \code{df1hvx} & 80268        & 0.662s        & 0.452s        & 2.44   & \code{df1hvx} & 33523        & 0.300s        & 0.196s        & 1.02    \\
+        \code{df1v}   & 3939         & 0.065s        & 0.058s        & 0.12   & \code{df1v}   & 976          & 0.029s        & 0.020s        & 0.02    \\
+        \code{hd01}   & 100391       & 1.170s        & 0.982s        & 3.06   & \code{hd01}   & 88148        & 0.836s        & 0.666s        & 2.69    \\
+        \code{hd02}   & 95577        & 1.098s        & 0.960s        & 2.91   & \code{hd02}   & 86590        & 0.868s        & 0.694s        & 2.64    \\
+        \code{hd07}   & 157742       & 1.556s        & 1.275s        & 4.81   & \code{hd07}   & 109711       & 0.947s        & 0.632s        & 3.34    \\
+        \code{hd08}   & 113813       & 1.051s        & 0.784s        & 3.47   & \code{hd08}   & 98722        & 0.860s        & 0.643s        & 3.01    \\
+        \code{hd09}   & 218002       & 2.265s        & 1.875s        & 6.65   & \code{hd09}   & 152417       & 1.325s        & 0.975s        & 4.65    \\
+        \code{hd12}   & 178036       & 1.918s        & 1.602s        & 5.43   & \code{hd12}   & 126804       & 1.081s        & 0.783s        & 3.86    \\
+        \code{nk01}   & 212591       & 1.947s        & 1.531s        & 6.48   & \code{nk01}   & 198387       & 1.676s        & 1.336s        & 6.05    \\\hline
+        \textbf{Avg}  & 142293       & 1.484s        & 1.215s        & 4.33   & \textbf{Avg}  & 89593        & 0.796s        & 0.596s        & 2.72    \\
+        \hline\hline
+        \multicolumn{5}{c ||}{Option \code{-a}} & \multicolumn{5}{c}{Option \code{-m -a}} \\\hline
+        File          & Enc. size    & Enc. time     & Dec. time     & bpc    & File          & Enc. size    & Enc. time     & Dec. time     & bpc \\\hline
+        \code{df1h}   & 3939         & 0.073s        & 0.058s        & 0.12   & \code{df1h}   & 650          & 0.050s        & 0.021s        & 0.01    \\
+        \code{df1hvx} & 80268        & 0.640s        & 0.437s        & 2.44   & \code{df1hvx} & 33523        & 0.308s        & 0.189s        & 1.02    \\
+        \code{df1v}   & 3939         & 0.071s        & 0.056s        & 0.12   & \code{df1v}   & 976          & 0.053s        & 0.023s        & 0.02    \\
+        \code{hd01}   & 100391       & 1.094s        & 0.978s        & 3.06   & \code{hd01}   & 88148        & 0.891s        & 0.656s        & 2.69    \\
+        \code{hd02}   & 95577        & 1.123s        & 0.965s        & 2.91   & \code{hd02}   & 86590        & 0.877s        & 0.693s        & 2.64    \\
+        \code{hd07}   & 157713       & 1.623s        & 1.316s        & 4.81   & \code{hd07}   & 109450       & 0.881s        & 0.661s        & 3.34    \\
+        \code{hd08}   & 112161       & 0.982s        & 0.740s        & 3.42   & \code{hd08}   & 98667        & 0.869s        & 0.672s        & 3.01    \\
+        \code{hd09}   & 216666       & 2.248s        & 1.843s        & 6.61   & \code{hd09}   & 152214       & 1.250s        & 0.896s        & 4.64    \\
+        \code{hd12}   & 176626       & 1.938s        & 1.606s        & 5.39   & \code{hd12}   & 125944       & 1.112s        & 0.825s        & 3.84    \\
+        \code{nk01}   & 212943       & 1.953s        & 1.539s        & 6.49   & \code{nk01}   & 198694       & 1.716s        & 1.282s        & 6.06    \\\hline
+        \textbf{Avg}  & 116022       & 1.1745        & 0.9538        & 3.53   & \textbf{Avg}  & 89486        & 0.8007        & 0.591s        & 2.72    \\
+
+        \hline\hline
+    \end{tabular}
 
 \end{document}
