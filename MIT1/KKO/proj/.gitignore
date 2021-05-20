@@ -1,0 +1,18 @@
+# VSCode local settings
+.vscode
+
+# Compilation output
+huff_codec
+*.o
+
+# Testing input/output data
+data/*
+data.zip
+*.raw
+*.kko
+test/*
+
+# LaTeX output
+doc.*
+!doc.tex
+!doc.pdf
