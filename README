@@ -5,3 +5,20 @@ represents the year of the program (e.g. MIT1 is the first two
 semesters). Inside these directories are further directories named
 according to the individual classes.
 
+Classes:
+  MIT1:
+    KRY - Projects in C/C++ and Python aimed at cryptography.
+    PRL - Projects in C++ aimed at parallelization.
+    KKO - Project in C++ aimed at compression algorithms.
+    WAP - Projects in JavaScript.
+    MSP - Mathematical statistics.
+    FLP - Project in Haskell aimed at formal grammars.
+    TIN - Theoretical computer science.
+    BIO - No published project.
+
+  MIT2:
+    BZA - Project in C aimed at implementating some of the Platypus side-channel attacks.
+    GUX - Project in C with the GTK toolkit.
+    AVS - Projects in C++ aimed at writing vectorized and effective code.
+    FLP - Project in Haskell aimed at formal grammars. [class retaken]
+    PDS - Project in Python aimed at network traffic analysis.
